@@ -10,7 +10,7 @@ class AppConstants {
   static const String baseUrl = 'https://eagle.forexmountains.com/api/';
   static const String appName = 'Forex Mountains';
 
-  //firebase
+  //firebase using
   static const String firebaseCollectionName = 'ForexMountains';
 
   /// app settings
