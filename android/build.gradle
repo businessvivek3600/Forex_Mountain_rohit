@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.9.0'
+    ext.kotlin_version = '1.8.0'
     // '1.7.10' //'1.9.0'
     repositories {
         google()
@@ -7,7 +7,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:8.0.2"  // Correct version of the Android Gradle Plugin
+        classpath "com.android.tools.build:gradle:8.1.0"  // Correct version of the Android Gradle Plugin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:4.3.15"
     }

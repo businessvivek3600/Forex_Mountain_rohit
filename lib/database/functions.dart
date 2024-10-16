@@ -56,26 +56,26 @@ String appVersion = '';
 String pPTDownloadFilePath = '';
 
 void launchPlayStore() async {
-  const playStoreUrl =
-      "https://play.google.com/store/apps/details?id=${AppConstants.packageID}";
-
-  if (await canLaunch(playStoreUrl)) {
-    await launch(playStoreUrl);
-  } else {
-    throw 'Could not launch Play Store';
-  }
+  // const playStoreUrl =
+  //     "https://play.google.com/store/apps/details?id=${AppConstants.packageID}";
+  //
+  // if (await canLaunch(playStoreUrl)) {
+  //   await launch(playStoreUrl);
+  // } else {
+  //   throw 'Could not launch Play Store';
+  // }
 }
 
 void launchAppStore() async {
-  const appStoreUrl =
-      // "https://itunes.apple.com/app/your-app-name/id${AppConstants.appAppleStoreId}?mt=8";
-      "https://apps.apple.com/in/app/my-wealth-club/id${AppConstants.appAppleStoreId}";
-
-  if (await canLaunch(appStoreUrl)) {
-    await launch(appStoreUrl);
-  } else {
-    throw 'Could not launch App Store';
-  }
+  // const appStoreUrl =
+  //     // "https://itunes.apple.com/app/your-app-name/id${AppConstants.appAppleStoreId}?mt=8";
+  //     "https://apps.apple.com/in/app/my-wealth-club/id${AppConstants.appAppleStoreId}";
+  //
+  // if (await canLaunch(appStoreUrl)) {
+  //   await launch(appStoreUrl);
+  // } else {
+  //   throw 'Could not launch App Store';
+  // }
 }
 
 //update
