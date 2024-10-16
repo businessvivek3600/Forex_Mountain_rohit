@@ -160,31 +160,34 @@ class _LoginScreenState extends State<LoginScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Stack(
-          children: [
-            Center(
-              child: GestureDetector(
-                onTap: () => _login(context),
-                // label: !isLoginDisabled
-                //     ? loaderWidget(radius: 8)
-                //     : Icon(Icons.arrow_forward_rounded,
-                //         color: Colors.white, size: 20),
-                child: assetImages(Assets.loginToMWC, width: 250),
-                // child: titleLargeText(
-                //   'Login',
-                //   context,
-                //   color: Colors.white,
-                //   useGradient: false,
-                // ),
+        GestureDetector(
+          onTap: () => _login(context),
+          child: Stack(
+            children: [
+              Center(
+                child: GestureDetector(
+                  onTap: () => _login(context),
+                  // label: !isLoginDisabled
+                  //     ? loaderWidget(radius: 8)
+                  //     : Icon(Icons.arrow_forward_rounded,
+                  //         color: Colors.white, size: 20),
+                  child: assetImages(Assets.loginToMWC, width: 250),
+                  // child: titleLargeText(
+                  //   'Login',
+                  //   context,
+                  //   color: Colors.white,
+                  //   useGradient: false,
+                  // ),
+                ),
               ),
-            ),
-            // buildLoginButton2(context),
-            if (isLoginDisabled)
-              Container(
-                  color: Colors.transparent,
-                  width: double.maxFinite,
-                  height: 50)
-          ],
+              // buildLoginButton2(context),
+              if (isLoginDisabled)
+                Container(
+                    color: Colors.transparent,
+                    width: double.maxFinite,
+                    height: 50)
+            ],
+          ),
         ),
         height10(),
         if (isLoginDisabled)
