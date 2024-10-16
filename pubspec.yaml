@@ -106,6 +106,7 @@ dependencies:
   in_app_purchase: ^3.2.0
   permission_handler: ^11.3.1
   pedometer: ^4.0.2
+  vimeo_player_flutter: ^0.1.0
 
 dev_dependencies:
   flutter_test:

@@ -14,7 +14,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:vimeo_player_flutter/vimeo_player_flutter.dart';
 import '../../../../database/model/response/videos_model.dart';
 import 'dart:developer' as dev;
 
@@ -1304,45 +1304,15 @@ class PlayVideoFromVimeoPrivateId extends StatefulWidget {
 
 class _PlayVideoFromVimeoPrivateIdState
     extends State<PlayVideoFromVimeoPrivateId> {
-  late YoutubePlayerController _youtubeController;
 
-  @override
-  void initState() {
-    super.initState();
-    _youtubeController = YoutubePlayerController(
-      initialVideoId: "eb0qebbK89w",
-      flags: YoutubePlayerFlags(
-        autoPlay: widget.autoPlay ?? true,
-        mute: false,
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _youtubeController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    print("This page is called________________________________________________________________");
-    return YoutubePlayerBuilder(
-      player: YoutubePlayer(
-        controller: _youtubeController,
-        showVideoProgressIndicator: true,
-        progressColors: ProgressBarColors(
-          playedColor: Colors.red,
-          handleColor: Colors.redAccent,
-        ),
+    print("__________This page is called__________");
+    return Expanded(
+      child: VimeoPlayer(
+        videoId: widget.videoId,
       ),
-      builder: (context, player) {
-        return Column(
-          children: [
-            player, // Display YouTube player
-          ],
-        );
-      },
     );
   }
 }

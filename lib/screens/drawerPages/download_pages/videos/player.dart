@@ -48,20 +48,6 @@ class _CustomOrientationPlayerState extends State<CustomOrientationPlayer> {
   load() async {
     if (isActive) {
       await Future(() async {
-        //   var url = await getUrlString(
-        //       widget.videos[widget.videoIndex].videoUrl ?? '', context);
-        //   flickManager = FlickManager(
-        //       videoPlayerController: VideoPlayerController.network(url),
-        //       onVideoEnd: () {
-        //         dataManager.skipToNextVideo(context, Duration(seconds: 5));
-        //       });
-        // })
-        //     .then((value) => dataManager = DataManager(
-        //         flickManager: flickManager,
-        //         urls: widget.videos.map((e) => e.videoUrl ?? '').toList()))
-        //     .then((value) => dataManager.videos = widget.videos)
-        //     .then((value) => setState(() {
-        //           loading = false;
       });
     } else {
       inActiveUserAccessDeniedDialog(
@@ -99,19 +85,22 @@ class _CustomOrientationPlayerState extends State<CustomOrientationPlayer> {
       builder: (context, provider, child) {
         var playIndex = widget.videos.indexOf(provider.currentVideo!);
         return Scaffold(
-            appBar: AppBar(title: Text(provider.currentVideo?.title ?? '')),
+            appBar: AppBar(title: Text(provider.currentVideo?.title ?? '',style: TextStyle(color: Colors.white),)),
             body: SafeArea(
               child: Column(
                 children: [
                   // !loading
                   // ? buildPlayerWidget()
                   // ?
-                  PlayVideoFromVimeoPrivateId(
-                    videoId: provider.currentVideo!.videoUrl!.split('/').last,
-                    autoPlay: isActive,
-                    // onPlayerCreated: (controller) {
-                    //   podPlayerController = controller;
-                    // },
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    child: PlayVideoFromVimeoPrivateId(
+                      videoId: provider.currentVideo!.videoUrl!.split('/').last,
+                      autoPlay: isActive,
+                      // onPlayerCreated: (controller) {
+                      //   podPlayerController = controller;
+                      // },
+                    ),
                   ),
                   // : Container(
                   //     height: 200,
