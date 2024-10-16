@@ -40,8 +40,8 @@ android {
 
     defaultConfig {
         applicationId = "com.app.forex_mountain"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        minSdk  = 21
+        targetSdk = 33
         versionCode = "1"
         versionName = "1.0.0"
     }
