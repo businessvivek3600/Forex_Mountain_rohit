@@ -10,13 +10,25 @@ class PlayVideoFromYoutube extends StatefulWidget {
 
 class _PlayVideoFromYoutubeState extends State<PlayVideoFromYoutube> {
   late final PodPlayerController controller;
+  bool isVideoPlayable = true;
 
   @override
   void initState() {
-    controller = PodPlayerController(
-      playVideoFrom: PlayVideoFrom.youtube('https://youtu.be/A3ltMaM6noM'),
-    )..initialise();
     super.initState();
+    checkVideoAvailability();
+  }
+
+  Future<void> checkVideoAvailability() async {
+    try {
+      controller = PodPlayerController(
+        playVideoFrom: PlayVideoFrom.youtube('https://www.youtube.com/watch?v=6tWvJ-BLhbs'),
+      )..initialise();
+    } catch (e) {
+      setState(() {
+        isVideoPlayable = false;
+      });
+      print('Error: $e');
+    }
   }
 
   @override
@@ -27,6 +39,10 @@ class _PlayVideoFromYoutubeState extends State<PlayVideoFromYoutube> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: PodVideoPlayer(controller: controller));
+    return Scaffold(
+      body: isVideoPlayable
+          ? PodVideoPlayer(controller: controller)
+          : Center(child: Text("This video cannot be played. Please sign in or check restrictions.")),
+    );
   }
 }

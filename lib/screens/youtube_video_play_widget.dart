@@ -26,7 +26,7 @@ import '../sl_container.dart';
 
 /// Homepage
 class YoutubePlayerPage extends StatefulWidget {
-  const YoutubePlayerPage({Key? key}) : super(key: key);
+  const YoutubePlayerPage({super.key});
 
   static const String routeName = '/ytLive';
 
@@ -52,8 +52,8 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
       if (args != null && args is String && args.isNotEmpty) {
         Map<String, dynamic> data = jsonDecode(args);
         setState(() {
-          videoId = data['vimeo_webinar_id'];
-          isLive = data['isLive'];
+          videoId = data['videoId'];
+          // isLive = data['isLive'];
           rotate = data['rotate'];
           eventData = data['data'];
         });

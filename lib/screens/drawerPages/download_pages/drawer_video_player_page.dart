@@ -28,6 +28,7 @@ class _DrawerVideoScreenState extends State<DrawerVideoScreen> {
   @override
   void initState() {
     super.initState();
+    print("thisPage is called________________________________________________________________");
     _controller = VideoPlayerController.network(widget.url)
       ..initialize().then((_) {
         // _controller.play();

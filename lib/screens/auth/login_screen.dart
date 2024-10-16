@@ -118,10 +118,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      FilledButton(
-                                          onPressed: () =>
-                                              Get.to(PlayVideoFromYoutube()),
-                                          child: Text('Play Video')),
+                                      // FilledButton(
+                                      //     onPressed: () =>
+                                      //         Get.to(PlayVideoFromYoutube()),
+                                      //     child: Text('Play Video')),
                                       height100(height * 0.1),
                                       buildHeader(height, context),
                                       height100(height * 0.05),

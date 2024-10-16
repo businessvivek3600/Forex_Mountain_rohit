@@ -109,9 +109,9 @@ class _CustomOrientationPlayerState extends State<CustomOrientationPlayer> {
                   PlayVideoFromVimeoPrivateId(
                     videoId: provider.currentVideo!.videoUrl!.split('/').last,
                     autoPlay: isActive,
-                    onPlayerCreated: (controller) {
-                      podPlayerController = controller;
-                    },
+                    // onPlayerCreated: (controller) {
+                    //   podPlayerController = controller;
+                    // },
                   ),
                   // : Container(
                   //     height: 200,

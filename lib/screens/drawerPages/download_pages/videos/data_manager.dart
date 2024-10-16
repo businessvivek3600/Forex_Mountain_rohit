@@ -4,6 +4,8 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:forex_mountain/database/model/response/base/api_response.dart';
 import 'package:pod_player/pod_player.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '/database/functions.dart';
 import '/providers/GalleryProvider.dart';
 import '/sl_container.dart';
@@ -1286,14 +1288,13 @@ class _VimeoEventExampleState extends State<VimeoEventExample> {
 */
 
 class PlayVideoFromVimeoPrivateId extends StatefulWidget {
-  const PlayVideoFromVimeoPrivateId(
-      {Key? key,
-      required this.videoId,
-      required this.onPlayerCreated,
-      this.autoPlay})
-      : super(key: key);
+  const PlayVideoFromVimeoPrivateId({
+    Key? key,
+    required this.videoId,
+    this.autoPlay,
+  }) : super(key: key);
+
   final String videoId;
-  final Function(PodPlayerController? controller) onPlayerCreated;
   final bool? autoPlay;
 
   @override
@@ -1303,80 +1304,45 @@ class PlayVideoFromVimeoPrivateId extends StatefulWidget {
 
 class _PlayVideoFromVimeoPrivateIdState
     extends State<PlayVideoFromVimeoPrivateId> {
-  late final PodPlayerController controller;
-  var headers = {
-    'Authorization': 'Bearer ${'f106a6b507f0f3652a374a55ee7df97b'}',
-    'Accept': 'application/vnd.vimeo.*+json;version=3.4'
-  };
+  late YoutubePlayerController _youtubeController;
+
   @override
   void initState() {
-    controller = PodPlayerController(
-      playVideoFrom: PlayVideoFrom.vimeoPrivateVideos(
-        widget.videoId,
-        videoPlayerOptions: VideoPlayerOptions(),
-        httpHeaders: headers,
-      ),
-      podPlayerConfig: PodPlayerConfig(
-        autoPlay: widget.autoPlay ?? true,
-      ),
-    )..initialise().then((value) => widget.onPlayerCreated(controller));
     super.initState();
+    _youtubeController = YoutubePlayerController(
+      initialVideoId: "eb0qebbK89w",
+      flags: YoutubePlayerFlags(
+        autoPlay: widget.autoPlay ?? true,
+        mute: false,
+      ),
+    );
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    _youtubeController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return PodVideoPlayer(
-      controller: controller,
-      podPlayerLabels: PodPlayerLabels(),
-    );
-  }
-
-  Row _loadVideoFromUrl() {
-    return Row(
-      children: [
-        FocusScope(
-          canRequestFocus: false,
-          child: ElevatedButton(
-            onPressed: () async {
-              try {
-                snackBar('Loading....');
-                FocusScope.of(context).unfocus();
-
-                final Map<String, String> headers = <String, String>{};
-                headers['Authorization'] = 'Bearer ${''}';
-
-                await controller.changeVideo(
-                  playVideoFrom: PlayVideoFrom.vimeoPrivateVideos(
-                    'videoTextFieldCtr.text',
-                    httpHeaders: headers,
-                  ),
-                );
-                if (!mounted) return;
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              } catch (e) {
-                snackBar('Unable to load,\n $e');
-              }
-            },
-            child: const Text('Load Video'),
-          ),
+    print("This page is called________________________________________________________________");
+    return YoutubePlayerBuilder(
+      player: YoutubePlayer(
+        controller: _youtubeController,
+        showVideoProgressIndicator: true,
+        progressColors: ProgressBarColors(
+          playedColor: Colors.red,
+          handleColor: Colors.redAccent,
         ),
-      ],
+      ),
+      builder: (context, player) {
+        return Column(
+          children: [
+            player, // Display YouTube player
+          ],
+        );
+      },
     );
-  }
-
-  void snackBar(String text) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(text),
-        ),
-      );
   }
 }

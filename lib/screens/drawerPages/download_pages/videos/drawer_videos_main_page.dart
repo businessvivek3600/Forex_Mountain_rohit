@@ -23,7 +23,7 @@ class DrawerVideosMainPage extends StatefulWidget {
 }
 
 class _DrawerVideosMainPageState extends State<DrawerVideosMainPage> {
-  RefreshController _refreshController =
+  final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   @override
   void initState() {
