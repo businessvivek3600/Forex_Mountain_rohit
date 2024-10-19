@@ -1054,316 +1054,285 @@ class _MainPageState extends State<MainPage>
       DashBoardProvider dashBoardProvider, AuthProvider authProvider) {
     String currency_icon = sl.get<AuthProvider>().userData.currency_icon ?? '';
 
-    bool showList =
-        !dashBoardProvider.loadingDash && dashBoardProvider.hasSubscription;
+    bool showList = !dashBoardProvider.loadingDash && dashBoardProvider.hasSubscription;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         UiCategoryTitleContainer(
-            child: bodyLargeText('SUBSCRIPTION HISTORY', context)),
+          child: bodyLargeText('SUBSCRIPTION HISTORY', context),
+        ),
         Container(
-          // duration: const Duration(milliseconds: 500),
           height: dashBoardProvider.loadingDash ||
-                  dashBoardProvider.subscriptionPacks.isNotEmpty
-              ? 200
-              : 130,
+              dashBoardProvider.subscriptionPacks.isNotEmpty
+              ? size.height * 0.21
+              : size.height * 0.13,
           child: !dashBoardProvider.loadingDash &&
-                  (!dashBoardProvider.hasSubscription ||
-                      dashBoardProvider.subscriptionPacks.isEmpty)
+              (!dashBoardProvider.hasSubscription ||
+                  dashBoardProvider.subscriptionPacks.isEmpty)
               ? Container(
-                  width: double.maxFinite,
-                  constraints: BoxConstraints(maxWidth: size.width),
-                  margin: const EdgeInsetsDirectional.only(
-                      start: 8, end: 8, top: 10, bottom: 0),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    // color: Colors.white,
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
-                  child: LayoutBuilder(builder: (context, bound) {
-                    return Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          bodyLargeText(
-                              "You don't have any subscription yet.", context,
-                              color: Colors.white,
-                              useGradient: false,
-                              fontSize: 17,
-                              textAlign: TextAlign.center),
-                          height20(),
-                          GestureDetector(
-                            onTap: () => Get.to(const SubscriptionPage(
-                                initPurchaseDialog: true)),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 10),
-                              decoration: BoxDecoration(
-                                // color: appLogoColor,
-                                borderRadius: BorderRadius.circular(5),
-                                border:
-                                    Border.all(color: appLogoColor, width: 2),
-                              ),
-                              child: capText(
-                                'Add Subscriptions',
-                                context,
-                                color: Colors.white,
-                                textAlign: TextAlign.center,
-                                useGradient: true,
-                              ),
-                            ),
+            width: double.infinity,
+            constraints: BoxConstraints(maxWidth: size.width),
+            margin: const EdgeInsetsDirectional.only(
+                start: 8, end: 8, top: 10, bottom: 0),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.white, width: 2),
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    bodyLargeText(
+                      "You don't have any subscription yet.",
+                      context,
+                      color: Colors.white,
+                      useGradient: false,
+                      fontSize: 17,
+                      textAlign: TextAlign.center,
+                    ),
+                    height20(),
+                    GestureDetector(
+                      onTap: () => Get.to(const SubscriptionPage(initPurchaseDialog: true)),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: appLogoColor, width: 2),
+                        ),
+                        child: capText(
+                          'Add Subscriptions',
+                          context,
+                          color: Colors.white,
+                          textAlign: TextAlign.center,
+                          useGradient: true,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          )
+              : ListView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            scrollDirection: Axis.horizontal,
+            children: [
+              if (showList)
+                ...dashBoardProvider.subscriptionPacks.map((pack) {
+                  Color monthlyColor = const Color(0xFFCC97D1);
+                  Color goldColor = const Color(0xFFF9CE83);
+                  Color platinumColor = const Color(0xFFBB9191);
+
+                  Color color1 = pack.packageId == '1'
+                      ? monthlyColor
+                      : pack.packageId == '2'
+                      ? goldColor
+                      : pack.packageId == '3'
+                      ? platinumColor
+                      : Colors.black;
+
+                  Color color2 = pack.packageId == '1'
+                      ? const Color.fromARGB(255, 221, 212, 248)
+                      : pack.packageId == '2'
+                      ? const Color(0xff404040)
+                      : pack.packageId == '3'
+                      ? Colors.black
+                      : Colors.black54;
+                  Color color3 = pack.packageId == '1'
+                      ? const Color(0xFF96C5FF)
+                      : pack.packageId == '2'
+                      ? const Color(0xFFFA8B8F)
+                      : pack.packageId == '3'
+                      ? const Color(0xFF59F3CF)
+                      : Colors.black54;
+
+                  return GestureDetector(
+                    onTap: () => Get.to(const SubscriptionPage(initPurchaseDialog: false)),
+                    child: Container(
+                      width: size.width * 0.4,
+                      margin: EdgeInsets.only(
+                        top: size.height * 0.02,
+                        right: dashBoardProvider.subscriptionPacks.indexOf(pack) <
+                            dashBoardProvider.subscriptionPacks.length - 1
+                            ? 10
+                            : 0,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [color2.darken(30), color3],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(100),
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color.fromARGB(29, 252, 197, 197),
+                            spreadRadius: 5,
+                            blurRadius: 5,
                           ),
                         ],
                       ),
-                    );
-                  }),
-                )
-              : ListView(
-                  physics: const BouncingScrollPhysics(),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    if (showList)
-                      ...dashBoardProvider.subscriptionPacks
-                          .map((pack) => Builder(builder: (context) {
-                                // return Container(
-                                //   margin:
-                                //       EdgeInsets.only(right: 10, top: 10),
-                                //   child: buildCachedNetworkImage(
-                                //       'https://ForexMountains.com/assets/customer-panel/img/product/usd-monthly-pack-1.png'),
-                                // );
-                                //color for monthly, gold and platinum
-                                Color monthlyColor = const Color(0xFFCC97D1);
-                                Color goldColor = const Color(0xFFF9CE83);
-                                Color platinumColor = const Color(0xFFBB9191);
-
-                                Color color1 = pack.packageId == '1'
-                                    ? monthlyColor
-                                    : pack.packageId == '2'
-                                        ? goldColor
-                                        : pack.packageId == '3'
-                                            ? platinumColor
-                                            : Colors.black;
-
-                                Color color2 = pack.packageId == '1'
-                                    ? const Color.fromARGB(255, 221, 212, 248)
-                                    : pack.packageId == '2'
-                                        ? const Color(0xff404040)
-                                        : pack.packageId == '3'
-                                            ? Colors.black
-                                            : Colors.black54;
-                                Color color3 = pack.packageId == '1'
-                                    ? const Color(0xFF96C5FF)
-                                    : pack.packageId == '2'
-                                        ? const Color(0xFFFA8B8F)
-                                        : pack.packageId == '3'
-                                            ? const Color(0xFF59F3CF)
-                                            : Colors.black54;
-                                return GestureDetector(
-                                  onTap: () => Get.to(const SubscriptionPage(
-                                      initPurchaseDialog: false)),
-                                  child: Container(
-                                    width: size.width * 0.4,
-                                    margin: EdgeInsets.only(
-                                        top: size.height * 0.02,
-                                        right: dashboardProvider
-                                                    .subscriptionPacks
-                                                    .indexOf(pack) <
-                                                dashBoardProvider
-                                                        .subscriptionPacks
-                                                        .length -
-                                                    1
-                                            ? 10
-                                            : 0),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [color2.darken(30), color3],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                      ),
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        topRight: Radius.circular(100),
-                                        bottomLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
-                                      ),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            color: Color.fromARGB(
-                                                29, 252, 197, 197),
-                                            spreadRadius: 5,
-                                            blurRadius: 5)
-                                      ],
-                                    ),
-                                    padding: const EdgeInsets.all(10),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: color1,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                  color: Colors.black12,
-                                                  spreadRadius: 5,
-                                                  blurRadius: 15)
-                                            ],
-                                          ),
-                                          padding: const EdgeInsets.all(10),
-                                          child: titleLargeText(
-                                              '$currency_icon${pack.payableAmt ?? ''}',
-                                              context,
-                                              color: Colors.white,
-                                              useGradient: false),
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            titleLargeText(
-                                                pack.packageName ?? '', context,
-                                                color: Colors.white,
-                                                textAlign: TextAlign.center,
-                                                useGradient: false),
-                                            height5(),
-                                            bodyLargeText(
-                                                pack.paymentType ?? '', context,
-                                                color: Colors.white60,
-                                                textAlign: TextAlign.center,
-                                                useGradient: false),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                                Icons
-                                                    .access_time_filled_rounded,
-                                                color: color3,
-                                                size: 20),
-                                            width5(),
-                                            Expanded(
-                                              child: capText(
-                                                DateFormat()
-                                                    .add_yMMMEd()
-                                                    // .add_jm()
-                                                    .format(DateTime.parse(
-                                                        pack.createdAt ?? '')),
-                                                context,
-                                                color: const Color.fromARGB(
-                                                    255, 255, 255, 255),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }))
-                          .toList(),
-                    if (dashBoardProvider.loadingDash)
-                      ...[1, 2, 3, 4].map(
-                        (e) => Builder(builder: (context) {
-                          Color color1 = const Color(0xFFCC97D1);
-                          Color color2 =
-                              const Color.fromARGB(255, 221, 212, 248);
-                          Color color3 = const Color(0xFF96C5FF);
-                          return Container(
-                            width: size.width * 0.4,
-                            margin: EdgeInsets.only(
-                                top: size.height * 0.02, right: e < 4 ? 10 : 0),
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [color2.darken(30), color3],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(100),
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10),
-                              ),
+                              color: color1,
+                              borderRadius: BorderRadius.circular(10),
                               boxShadow: const [
                                 BoxShadow(
-                                    color: Color.fromARGB(29, 252, 197, 197),
+                                    color: Colors.black12,
                                     spreadRadius: 5,
-                                    blurRadius: 5)
+                                    blurRadius: 15),
                               ],
                             ),
                             padding: const EdgeInsets.all(10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                    decoration: BoxDecoration(
-                                      color: color1.withOpacity(0.3),
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            color: Colors.black12,
-                                            spreadRadius: 5,
-                                            blurRadius: 15)
-                                      ],
-                                    ),
-                                    padding: const EdgeInsets.all(10),
-                                    child: Skeleton(
-                                      height: 20,
-                                      width: 50,
-                                      borderRadius: BorderRadius.circular(10),
-                                    )),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Skeleton(
-                                      height: 20,
-                                      width: 50,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    height5(),
-                                    Skeleton(
-                                      height: 20,
-                                      width: 50,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ],
+                            child: titleLargeText(
+                                '$currency_icon${pack.payableAmt ?? ''}',
+                                context,
+                                color: Colors.white,
+                                useGradient: false),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              titleLargeText(pack.packageName ?? '', context,
+                                  color: Colors.white, useGradient: false),
+                              height5(),
+                              bodyLargeText(
+                                  pack.paymentType ?? '', context,
+                                  color: Colors.white60),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Icon(Icons.access_time_filled_rounded,
+                                  color: color3, size: 20),
+                              width5(),
+                              Expanded(
+                                child: capText(
+                                  DateFormat().add_yMMMEd().format(
+                                      DateTime.parse(pack.createdAt ?? '')),
+                                  context,
+                                  color: const Color.fromARGB(
+                                      255, 255, 255, 255),
                                 ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.access_time_filled_rounded,
-                                        color: color3, size: 20),
-                                    width5(),
-                                    Expanded(
-                                      child: Skeleton(
-                                        height: 20,
-                                        width: 50,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                  ],
-                ),
+                    ),
+                  );
+                }).toList(),
+              if (dashBoardProvider.loadingDash)
+                ...[1, 2, 3, 4].map((e) {
+                  Color color1 = const Color(0xFFCC97D1);
+                  Color color2 = const Color.fromARGB(255, 221, 212, 248);
+                  Color color3 = const Color(0xFF96C5FF);
+
+                  return Container(
+                    width: size.width * 0.4,
+                    margin: EdgeInsets.only(
+                        top: size.height * 0.02, right: e < 4 ? 10 : 0),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [color2.darken(30), color3],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(100),
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                      ),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromARGB(29, 252, 197, 197),
+                          spreadRadius: 5,
+                          blurRadius: 5,
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: color1.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                spreadRadius: 5,
+                                blurRadius: 15,
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.all(10),
+                          child: Skeleton(
+                            height: 20,
+                            width: 50,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Skeleton(
+                              height: 20,
+                              width: 50,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            height5(),
+                            Skeleton(
+                              height: 20,
+                              width: 50,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.access_time_filled_rounded,
+                                color: color3, size: 20),
+                            width5(),
+                            Expanded(
+                              child: Skeleton(
+                                height: 20,
+                                width: 50,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            ],
+          ),
         ),
         buildSubscriptionStatusBar(context, dashBoardProvider, authProvider),
       ],
     );
   }
+
 
   Container buildSubscriptionStatusBar(BuildContext context,
       DashBoardProvider dashBoardProvider, AuthProvider authProvider) {
