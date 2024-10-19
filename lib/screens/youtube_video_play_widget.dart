@@ -35,8 +35,6 @@ class YoutubePlayerPage extends StatefulWidget {
 }
 
 class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
-
-
   var provider = sl.get<PlayerProvider>();
   String? videoId;
   bool isLive = true;
@@ -107,8 +105,8 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-  print("+++++++++++++++++++++++++");
-  print(videoId);
+    print("+++++++++++++++++++++++++");
+    print(videoId);
     return videoId != '' && videoId != null
         ? Stack(
             children: [
@@ -135,8 +133,53 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
                   ))
             ],
           )
-        : const Center(child: CircularProgressIndicator(color: Colors.white));
-   ///Dead code-1
+        : Scaffold(
+            body: Container(
+              height: double.maxFinite,
+              width: double.maxFinite,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: userAppBgImageProvider(context),
+                  fit: BoxFit.cover,
+                  opacity: 1,
+                ),
+              ),
+              child: SafeArea(
+                child: Stack(
+                  children: [
+                    /// Centered content
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          assetLottie(Assets.noLiveVideoLottie,
+                              width: 150, height: 150),
+                          bodyLargeText(
+                              'There is no live webinar available', context),
+                        ],
+                      ),
+                    ),
+
+                    /// Cross icon positioned at the top-right corner
+                    Positioned(
+                      top: 16,
+                      left: 16,
+                      child: IconButton(
+                        icon: const Icon(Icons.close,
+                            color: Colors.white, size: 28),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+
+    ///Dead code-1
   }
 
   AppBar buildAppBar({required bool isLive, required PlayerProvider provider}) {
@@ -687,7 +730,7 @@ class PlayerProvider extends ChangeNotifier {
                     //     Get.to(PlayVideoFromNetwork());
                     //   },
                     // ),
-                
+
 
 */
 
@@ -705,22 +748,12 @@ class __LiveYTPlayerState extends State<_LiveYTPlayer> {
   late final PodPlayerController controller;
   Map<String, dynamic>? eventData;
   bool isFullScreen = false;
+  bool isError = false;
 
   @override
   void initState() {
     super.initState();
-    controller = PodPlayerController(
-        playVideoFrom:
-            PlayVideoFrom.youtube(widget.videoId, live: widget.isLive))
-      ..initialise()
-      ..enableFullScreen();
-    controller.addListener(() {
-      if (controller.isFullScreen != isFullScreen) {
-        isFullScreen = controller.isFullScreen;
-        logger.i('isFullScreen $isFullScreen');
-        setState(() {});
-      }
-    });
+    _initializeController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
         eventData = widget.data;
@@ -728,11 +761,46 @@ class __LiveYTPlayerState extends State<_LiveYTPlayer> {
     });
   }
 
+  void _initializeController() async {
+    try {
+      controller = PodPlayerController(
+        playVideoFrom: PlayVideoFrom.youtube(widget.videoId,
+          live: widget.isLive,
+          videoPlayerOptions: VideoPlayerOptions(
+            allowBackgroundPlayback: false,
+            mixWithOthers: false,
+            webOptions: const VideoPlayerWebOptions(
+              allowContextMenu: false,
+              allowRemotePlayback: false,
+              controls: VideoPlayerWebOptionsControls.disabled(),
+            ),
+          ),
+        ),
+      );
+      await controller.initialise(); // Wait for initialization
+      controller.enableFullScreen();
+
+      controller.addListener(() {
+        if (controller.isFullScreen != isFullScreen) {
+          isFullScreen = controller.isFullScreen;
+          setState(() {});
+        }
+      });
+    } catch (e) {
+      // If any error occurs during initialization, set isError to true
+      setState(() {
+        isError = true;
+      });
+      debugPrint("Error initializing video player: $e");
+    }
+  }
+
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -749,11 +817,14 @@ class __LiveYTPlayerState extends State<_LiveYTPlayer> {
         ),
         child: Column(
           children: [
-            Expanded(
+            isError
+                ? _buildErrorWidget()
+                : Expanded(
                 flex: 1,
                 // aspectRatio: 16 / 9,
                 child: PodVideoPlayer(
                   controller: controller,
+
                   onLoading: (context) {
                     return Stack(
                       children: [
@@ -773,36 +844,51 @@ class __LiveYTPlayerState extends State<_LiveYTPlayer> {
                       ],
                     );
                   },
-                  onVideoError: () {
-                    return Stack(
-                      children: [
-                        Container(color: Colors.transparent),
-                        const Positioned(
-                          top: 0,
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Center(
-                            child: Text(
-                              'Error while loading video',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-
-                        ///back button
-                        backButton()
-                      ],
-                    );
-                  },
-                )),
+                  onVideoError: () =>  _buildErrorWidget(),
+                ),
+            ),
             _buildEvendDetails(context)
           ],
         ),
       ),
     );
   }
-
+  Widget _buildErrorWidget() {
+    return Stack(
+      children: [
+        Container(color: Colors.transparent),
+        Positioned(
+          top: 100,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Show Lottie animation for no video available
+                assetLottie(
+                  Assets.noLiveVideoLottie,
+                  width: 150,
+                  height: 150,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'There is no Live video available',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        backButton(),
+      ],
+    );
+  }
   Positioned backButton() {
     return Positioned(
         top: 0,
@@ -910,6 +996,7 @@ class __LiveYTPlayerState extends State<_LiveYTPlayer> {
     );
   }
 }
+
 ///dead code -1
 // DateTime? date = DateTime.tryParse(eventData?['webinar_time'] ?? '');
 //     // return Container();
@@ -1117,3 +1204,5 @@ class __LiveYTPlayerState extends State<_LiveYTPlayer> {
 //         });
 //       }),
 //     );
+
+///RLnsbMScBUQ ,Good Morning Everyone,2024-05-03 08:30:00 ,Daily Webinar

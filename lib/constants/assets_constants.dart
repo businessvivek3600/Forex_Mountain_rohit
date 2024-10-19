@@ -118,4 +118,6 @@ class Assets {
   static const loading_mwc = 'loading_mwc.json';
   static const liveLottie = 'live.json';
   static const liveBroadcastLottie = 'live_broadcast_2s.json';
+  static const noLiveVideoLottie = 'empty.json';
+  static const noLiveVideoLottie1 = 'empty1.json';
 }
