@@ -877,7 +877,6 @@ class _MainPageState extends State<MainPage>
                     0)
                   Positioned(
                     right: 0,
-
                     top: 0,
                     child: Container(
                       decoration: const BoxDecoration(
@@ -1063,11 +1062,12 @@ class _MainPageState extends State<MainPage>
         UiCategoryTitleContainer(
             child: bodyLargeText('SUBSCRIPTION HISTORY', context)),
         Container(
-          // duration: const Duration(milliseconds: 500),
-          height: dashBoardProvider.loadingDash ||
-                  dashBoardProvider.subscriptionPacks.isNotEmpty
-              ? 200
-              : 130,
+          height: (dashBoardProvider.loadingDash ||
+                  dashBoardProvider.subscriptionPacks.isNotEmpty)
+              ? MediaQuery.of(context).size.height *
+                  0.312 // 25% of the screen height
+              : MediaQuery.of(context).size.height *
+                  0.150, // 15% of the screen height
           child: !dashBoardProvider.loadingDash &&
                   (!dashBoardProvider.hasSubscription ||
                       dashBoardProvider.subscriptionPacks.isEmpty)
