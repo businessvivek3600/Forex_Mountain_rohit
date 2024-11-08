@@ -1065,7 +1065,7 @@ class _MainPageState extends State<MainPage>
         Container(
           height: dashBoardProvider.loadingDash ||
                   dashBoardProvider.subscriptionPacks.isNotEmpty
-              ? size.height * 0.29
+              ? size.height * 0.25
               : size.height * 0.20,
           child: !dashBoardProvider.loadingDash &&
                   (!dashBoardProvider.hasSubscription ||
@@ -1152,7 +1152,7 @@ class _MainPageState extends State<MainPage>
                                 ? const Color(0xFFFA8B8F)
                                 : pack.packageId == '3'
                                     ? const Color(0xFF59F3CF)
-                                    : Colors.black54;
+                                    : Colors.white54;
 
                         return GestureDetector(
                           onTap: () => Get.to(const SubscriptionPage(
