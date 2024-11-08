@@ -1,8 +1,1 @@
-{
-  "emulators": {
-    "singleProjectMode": true
-  },
-  "remoteconfig": {
-    "template": "remoteconfig.template.json"
-  }
-}
+{"emulators":{"singleProjectMode":true},"remoteconfig":{"template":"remoteconfig.template.json"},"flutter":{"platforms":{"android":{"default":{"projectId":"eagle-mountain","appId":"1:519172440309:android:d3656da2f81d8e50f585bc","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"eagle-mountain","appId":"1:519172440309:ios:8ff915795ba9d0d4f585bc","uploadDebugSymbols":true,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"macos":{"default":{"projectId":"eagle-mountain","appId":"1:519172440309:ios:8ff915795ba9d0d4f585bc","uploadDebugSymbols":true,"fileOutput":"macos/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"eagle-mountain","configurations":{"android":"1:519172440309:android:d3656da2f81d8e50f585bc","ios":"1:519172440309:ios:8ff915795ba9d0d4f585bc","macos":"1:519172440309:ios:8ff915795ba9d0d4f585bc","web":"1:519172440309:web:3af0111c102fad86f585bc","windows":"1:519172440309:web:5dea42cabcfceb37f585bc"}}}}}}

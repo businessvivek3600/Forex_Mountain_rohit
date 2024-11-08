@@ -34,28 +34,28 @@ class TeamDownlineUser {
     referral = json['referral'];
     newLevel = json['new_level'];
     nodeVal = json['nodeVal'];
-    status = json['status'];
+    status = json['status']?.toString(); // Convert to String
     downline = json['downline'];
     nameWithUsername = json['name_with_username'];
     activeDate = json['active_date'];
     expireDate = json['expire_date'];
-    totalMember = json['total_member'];
-    activeMember = json['active_member'];
+    totalMember = json['total_member']?.toString(); // Convert to String
+    activeMember = json['active_member']?.toString(); // Convert to String
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['username'] = this.username;
-    data['referral'] = this.referral;
-    data['new_level'] = this.newLevel;
-    data['nodeVal'] = this.nodeVal;
-    data['downline'] = this.downline;
-    data['status'] = this.status;
-    data['name_with_username'] = this.nameWithUsername;
-    data['active_date'] = this.activeDate;
-    data['expire_date'] = this.expireDate;
-    data['total_member'] = this.totalMember;
-    data['active_member'] = this.activeMember;
+    data['username'] = username;
+    data['referral'] = referral;
+    data['new_level'] = newLevel;
+    data['nodeVal'] = nodeVal;
+    data['downline'] = downline;
+    data['status'] = status;
+    data['name_with_username'] = nameWithUsername;
+    data['active_date'] = activeDate;
+    data['expire_date'] = expireDate;
+    data['total_member'] = totalMember;
+    data['active_member'] = activeMember;
     return data;
   }
 }

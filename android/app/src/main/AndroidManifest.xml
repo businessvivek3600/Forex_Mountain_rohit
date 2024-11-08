@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.app.forex_mountain">
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <application
         android:label="forex_mountain"

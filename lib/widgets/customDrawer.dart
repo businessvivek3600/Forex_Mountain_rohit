@@ -73,7 +73,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     List<List<dynamic>> drawerOtherItems = [
       ['Login Logs', Assets.logsSvg],
       ['Notifications', Assets.notification],
-      ['Settings', Assets.settings],
+      // ['Settings', Assets.settings],
       ['Support', Assets.support],
       ['Logout', Assets.logout],
     ];
@@ -83,7 +83,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     // String eventTicket = 'Event Ticket';
     // String holdingTank = 'Holding Tank';
     String matrixAnalyzer = 'Matrix Analyzer';
-    String whatsNew = 'What\'s New';
+  //  String whatsNew = 'What\'s New';
     String stepCounter = "Step Counter";
     return Container(
       color: Colors.blueGrey.shade900,
@@ -226,21 +226,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 fontWeight: FontWeight.bold),
                             height10(),
                             buildProfileExpansionTile(size, dashBoardProvider),
-                            height10(),
-                            DrawerTileItem(
-                              onTap: () {
-                                dashBoardProvider.setDrawerTile(stepCounter);
-                                Widget page =  StepCounter();
-                                Get.to(page);
-                              },
-                              leading: Assets.pages,
-                              title: stepCounter,
-                              width: size.width * 0.7,
-                              selected: dashBoardProvider.selectedDrawerTile ==
-                                  stepCounter,
-                              trailing: assetImages(Assets.newPng,
-                                  width: 25, height: 25),
-                            ),
+                            // height10(),
+                            // DrawerTileItem(
+                            //   onTap: () {
+                            //     dashBoardProvider.setDrawerTile(stepCounter);
+                            //     Widget page =  StepCounter();
+                            //     Get.to(page);
+                            //   },
+                            //   leading: Assets.pages,
+                            //   title: stepCounter,
+                            //   width: size.width * 0.7,
+                            //   selected: dashBoardProvider.selectedDrawerTile ==
+                            //       stepCounter,
+                            //   trailing: assetImages(Assets.newPng,
+                            //       width: 25, height: 25),
+                            // ),
                             height10(),
                             //Others
                             capText('Others', context,
@@ -251,21 +251,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 e, context, size, dashBoardProvider)),
 
                             // whatsNew
-                            DrawerTileItem(
-                              onTap: () {
-                                dashBoardProvider.setDrawerTile(whatsNew);
-                                Widget page = const WhatsNewPage();
-                                Get.to(page);
-                              },
-                              leading: Assets.pages,
-                              title: whatsNew,
-                              width: size.width * 0.7,
-                              selected: dashBoardProvider.selectedDrawerTile ==
-                                  whatsNew,
-                              trailing: assetImages(Assets.newPng,
-                                  width: 25, height: 25),
-                            ),
-                            height10(),
+                            // DrawerTileItem(
+                            //   onTap: () {
+                            //     dashBoardProvider.setDrawerTile(whatsNew);
+                            //     Widget page = const WhatsNewPage();
+                            //     Get.to(page);
+                            //   },
+                            //   leading: Assets.pages,
+                            //   title: whatsNew,
+                            //   width: size.width * 0.7,
+                            //   selected: dashBoardProvider.selectedDrawerTile ==
+                            //       whatsNew,
+                            //   trailing: assetImages(Assets.newPng,
+                            //       width: 25, height: 25),
+                            // ),
+                            // height10(),
 
                             buildAppPagesExpansionTile(
                                 size, dashBoardProvider, authProvider),

@@ -418,7 +418,7 @@ class _LazyLoadingTreeViewState extends State<LazyLoadingTreeView> {
           ),
           titleLargeText(
               'Create team & join more people to enlarge the system.', context,
-              color: Colors.black, textAlign: TextAlign.center),
+              color: Colors.white, textAlign: TextAlign.center),
           height20(),
           buildTeamBuildingReferralLink(context)
         ],

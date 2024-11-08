@@ -108,6 +108,16 @@ dependencies:
   vimeo_player_flutter: ^0.1.0
   flutter_app_badger: ^1.5.0
 
+  in_app_purchase_android: any
+  in_app_purchase_storekit: any
+  timezone: any
+  xml: any
+  nested: any
+  webview_flutter: any
+  webview_flutter_android: any
+  webview_flutter_wkwebview: any
+  flutter_html: any
+  collection: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

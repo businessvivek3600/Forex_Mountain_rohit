@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "519172440309",
+    "project_id": "eagle-mountain",
+    "storage_bucket": "eagle-mountain.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519172440309:android:d3656da2f81d8e50f585bc",
+        "android_client_info": {
+          "package_name": "com.app.forex_mountain"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzHps8s51hjbUaOf2st3AyLNbd_OUVMyU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
