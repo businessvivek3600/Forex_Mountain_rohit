@@ -79,12 +79,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
     ];
     Size size = MediaQuery.of(context).size;
     String inbox = 'Inbox';
-    // String giftVoucher = 'Gift Voucher';
-    // String eventTicket = 'Event Ticket';
-    // String holdingTank = 'Holding Tank';
+    String giftVoucher = 'Gift Voucher';
+    String eventTicket = 'Event Ticket';
+    String holdingTank = 'Holding Tank';
     String matrixAnalyzer = 'Matrix Analyzer';
   //  String whatsNew = 'What\'s New';
-    String stepCounter = "Step Counter";
+  //   String stepCounter = "Step Counter";
     return Container(
       color: Colors.blueGrey.shade900,
       height: double.maxFinite,
@@ -131,20 +131,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   dashBoardProvider.selectedDrawerTile == inbox,
                             ),
                             height10(),
-                            //holdingTank
-                            // DrawerTileItem(
-                            //   onTap: () {
-                            //     dashBoardProvider.setDrawerTile(holdingTank);
-                            //     Widget page = const HoldingTankPage();
-                            //     Get.to(page);
-                            //   },
-                            //   leading: Assets.creditCard,
-                            //   title: holdingTank,
-                            //   width: size.width * 0.7,
-                            //   selected: dashBoardProvider.selectedDrawerTile ==
-                            //       holdingTank,
-                            // ),
-                            // height10(),
+                           // holdingTank
+                            DrawerTileItem(
+                              onTap: () {
+                                dashBoardProvider.setDrawerTile(holdingTank);
+                                Widget page = const HoldingTankPage();
+                                Get.to(page);
+                              },
+                              leading: Assets.creditCard,
+                              title: holdingTank,
+                              width: size.width * 0.7,
+                              selected: dashBoardProvider.selectedDrawerTile ==
+                                  holdingTank,
+                            ),
+                            height10(),
 
                             //downlines
                             //downlines
@@ -152,23 +152,23 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 size, dashBoardProvider),
                             height10(),
 
-                            //Matrix-Analyzer
-                            // DrawerTileItem(
-                            //   onTap: () {
-                            //     dashBoardProvider.setDrawerTile(matrixAnalyzer);
-                            //     Widget page = const MatrixAnalyzerPage();
-                            //     Get.to(page);
-                            //   },
-                            //   leading: Assets.analyzer,
-                            //   title: matrixAnalyzer,
-                            //   width: size.width * 0.7,
-                            //   selected: dashBoardProvider.selectedDrawerTile ==
-                            //       matrixAnalyzer,
-                            // ),
-                            // height10(),
+                           // Matrix-Analyzer
+                            DrawerTileItem(
+                              onTap: () {
+                                dashBoardProvider.setDrawerTile(matrixAnalyzer);
+                                Widget page = const MatrixAnalyzerPage();
+                                Get.to(page);
+                              },
+                              leading: Assets.analyzer,
+                              title: matrixAnalyzer,
+                              width: size.width * 0.7,
+                              selected: dashBoardProvider.selectedDrawerTile ==
+                                  matrixAnalyzer,
+                            ),
+                            height10(),
 
-                            // Subscription
-                            // if (Platform.isAndroid)
+                          //  Subscription
+                            if (Platform.isAndroid)
                             DrawerTileItem(
                               onTap: () {
                                 dashBoardProvider.setDrawerTile('Subscription');
@@ -185,19 +185,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                             ///Gift Voucher
                             // if (Platform.isAndroid)
-                            // DrawerTileItem(
-                            //   onTap: () {
-                            //     dashBoardProvider.setDrawerTile(giftVoucher);
-                            //     Widget page = const GiftVoucherPage();
-                            //     Get.to(page);
-                            //   },
-                            //   leading: Assets.gift,
-                            //   title: giftVoucher,
-                            //   width: size.width * 0.7,
-                            //   selected: dashBoardProvider.selectedDrawerTile ==
-                            //       giftVoucher,
-                            // ),
-                            // height10(),
+                            DrawerTileItem(
+                              onTap: () {
+                                dashBoardProvider.setDrawerTile(giftVoucher);
+                                Widget page = const GiftVoucherPage();
+                                Get.to(page);
+                              },
+                              leading: Assets.gift,
+                              title: giftVoucher,
+                              width: size.width * 0.7,
+                              selected: dashBoardProvider.selectedDrawerTile ==
+                                  giftVoucher,
+                            ),
+                            height10(),
 
                             //Event Ticket
                             // DrawerTileItem(
