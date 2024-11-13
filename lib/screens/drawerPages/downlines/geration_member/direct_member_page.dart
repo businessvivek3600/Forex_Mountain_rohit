@@ -624,7 +624,7 @@ class _MemberTile extends StatelessWidget {
                 radius: 20,
                 backgroundColor: Colors.white.withOpacity(0.0),
                 child: buildCachedNetworkImage(
-                    'https://ForexMountains.com/assets/customer-panel/img/reward/rank-image-${user.nRankId}.png'),
+                    'https://ForexMountains.com/assets/customer-panel/img/reward/rank-image-${user.nRankId}.png',fit: BoxFit.cover),
               ),
               width10(),
               Expanded(
