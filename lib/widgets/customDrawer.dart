@@ -8,6 +8,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:forex_mountain/screens/drawerPages/downlines/my_login_logs_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../screens/drawerPages/step_counter/step_counter.dart';
 import '../screens/drawerPages/whats_new_page.dart';
 import '../screens/youtube_video_play_widget.dart';
@@ -79,12 +80,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
     ];
     Size size = MediaQuery.of(context).size;
     String inbox = 'Inbox';
-    String giftVoucher = 'Gift Voucher';
-    String eventTicket = 'Event Ticket';
-    String holdingTank = 'Holding Tank';
-    String matrixAnalyzer = 'Matrix Analyzer';
-  //  String whatsNew = 'What\'s New';
-  //   String stepCounter = "Step Counter";
+    // String giftVoucher = 'Gift Voucher';
+    // String eventTicket = 'Event Ticket';
+    // String holdingTank = 'Holding Tank';
+    // String matrixAnalyzer = 'Matrix Analyzer';
+    //  String whatsNew = 'What\'s New';
+    //   String stepCounter = "Step Counter";
+    String delete = 'Delete Account';
     return Container(
       color: Colors.blueGrey.shade900,
       height: double.maxFinite,
@@ -131,20 +133,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   dashBoardProvider.selectedDrawerTile == inbox,
                             ),
                             height10(),
-                           // holdingTank
-                            DrawerTileItem(
-                              onTap: () {
-                                dashBoardProvider.setDrawerTile(holdingTank);
-                                Widget page = const HoldingTankPage();
-                                Get.to(page);
-                              },
-                              leading: Assets.creditCard,
-                              title: holdingTank,
-                              width: size.width * 0.7,
-                              selected: dashBoardProvider.selectedDrawerTile ==
-                                  holdingTank,
-                            ),
-                            height10(),
+                            // // holdingTank
+                            //  DrawerTileItem(
+                            //    onTap: () {
+                            //      dashBoardProvider.setDrawerTile(holdingTank);
+                            //      Widget page = const HoldingTankPage();
+                            //      Get.to(page);
+                            //    },
+                            //    leading: Assets.creditCard,
+                            //    title: holdingTank,
+                            //    width: size.width * 0.7,
+                            //    selected: dashBoardProvider.selectedDrawerTile ==
+                            //        holdingTank,
+                            //  ),
+                            //  height10(),
 
                             //downlines
                             //downlines
@@ -152,52 +154,54 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 size, dashBoardProvider),
                             height10(),
 
-                           // Matrix-Analyzer
-                            DrawerTileItem(
-                              onTap: () {
-                                dashBoardProvider.setDrawerTile(matrixAnalyzer);
-                                Widget page = const MatrixAnalyzerPage();
-                                Get.to(page);
-                              },
-                              leading: Assets.analyzer,
-                              title: matrixAnalyzer,
-                              width: size.width * 0.7,
-                              selected: dashBoardProvider.selectedDrawerTile ==
-                                  matrixAnalyzer,
-                            ),
-                            height10(),
+                            // // Matrix-Analyzer
+                            //  DrawerTileItem(
+                            //    onTap: () {
+                            //      dashBoardProvider.setDrawerTile(matrixAnalyzer);
+                            //      Widget page = const MatrixAnalyzerPage();
+                            //      Get.to(page);
+                            //    },
+                            //    leading: Assets.analyzer,
+                            //    title: matrixAnalyzer,
+                            //    width: size.width * 0.7,
+                            //    selected: dashBoardProvider.selectedDrawerTile ==
+                            //        matrixAnalyzer,
+                            //  ),
+                            //  height10(),
 
-                          //  Subscription
+                            //  Subscription
                             if (Platform.isAndroid)
-                            DrawerTileItem(
-                              onTap: () {
-                                dashBoardProvider.setDrawerTile('Subscription');
-                                Widget page = const SubscriptionPage();
-                                Get.to(page);
-                              },
-                              leading: Assets.subscription,
-                              title: 'Subscription',
-                              width: size.width * 0.7,
-                              selected: dashBoardProvider.selectedDrawerTile ==
-                                  'Subscription',
-                            ),
+                              DrawerTileItem(
+                                onTap: () {
+                                  dashBoardProvider
+                                      .setDrawerTile('Subscription');
+                                  Widget page = const SubscriptionPage();
+                                  Get.to(page);
+                                },
+                                leading: Assets.subscription,
+                                title: 'Subscription',
+                                width: size.width * 0.7,
+                                selected:
+                                    dashBoardProvider.selectedDrawerTile ==
+                                        'Subscription',
+                              ),
                             height10(),
 
                             ///Gift Voucher
-                            // if (Platform.isAndroid)
-                            DrawerTileItem(
-                              onTap: () {
-                                dashBoardProvider.setDrawerTile(giftVoucher);
-                                Widget page = const GiftVoucherPage();
-                                Get.to(page);
-                              },
-                              leading: Assets.gift,
-                              title: giftVoucher,
-                              width: size.width * 0.7,
-                              selected: dashBoardProvider.selectedDrawerTile ==
-                                  giftVoucher,
-                            ),
-                            height10(),
+                            // // if (Platform.isAndroid)
+                            // DrawerTileItem(
+                            //   onTap: () {
+                            //     dashBoardProvider.setDrawerTile(giftVoucher);
+                            //     Widget page = const GiftVoucherPage();
+                            //     Get.to(page);
+                            //   },
+                            //   leading: Assets.gift,
+                            //   title: giftVoucher,
+                            //   width: size.width * 0.7,
+                            //   selected: dashBoardProvider.selectedDrawerTile ==
+                            //       giftVoucher,
+                            // ),
+                            // height10(),
 
                             //Event Ticket
                             // DrawerTileItem(
@@ -269,6 +273,44 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                             buildAppPagesExpansionTile(
                                 size, dashBoardProvider, authProvider),
+
+
+                            height10(),
+                            if(authProvider.userData.username == "BIZZ3800074")
+                            DrawerTileItem(
+                              deleteAccount: true,
+                              onTap: () {
+                                AwesomeDialog(
+                                  dialogType: DialogType.info,
+                                  dismissOnBackKeyPress: false,
+                                  dismissOnTouchOutside: false,
+                                  title: 'Do you really want to Delete your Account?',
+                                  context: context,
+                                  btnCancelText: 'No',
+                                  btnOkText: 'Yes Sure!',
+                                  btnCancelOnPress: () {},
+                                  padding: EdgeInsets.all(10),
+                                  btnOkOnPress: () async {
+                                    const url = 'https://eagle.forexmountains.com/delete-account';
+
+                                    if (await canLaunch(url)) {
+                                      await launch(url);
+                                    } else {
+                                      throw 'Could not launch $url';
+                                    }
+                                  },
+                                  reverseBtnOrder: true,
+                                ).show();
+                              },
+                              leading: Assets.delete,
+                              title: delete,
+                              width: size.width * 0.7,
+                              selected: dashBoardProvider.selectedDrawerTile ==
+                                  delete,
+                              // trailing: assetImages(Assets.newPng,
+                              //     width: 25, height: 25),
+                            ),
+
                             height10(),
                             buildFooter(size, context, dashBoardProvider),
                           ],
@@ -495,7 +537,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           break;
 
                         case inactiveAnalyzer:
-
                         default:
                           page = buildDefaultPage();
                           break;
@@ -936,7 +977,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Container buildFooter(
       Size size, BuildContext context, DashBoardProvider dashBoardProvider) {
     return Container(
-      height: 20 + size.height * 0.13,
+      height: 25 + size.height * 0.13,
       // color: Colors.white38,
       width: double.maxFinite,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1131,7 +1172,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
       appBar: AppBar(
         backgroundColor: mainColor,
         elevation: 0,
-        title: titleLargeText('My Car Club', context,
+        title: titleLargeText('Forex Mountains', context,
             color: Colors.white,
             fontWeight: FontWeight.bold,
             useGradient: true),
@@ -1308,6 +1349,7 @@ class DrawerTileItem extends StatefulWidget {
     this.trailing,
     this.trailingOnTap,
     this.opacity = 1,
+    this.deleteAccount = false,
   });
 
   final void Function()? onTap;
@@ -1315,6 +1357,7 @@ class DrawerTileItem extends StatefulWidget {
   final String title;
   final bool selected;
   final double width;
+  final bool deleteAccount;
   final Widget? trailing;
   final VoidCallback? trailingOnTap;
   final double opacity;
@@ -1375,16 +1418,25 @@ class _DrawerTileItemState extends State<DrawerTileItem>
                   assetSvg(widget.leading, color: Colors.white, width: 15),
                   width10(),
                   Expanded(
-                    child: bodyMedText(
-                      widget.title,
-                      context,
-                      color: Colors.white70,
-                      fontWeight: FontWeight.bold,
-                      useGradient: true,
-                      opacity: widget.selected ? 1 : widget.opacity,
-                      // maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    child: widget.deleteAccount == true
+                        ? Text(
+                            widget.title,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
+                        : bodyMedText(
+                            widget.title,
+                            context,
+                            color: Colors.white70,
+                            fontWeight: FontWeight.bold,
+                            useGradient: true,
+                            opacity: widget.selected ? 1 : widget.opacity,
+                            // maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                   ),
                   if (widget.trailing != null) width10(),
                   if (widget.trailing != null) widget.trailing!
@@ -1413,169 +1465,169 @@ class _DrawerTileItemState extends State<DrawerTileItem>
   }
 }
 
-const String aboutUsHtml = (r'''
-
-<section class="p-y-5 pb-0">
-<div class="container">
-<div class="row">
-<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 p-2">
-<img style="margin-top:15%;" src="https://forex_mountain.com/assets/website-panel/img/ilu.png" width="100%" alt="">
-</div>
-<div style="margin-top:5%;" class="col-lg-7 col-md-7 col-sm-7 col-xs-12 p-2">
-<p style="font-weight:bold;font-size:20px;color: #f26822;">ABOUT</p>
-<p style="font-size:medium;text-align: justify;">If you're passionate about cars, then you've come to the right place! forex_mountain.com is a tight-knit community of car enthusiasts who come together to share their love for anything on wheels. You receive weekly newsletter on the latest motor releases, events, exhibitions and more.<br><br>
-We believe that cars aren't just machines, they're a way of life. From muscle cars to exotic rides, we're always eager to hear the stories behind each member's unique ride. Whether you're an expert, enthusiast or simply love the thrill of a good drive, there's something for everyone in our club.<br></p>
-
-</div>
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2">
-<p style="font-size:medium;text-align: justify;"> Our inclusive and supportive community is all about coming together to celebrate everything that makes cars so special. We believe in supporting each other through the highs and lows of car ownership, and we're always happy to offer advice on how to get the most out of your ride. We also present you the opportunity to drive a top class luxury car and make monthly income through our marketing plan.</p>
-<p style="font-size:medium;">So whether you're into classic cars, performance vehicles, or simply love the thrill of hitting the open road, we'd love for you to join our community.
-</p>
-</div>
-</div>
-</div>
-</section>
-<section class="p-y-5 pb-0" style="padding: 10px;">
-<div class="container">
-<div class="row">
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2 text-center">
-<img src="https://forex_mountain.com/assets/website-panel/img/car-keys.png" style="max-width: 100%;">
-</div>
-</div>
-</div>
-</section>
-<section class="p-y-5 pb-0" style="background-color: #ebebeb8f; padding: 10px;">
-<div class="container">
-<div class="row">
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2">
-<p style="font-weight:bold;font-size:20px;color: #f26822;">START</p>
-<p style="font-size:medium; text-align: justify;">Starting your My Car Club membership can be a fun and exciting endeavour. You can avail all the amazing offers, discounts and activity invites through a few simple clicks. My Car Club offers a subscription-based model where members could choose either a monthly or yearly subscription. There is a one-time joining fee of €149, at present you get €50 Founder’s discount making it affectively €99 only. The monthly membership is only €29 while you save one month’s subscription fee by paying for a year. When you choose yearly membership, you pay only €319 instead of €348. </p>
-<p style="font-size:medium; text-align: justify;">By following these steps, you can establish you My Car Club membership that will provide you and your fellow enthusiasts with enjoyable and memorable experiences along with an abundance of benefits.</p>
-</div>
-</div>
-</div>
-</section>
-<section class="p-y-5 pb-0" style="padding: 10px;">
-<div class="container">
-<div class="row">
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2 text-center">
-<img src="https://forex_mountain.com/assets/website-panel/img/12wa.png" style="max-width: 60%;">
-</div>
-</div>
-</div>
-</section>
-<section class="p-y-5 pb-0" style="background-color: #e2e2e2fa; padding: 10px;">
-<div class="container">
-<div class="row">
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2" style="background-color: #e2e2e2fa;">
-<p style="font-weight:bold;font-size:20px;color: #f26822;">BUSINESS OPPORTUNITY</p>
-<p style="font-size:medium; text-align: justify;">We are building an active community of car enthusiasts where you can network with people from different walks of life. You get to meet gearheads, wizards, experts, professionals, and fans of the automotive industry. My Car Club gives you huge rewards for networking too. From being able to drive a latest luxury car to even getting monthly residual income – it is all within your reach with My Car Club. More information on the reward programme is accessible for paying members.</p>
-</div>
-</div>
-</div>
-</section>
-<section class="p-y-5 pb-0">
-<div class="container">
-<div class="row">
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2">
-<h1 style="font-weight:bold;font-size:25px;color: #f26822;">EXCLUSIVE CAR CLUB AND A GROUP OF CAR</h1>
-<p style="font-size:medium;">Enthusiasts who love everything about the automotive world.</p>
-</div>
-<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 p-2">
-<p style="font-weight:bold;font-size:20px;color: #f26822;">Mission</p>
-<p style="font-size:medium;text-align: justify;">The mission of a forex_mountain is to provide members with a unique, exclusive, and unparalleled experience to its members. We aim to offer a wide range of benefits to individual needs and desires so our goal is to ensure each customer has a safe and enjoyable experience that leaves them coming back for more.</p>
-</div>
-<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 p-2">
-<p style="font-weight:bold;font-size:20px;color: #f26822;">Vision</p>
-<p style="font-size:medium;text-align: justify;">Our vision is to provide an exceptional level of personalized service, allowing members to explore new vehicles and discover new engaging opportunities. We strive to exceed expectations with every aspect of our service, from the quality of our vehicles to the attention to detail in our customer service. </p>
-</div>
-</div>
-</div>
-</section>
-
-<section class="p-y-5 pb-0" style="padding: 5px; background-color: #ebebeb8f;">
-<div class="container">
-<div class="row">
-<div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 p-2 ">
-<h2 class="elementor-heading-title elementor-size-default" style="font-weight:bold;font-size:20px;color: #f26822;">WELCOME TO MY CAR CLUB</h2>
-<p style="font-size:medium; color: #000;text-align: justify;">Once you become a part of this exclusive membership club, you shall have access to all major events organised by us, such as follows:<br>
-1. We organize a scenic drives: We plan scenic routes through the countryside and national parks where the My Car Club members can drive and appreciate the beautiful scenery. You can also hold a photo contest for the members and give prizes for the best pictures.<br>
-2. We host car shows: We invite car enthusiasts from different locations to showcase their cars and compete in various categories. We also set up food and music for fun-filled days.<br>
-3. Road rallies: We plan road rallies where My Car Club members can race against each other while solving puzzles and riddles along the route.<br>
-4. Car maintenance workshops: We host regular workshops on car maintenance where members can learn about basic car maintenance tips and tricks.<br>
-5. Car detailing demos: We invite professionals to showcase how to detail a car properly. This can be helpful for car enthusiasts who want to learn more about cleaning and detailing their cars.<br>
-6. Garage tour: We organize garage tours where members can visit local garages and see cool car collections.</p>
-</div>
-<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 p-2 ">
-<img src="https://forex_mountain.com/assets/website-panel/img/lobbyimage_2-min-removebg-preview.png" style="margin-top:15%;" class="attachment-large size-large" alt="" loading="lazy" sizes="(max-width: 590px) 100vw, 590px">
-</div>
-</div>
-</div>
-</section>
-<div class="container">
-<div class="row">
-<div style="margin-top:5%;" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-<h1 style="font-weight:bold;font-size:20px;color: #f26822;">JOIN US</h1>
-<p style="font-size:medium;">Come join the world’s most exclusive car club today and experience a lifestyle like no other! Drive your dream cars and be part of a select group of people who share a passion for cars.</p>
-<a href="https://forex_mountain.com/membership"><button class="button12 buttonr">MEMBERSHIP</button></a>
-</div>
-</div>
-</div>
-<br><br>
-<section class="p-y-5 pb-0" style="padding: 5px; background-color: #e2e2e2fa;">
-<div class="container">
-<div class="row">
-<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 p-2 ">
-<img src="https://forex_mountain.com/assets/website-panel/img/mcd.png" style="margin-top:15%;" class="attachment-large size-large" alt="" loading="lazy" sizes="(max-width: 590px) 100vw, 590px">
-</div>
-<div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 p-2 ">
-<h2 class="elementor-heading-title elementor-size-default" style="font-weight:bold;font-size:20px;color: #f26822;">WHY US</h2>
-<p style="font-size:medium; color: #000;text-align: justify;">As a car enthusiast club, there are several benefits that members can derive from being part of My Car Club community. Some of these benefits include:
-<br>
-1. Knowledge sharing: Being part of this community allows you to interact with like-minded people who share your passion for automobiles. This opens up the opportunity to share knowledge and learn from others. You will have access to information, tips, and advice from seasoned professionals and experienced car enthusiasts.<br>
-2. Networking: My Car Club provides a platform for members to network and make connections with people who work within the automotive industry. This can be particularly fun and helpful for new car enthusiasts who are unfamiliar with the ins and outs of car culture.<br>
-3. Hands-on learning: We organise experiences where members are given the opportunity to work on cars and participate in activities such as track days or autocross. This allows members to gain hands-on experience with different types of vehicles and learn from experienced enthusiasts.<br>
-4. Access to exclusive events: Car enthusiast clubs often organise events that are limited to members. This could include car shows, rallies, and cruises.
-</p>
-</div>
-</div>
-</div>
-</section>
-<div class="row-video">
-<div class="container">
-
-<div class="row equalize sm-equalize-auto">
-<div class="col-md-6" style="margin-top: 5%;">
-<div class="themesflat-spacer clearfix" data-desktop="33" data-mobi="0" data-smobi="0" style="height:33px"></div>
-<div class="themesflat-headings style-1 clearfix">
-<h2 style="font-weight: bold;font-size: 15px;text-decoration:underline;color: #f26822;" class="heading letter-spacing--09px clearfix">SUPPORT</h2><br>
-<div class="sep clearfix"></div>
-<p style="font-size:medium;text-align: justify;">Our support team is available by phone, email and live chat, so you’ll always have someone to talk to – in your language – whenever the markets are open. You can also reach My Car Club on Facebook, our Customer Support representatives monitor and respond to comments on social media on a daily basis.</p>
-</div>
-
-<div class="themesflat-spacer clearfix" data-desktop="20" data-mobi="20" data-smobi="20" style="height:20px"></div>
-<h3 class="title-video"></h3>
-<div class="themesflat-spacer clearfix" data-desktop="21" data-mobi="20" data-smobi="20" style="height:21px"></div>
-<a href="#" class="themesflat-button blue"></a>
-<div class="themesflat-spacer clearfix" data-desktop="28" data-mobi="60" data-smobi="60" style="height:28px"></div>
-</div>
-
-<div class="col-md-6 half-background ">
-<div class="img-single margin-top--60">
-<img src="https://forex_mountain.com/assets/website-panel/img/sup.png" alt="Image" style="max-width: 80%;">
-</div>
-
-<div class="themesflat-icon style-1 clearfix background">
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-</div>
-<section class="p-y-5 pb-0">
-
-</section>
-''');
+// const String aboutUsHtml = (r'''
+//
+// <section class="p-y-5 pb-0">
+// <div class="container">
+// <div class="row">
+// <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 p-2">
+// <img style="margin-top:15%;" src="https://forex_mountain.com/assets/website-panel/img/ilu.png" width="100%" alt="">
+// </div>
+// <div style="margin-top:5%;" class="col-lg-7 col-md-7 col-sm-7 col-xs-12 p-2">
+// <p style="font-weight:bold;font-size:20px;color: #f26822;">ABOUT</p>
+// <p style="font-size:medium;text-align: justify;">If you're passionate about cars, then you've come to the right place! forex_mountain.com is a tight-knit community of car enthusiasts who come together to share their love for anything on wheels. You receive weekly newsletter on the latest motor releases, events, exhibitions and more.<br><br>
+// We believe that cars aren't just machines, they're a way of life. From muscle cars to exotic rides, we're always eager to hear the stories behind each member's unique ride. Whether you're an expert, enthusiast or simply love the thrill of a good drive, there's something for everyone in our club.<br></p>
+//
+// </div>
+// <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2">
+// <p style="font-size:medium;text-align: justify;"> Our inclusive and supportive community is all about coming together to celebrate everything that makes cars so special. We believe in supporting each other through the highs and lows of car ownership, and we're always happy to offer advice on how to get the most out of your ride. We also present you the opportunity to drive a top class luxury car and make monthly income through our marketing plan.</p>
+// <p style="font-size:medium;">So whether you're into classic cars, performance vehicles, or simply love the thrill of hitting the open road, we'd love for you to join our community.
+// </p>
+// </div>
+// </div>
+// </div>
+// </section>
+// <section class="p-y-5 pb-0" style="padding: 10px;">
+// <div class="container">
+// <div class="row">
+// <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2 text-center">
+// <img src="https://forex_mountain.com/assets/website-panel/img/car-keys.png" style="max-width: 100%;">
+// </div>
+// </div>
+// </div>
+// </section>
+// <section class="p-y-5 pb-0" style="background-color: #ebebeb8f; padding: 10px;">
+// <div class="container">
+// <div class="row">
+// <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2">
+// <p style="font-weight:bold;font-size:20px;color: #f26822;">START</p>
+// <p style="font-size:medium; text-align: justify;">Starting your Forex Mountains membership can be a fun and exciting endeavour. You can avail all the amazing offers, discounts and activity invites through a few simple clicks. Forex Mountains offers a subscription-based model where members could choose either a monthly or yearly subscription. There is a one-time joining fee of €149, at present you get €50 Founder’s discount making it affectively €99 only. The monthly membership is only €29 while you save one month’s subscription fee by paying for a year. When you choose yearly membership, you pay only €319 instead of €348. </p>
+// <p style="font-size:medium; text-align: justify;">By following these steps, you can establish you Forex Mountains membership that will provide you and your fellow enthusiasts with enjoyable and memorable experiences along with an abundance of benefits.</p>
+// </div>
+// </div>
+// </div>
+// </section>
+// <section class="p-y-5 pb-0" style="padding: 10px;">
+// <div class="container">
+// <div class="row">
+// <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2 text-center">
+// <img src="https://forex_mountain.com/assets/website-panel/img/12wa.png" style="max-width: 60%;">
+// </div>
+// </div>
+// </div>
+// </section>
+// <section class="p-y-5 pb-0" style="background-color: #e2e2e2fa; padding: 10px;">
+// <div class="container">
+// <div class="row">
+// <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2" style="background-color: #e2e2e2fa;">
+// <p style="font-weight:bold;font-size:20px;color: #f26822;">BUSINESS OPPORTUNITY</p>
+// <p style="font-size:medium; text-align: justify;">We are building an active community of car enthusiasts where you can network with people from different walks of life. You get to meet gearheads, wizards, experts, professionals, and fans of the automotive industry. Forex Mountains gives you huge rewards for networking too. From being able to drive a latest luxury car to even getting monthly residual income – it is all within your reach with Forex Mountains. More information on the reward programme is accessible for paying members.</p>
+// </div>
+// </div>
+// </div>
+// </section>
+// <section class="p-y-5 pb-0">
+// <div class="container">
+// <div class="row">
+// <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p-2">
+// <h1 style="font-weight:bold;font-size:25px;color: #f26822;">EXCLUSIVE CAR CLUB AND A GROUP OF CAR</h1>
+// <p style="font-size:medium;">Enthusiasts who love everything about the automotive world.</p>
+// </div>
+// <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 p-2">
+// <p style="font-weight:bold;font-size:20px;color: #f26822;">Mission</p>
+// <p style="font-size:medium;text-align: justify;">The mission of a forex_mountain is to provide members with a unique, exclusive, and unparalleled experience to its members. We aim to offer a wide range of benefits to individual needs and desires so our goal is to ensure each customer has a safe and enjoyable experience that leaves them coming back for more.</p>
+// </div>
+// <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 p-2">
+// <p style="font-weight:bold;font-size:20px;color: #f26822;">Vision</p>
+// <p style="font-size:medium;text-align: justify;">Our vision is to provide an exceptional level of personalized service, allowing members to explore new vehicles and discover new engaging opportunities. We strive to exceed expectations with every aspect of our service, from the quality of our vehicles to the attention to detail in our customer service. </p>
+// </div>
+// </div>
+// </div>
+// </section>
+//
+// <section class="p-y-5 pb-0" style="padding: 5px; background-color: #ebebeb8f;">
+// <div class="container">
+// <div class="row">
+// <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 p-2 ">
+// <h2 class="elementor-heading-title elementor-size-default" style="font-weight:bold;font-size:20px;color: #f26822;">WELCOME TO Forex Mountains</h2>
+// <p style="font-size:medium; color: #000;text-align: justify;">Once you become a part of this exclusive membership club, you shall have access to all major events organised by us, such as follows:<br>
+// 1. We organize a scenic drives: We plan scenic routes through the countryside and national parks where the Forex Mountains members can drive and appreciate the beautiful scenery. You can also hold a photo contest for the members and give prizes for the best pictures.<br>
+// 2. We host car shows: We invite car enthusiasts from different locations to showcase their cars and compete in various categories. We also set up food and music for fun-filled days.<br>
+// 3. Road rallies: We plan road rallies where Forex Mountains members can race against each other while solving puzzles and riddles along the route.<br>
+// 4. Car maintenance workshops: We host regular workshops on car maintenance where members can learn about basic car maintenance tips and tricks.<br>
+// 5. Car detailing demos: We invite professionals to showcase how to detail a car properly. This can be helpful for car enthusiasts who want to learn more about cleaning and detailing their cars.<br>
+// 6. Garage tour: We organize garage tours where members can visit local garages and see cool car collections.</p>
+// </div>
+// <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 p-2 ">
+// <img src="https://forex_mountain.com/assets/website-panel/img/lobbyimage_2-min-removebg-preview.png" style="margin-top:15%;" class="attachment-large size-large" alt="" loading="lazy" sizes="(max-width: 590px) 100vw, 590px">
+// </div>
+// </div>
+// </div>
+// </section>
+// <div class="container">
+// <div class="row">
+// <div style="margin-top:5%;" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+// <h1 style="font-weight:bold;font-size:20px;color: #f26822;">JOIN US</h1>
+// <p style="font-size:medium;">Come join the world’s most exclusive car club today and experience a lifestyle like no other! Drive your dream cars and be part of a select group of people who share a passion for cars.</p>
+// <a href="https://forex_mountain.com/membership"><button class="button12 buttonr">MEMBERSHIP</button></a>
+// </div>
+// </div>
+// </div>
+// <br><br>
+// <section class="p-y-5 pb-0" style="padding: 5px; background-color: #e2e2e2fa;">
+// <div class="container">
+// <div class="row">
+// <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 p-2 ">
+// <img src="https://forex_mountain.com/assets/website-panel/img/mcd.png" style="margin-top:15%;" class="attachment-large size-large" alt="" loading="lazy" sizes="(max-width: 590px) 100vw, 590px">
+// </div>
+// <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 p-2 ">
+// <h2 class="elementor-heading-title elementor-size-default" style="font-weight:bold;font-size:20px;color: #f26822;">WHY US</h2>
+// <p style="font-size:medium; color: #000;text-align: justify;">As a car enthusiast club, there are several benefits that members can derive from being part of Forex Mountains community. Some of these benefits include:
+// <br>
+// 1. Knowledge sharing: Being part of this community allows you to interact with like-minded people who share your passion for automobiles. This opens up the opportunity to share knowledge and learn from others. You will have access to information, tips, and advice from seasoned professionals and experienced car enthusiasts.<br>
+// 2. Networking: Forex Mountains provides a platform for members to network and make connections with people who work within the automotive industry. This can be particularly fun and helpful for new car enthusiasts who are unfamiliar with the ins and outs of car culture.<br>
+// 3. Hands-on learning: We organise experiences where members are given the opportunity to work on cars and participate in activities such as track days or autocross. This allows members to gain hands-on experience with different types of vehicles and learn from experienced enthusiasts.<br>
+// 4. Access to exclusive events: Car enthusiast clubs often organise events that are limited to members. This could include car shows, rallies, and cruises.
+// </p>
+// </div>
+// </div>
+// </div>
+// </section>
+// <div class="row-video">
+// <div class="container">
+//
+// <div class="row equalize sm-equalize-auto">
+// <div class="col-md-6" style="margin-top: 5%;">
+// <div class="themesflat-spacer clearfix" data-desktop="33" data-mobi="0" data-smobi="0" style="height:33px"></div>
+// <div class="themesflat-headings style-1 clearfix">
+// <h2 style="font-weight: bold;font-size: 15px;text-decoration:underline;color: #f26822;" class="heading letter-spacing--09px clearfix">SUPPORT</h2><br>
+// <div class="sep clearfix"></div>
+// <p style="font-size:medium;text-align: justify;">Our support team is available by phone, email and live chat, so you’ll always have someone to talk to – in your language – whenever the markets are open. You can also reach Forex Mountains on Facebook, our Customer Support representatives monitor and respond to comments on social media on a daily basis.</p>
+// </div>
+//
+// <div class="themesflat-spacer clearfix" data-desktop="20" data-mobi="20" data-smobi="20" style="height:20px"></div>
+// <h3 class="title-video"></h3>
+// <div class="themesflat-spacer clearfix" data-desktop="21" data-mobi="20" data-smobi="20" style="height:21px"></div>
+// <a href="#" class="themesflat-button blue"></a>
+// <div class="themesflat-spacer clearfix" data-desktop="28" data-mobi="60" data-smobi="60" style="height:28px"></div>
+// </div>
+//
+// <div class="col-md-6 half-background ">
+// <div class="img-single margin-top--60">
+// <img src="https://forex_mountain.com/assets/website-panel/img/sup.png" alt="Image" style="max-width: 80%;">
+// </div>
+//
+// <div class="themesflat-icon style-1 clearfix background">
+//
+// </div>
+//
+// </div>
+//
+// </div>
+//
+// </div>
+// </div>
+// <section class="p-y-5 pb-0">
+//
+// </section>
+// ''');

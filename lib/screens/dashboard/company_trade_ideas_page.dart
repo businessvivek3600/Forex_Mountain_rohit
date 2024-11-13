@@ -102,6 +102,7 @@ class _CompanyTradeIdeasPageState extends State<CompanyTradeIdeasPage> {
                   Tab(text: 'High Risk'),
                   Tab(text: 'Low Risk'),
                 ],
+                unselectedLabelColor: Colors.white54,
               ),
               actions: [assetImages(Assets.appLogo_S, width: 30), width10()],
             ),

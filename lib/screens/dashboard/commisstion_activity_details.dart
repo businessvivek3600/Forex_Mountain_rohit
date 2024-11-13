@@ -69,7 +69,7 @@ class _CommissionActivityDetailsPageState
             child: Column(
               children: <Widget>[
                 AppBar(
-                    title: Text('Activities'),
+                    title: titleLargeText("Activities", context, useGradient: true),
                     elevation: 1,
                     shadowColor: Colors.white),
                 Expanded(

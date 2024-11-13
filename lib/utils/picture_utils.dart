@@ -50,7 +50,7 @@ Widget assetImages(String path,
     );
 
 ImageProvider assetImageProvider(String path, {BoxFit? fit}) =>
-    AssetImage('assets/images/$path');
+    AssetImage('assets/images/$path',);
 
 ImageProvider userAppBgImageProvider(BuildContext context) {
   var userData = sl.get<AuthProvider>().userData;
