@@ -1065,8 +1065,8 @@ class _MainPageState extends State<MainPage>
         Container(
           height: dashBoardProvider.loadingDash ||
                   dashBoardProvider.subscriptionPacks.isNotEmpty
-              ? size.height * 0.25
-              : size.height * 0.20,
+              ? size.height * 0.27
+              : size.height * 0.22,
           child: !dashBoardProvider.loadingDash &&
                   (!dashBoardProvider.hasSubscription ||
                       dashBoardProvider.subscriptionPacks.isEmpty)
@@ -1084,6 +1084,7 @@ class _MainPageState extends State<MainPage>
                     builder: (context, constraints) {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           bodyLargeText(
                             "You don't have any subscription yet.",
@@ -1120,6 +1121,7 @@ class _MainPageState extends State<MainPage>
                   ),
                 )
               : ListView(
+            shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -1225,22 +1227,24 @@ class _MainPageState extends State<MainPage>
                                         color: Colors.white60),
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.access_time_filled_rounded,
-                                        color: color3, size: 20),
-                                    width5(),
-                                    Expanded(
-                                      child: capText(
-                                        DateFormat().add_yMMMEd().format(
-                                            DateTime.parse(
-                                                pack.createdAt ?? '')),
-                                        context,
-                                        color: const Color.fromARGB(
-                                            255, 255, 255, 255),
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.access_time_filled_rounded,
+                                          color: color3, size: 20),
+                                      width5(),
+                                      Expanded(
+                                        child: capText(
+                                          DateFormat().add_yMMMEd().format(
+                                              DateTime.parse(
+                                                  pack.createdAt ?? '')),
+                                          context,
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -1317,19 +1321,21 @@ class _MainPageState extends State<MainPage>
                                   ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  Icon(Icons.access_time_filled_rounded,
-                                      color: color3, size: 20),
-                                  width5(),
-                                  Expanded(
-                                    child: Skeleton(
-                                      height: 20,
-                                      width: 50,
-                                      borderRadius: BorderRadius.circular(10),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.access_time_filled_rounded,
+                                        color: color3, size: 20),
+                                    width5(),
+                                    Expanded(
+                                      child: Skeleton(
+                                        height: 20,
+                                        width: 50,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
                           ),

@@ -118,6 +118,7 @@ dependencies:
   webview_flutter_wkwebview: any
   flutter_html: any
   collection: any
+  android_id: ^0.4.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

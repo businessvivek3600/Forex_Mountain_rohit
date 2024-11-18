@@ -9,6 +9,7 @@ import 'package:forex_mountain/test_pod_player.dart';
 import 'package:get/get.dart';
 import 'package:forex_mountain/utils/default_logger.dart';
 import 'package:pod_player/pod_player.dart';
+import '../../utils/deviceid_provider.dart';
 import '/database/functions.dart';
 import '/constants/assets_constants.dart';
 import '/database/model/body/login_model.dart';
@@ -268,6 +269,10 @@ class _LoginScreenState extends State<LoginScreen> {
               child:
                   Icon(Icons.arrow_forward_ios_rounded, color: Colors.white))),
       action: (controller) async {
+        final deviceIdProvider = DeviceIdProvider();
+        String? deviceId = await deviceIdProvider.getDeviceId();
+        print("Device ID----------------------------------: $deviceId");
+
         if (_formKey.currentState?.validate() ?? false) {
           controller.loading(); //starts loading animation
           //--- trigger Password Save
@@ -278,7 +283,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 .login(LoginModel(
                   username: _userNameController.text,
                   password: _passwordController.text,
-                  device_id: '',
+                  device_id: deviceId.toString() ?? '',
+                device_name: deviceId.toString() ?? ''
                 ))
                 .then((value) {
               if (value) {
@@ -290,7 +296,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           loginModel: LoginModel(
                             username: _userNameController.text,
                             password: _passwordController.text,
-                            device_id: '',
+                            device_id: deviceId.toString() ?? '',
+                            device_name: deviceId.toString() ?? ''
                           ),
                         )));
               } else {
@@ -452,6 +459,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login(BuildContext context) async {
     primaryFocus?.unfocus();
+    final deviceIdProvider = DeviceIdProvider();
+    String? deviceId = await deviceIdProvider.getDeviceId();
+    print("Device ID----------------********------------------: $deviceId");
+
     if (_formKey.currentState?.validate() ?? false) {
       //--- trigger Password Save
       TextInput.finishAutofillContext();
@@ -461,7 +472,8 @@ class _LoginScreenState extends State<LoginScreen> {
             .login(LoginModel(
               username: _userNameController.text,
               password: _passwordController.text,
-              device_id: '',
+            device_id: deviceId.toString() ?? '',
+            device_name: deviceId.toString() ?? ''
             ))
             .then((value) {
           if (value) {

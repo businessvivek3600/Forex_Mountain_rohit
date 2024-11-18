@@ -42,6 +42,8 @@ class _NotificationPageState extends State<NotificationPage> {
     sl.get<NotificationProvider>().init();
     FlutterAppBadger.removeBadge();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      String? token = await FirebaseMessaging.instance.getToken();
+        print('FCM Token-----------------------------------: $token');
       errorLog((await FirebaseMessaging.instance.getToken()).toString());
 
       final args = ModalRoute.of(context)!.settings.arguments;
@@ -112,7 +114,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 stream: sl.get<NotificationProvider>().notifications.stream,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
+                    return const Center(
                         child: CircularProgressIndicator(color: Colors.white));
                   } else if (snapshot.connectionState ==
                       ConnectionState.active) {
@@ -160,7 +162,7 @@ class _NotificationPageState extends State<NotificationPage> {
         height20(),
         OutlinedButton(
             style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Colors.white),
+              side: const BorderSide(color: Colors.white),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -182,8 +184,8 @@ class _NotificationPageState extends State<NotificationPage> {
     // print(snapshot.data?.first);
 
     return ListView.builder(
-        physics: BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         itemCount: snapshot.data!.length,
         itemBuilder: (context, index) {
           var notification = snapshot.data![index];
@@ -217,14 +219,14 @@ class NotificationPageFirstMessageDialog extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: Icon(CupertinoIcons.clear_circled_solid,
+                  icon: const Icon(CupertinoIcons.clear_circled_solid,
                       color: Colors.white),
                 ),
               ],
             ),
             Expanded(
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 30),
                 // decoration: BoxDecoration(
                 //   borderRadius: BorderRadius.circular(10),
                 //   color: Colors.white,
@@ -252,7 +254,7 @@ class NotificationPageFirstMessageDialog extends StatelessWidget {
                         Expanded(
                           child: ListView(
                             shrinkWrap: true,
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             children: [
                               bodyLargeText(notification.body ?? '', context,
                                   color: Colors.black,
@@ -333,7 +335,7 @@ class NotificationPageFirstMessageDialog extends StatelessWidget {
                                   ],
                                 ),
                               )
-                            : SizedBox.shrink(),
+                            : const SizedBox.shrink(),
                       ],
                     ),
                   ),
@@ -362,7 +364,7 @@ class NotificationPageFirstMessageDialog2 extends StatelessWidget {
           child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Card(
-                margin: EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),
                 child: Column(
@@ -480,7 +482,7 @@ class NotificationPageFirstMessageDialog2 extends StatelessWidget {
             child: IconButton(
               onPressed: () => Navigator.pop(context),
               icon:
-                  Icon(CupertinoIcons.clear_circled_solid, color: Colors.white),
+                  const Icon(CupertinoIcons.clear_circled_solid, color: Colors.white),
             ),
           ),
         ),
@@ -523,8 +525,8 @@ class _NotificationPageTileWidgetState
                   .then((value) => setState(() => expanded = !expanded))
               : () => setState(() => expanded = !expanded),
           child: Container(
-            margin: EdgeInsets.only(bottom: 8),
-            padding: EdgeInsets.all(10),
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               // color: widget.notification['isRead'] != 0
@@ -717,7 +719,7 @@ class _NotificationPageTileWidgetState
             ),
           ),
         ),
-        Divider(color: Colors.white, height: 0),
+        const Divider(color: Colors.white, height: 0),
       ],
     );
   }
