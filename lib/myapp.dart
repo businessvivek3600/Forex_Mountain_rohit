@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:forex_mountain/database/model/response/deposit_model.dart';
+import 'package:forex_mountain/screens/drawerPages/deposit_request/deposite_request.dart';
 import 'package:get/get.dart';
 import 'package:forex_mountain/screens/youtube_video_play_widget%20copy.dart';
 import '/screens/dashboard/company_trade_ideas_page.dart';
@@ -35,6 +37,7 @@ import '/utils/default_logger.dart';
 import '/utils/theme.dart';
 import 'package:provider/provider.dart';
 import 'providers/Cash_wallet_provider.dart';
+import 'providers/deposit_request_provider.dart';
 import 'screens/drawerPages/inbox/inbox_screen.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -63,6 +66,7 @@ class _ForexMountainsState extends State<ForexMountains> {
     sl.get<TeamViewProvider>(),
     sl.get<VoucherProvider>(),
     sl.get<InboxProvider>(),
+    // sl.get<DepositRequestProvider>(),
     sl.get<EventTicketsProvider>(),
     sl.get<SupportProvider>(),
     sl.get<SubscriptionProvider>(),
@@ -111,19 +115,23 @@ class _ForexMountainsState extends State<ForexMountains> {
             },
             routes: <String, WidgetBuilder>{
               SplashScreen.routeName: (_) => const SplashScreen(),
+              DepositRequestScreen.routeName: (_) => const DepositRequestScreen(),
               MainPage.routeName: (_) => MainPage(),
               LoginScreen.routeName: (_) => const LoginScreen(),
               InboxScreen.routeName: (_) => const InboxScreen(),
               EventTicketsPage.routeName: (_) => const EventTicketsPage(),
-              ForgotPasswordScreen.routeName: (_) => const ForgotPasswordScreen(),
+              ForgotPasswordScreen.routeName: (_) =>
+                  const ForgotPasswordScreen(),
               UpdateAppPage.routeName: (_) => const UpdateAppPage(),
               SubscriptionPage.routeName: (_) => const SubscriptionPage(),
               YoutubePlayerPage.routeName: (_) => const YoutubePlayerPage(),
-              YoutubePlayerPageNew.routeName: (_) => const YoutubePlayerPageNew(),
+              YoutubePlayerPageNew.routeName: (_) =>
+                  const YoutubePlayerPageNew(),
               NotificationPage.routeName: (_) => NotificationPage(
                   notificationAppLaunchDetails:
                       widget.notificationAppLaunchDetails),
-              CompanyTradeIdeasPage.routeName: (_) => const CompanyTradeIdeasPage(),
+              CompanyTradeIdeasPage.routeName: (_) =>
+                  const CompanyTradeIdeasPage(),
             },
             navigatorObservers: [routeObserver],
             enableLog: true,
@@ -142,6 +150,7 @@ class _ForexMountainsState extends State<ForexMountains> {
       ChangeNotifierProvider(create: (context) => sl.get<TeamViewProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<VoucherProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<InboxProvider>()),
+      ChangeNotifierProvider(create: (context) => sl.get<DepositRequestProvider>()),
       ChangeNotifierProvider(
           create: (context) => sl.get<EventTicketsProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<SupportProvider>()),

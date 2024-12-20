@@ -6,10 +6,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:forex_mountain/screens/drawerPages/deposit_request/deposite_request.dart';
 import 'package:get/get.dart';
 import 'package:forex_mountain/screens/drawerPages/downlines/my_login_logs_page.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../screens/drawerPages/step_counter/step_counter.dart';
+
 import '../screens/drawerPages/whats_new_page.dart';
 import '../screens/youtube_video_play_widget.dart';
 import '/database/model/response/additional/mcc_content_models.dart';
@@ -80,12 +81,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
     ];
     Size size = MediaQuery.of(context).size;
     String inbox = 'Inbox';
-    // String giftVoucher = 'Gift Voucher';
-    // String eventTicket = 'Event Ticket';
-    // String holdingTank = 'Holding Tank';
-    // String matrixAnalyzer = 'Matrix Analyzer';
-    //  String whatsNew = 'What\'s New';
-    //   String stepCounter = "Step Counter";
+    String giftVoucher = 'Gift Voucher';
+    String eventTicket = 'Event Ticket';
+    String holdingTank = 'Holding Tank';
+    String matrixAnalyzer = 'Matrix Analyzer';
+     String whatsNew = 'What\'s New';
+      String stepCounter = "Step Counter";
     String delete = 'Delete Account';
     return Container(
       color: Colors.blueGrey.shade900,
@@ -119,7 +120,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 color: Colors.white70,
                                 fontWeight: FontWeight.bold),
                             height10(),
-                            //Inbox
+                            // Inbox
                             DrawerTileItem(
                               onTap: () {
                                 dashBoardProvider.setDrawerTile(inbox);
@@ -154,7 +155,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 size, dashBoardProvider),
                             height10(),
 
-                            // // Matrix-Analyzer
+                            // Matrix-Analyzer
                             //  DrawerTileItem(
                             //    onTap: () {
                             //      dashBoardProvider.setDrawerTile(matrixAnalyzer);
@@ -169,7 +170,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             //  ),
                             //  height10(),
 
-                            //  Subscription
+                           ///  Subscription
                             if (Platform.isAndroid)
                               DrawerTileItem(
                                 onTap: () {
@@ -178,7 +179,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   Widget page = const SubscriptionPage();
                                   Get.to(page);
                                 },
-                                leading: Assets.subscription,
+                                leading: Assets.withdraw,
                                 title: 'Subscription',
                                 width: size.width * 0.7,
                                 selected:
@@ -186,7 +187,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         'Subscription',
                               ),
                             height10(),
-
+                            DrawerTileItem(
+                              onTap: () {
+                                dashBoardProvider
+                                    .setDrawerTile('Deposit Request');
+                                Widget page = DepositRequestScreen();
+                                Get.to(page);
+                              },
+                              leading: Assets.subscription,
+                              title: 'Deposit Request',
+                              width: size.width * 0.7,
+                              selected:
+                              dashBoardProvider.selectedDrawerTile ==
+                                  'Subscription',
+                            ),
+                            height10(),
                             ///Gift Voucher
                             // // if (Platform.isAndroid)
                             // DrawerTileItem(
@@ -221,7 +236,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             buildDownloadExpansionTile(size, dashBoardProvider),
                             height10(),
 
-                            //Wallets
+                            ///Wallets
                             buildWalletsExpansionTile(size, dashBoardProvider),
                             height10(),
 
@@ -276,7 +291,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
 
                             height10(),
-                            if(authProvider.userData.username == "BIZZ3800074")
+                            if(authProvider.userData.username == "TESTTEST01")
                             DrawerTileItem(
                               deleteAccount: true,
                               onTap: () {
@@ -650,13 +665,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Widget buildProfileExpansionTile(
       Size size, DashBoardProvider dashBoardProvider) {
     const String profile = 'Profile';
-    const String paymentMethods = 'Payment Methods';
+    // const String paymentMethods = 'Payment Methods';
 
     return expansionTile(
       headerAsset: Assets.personalInfo,
       title: 'Personal Information',
-      initiallyExpanded: dashBoardProvider.selectedDrawerTile == profile ||
-          dashBoardProvider.selectedDrawerTile == paymentMethods,
+      initiallyExpanded: dashBoardProvider.selectedDrawerTile == profile ,
+          // ||
+          // dashBoardProvider.selectedDrawerTile == paymentMethods,
       children: [
         Container(
           width: double.maxFinite,
@@ -670,7 +686,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           child: Column(
             children: [
-              ...[profile, paymentMethods].map(
+              ...[profile,
+                //paymentMethods
+              ].map(
                 (e) => Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: DrawerTileItem(
@@ -680,9 +698,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         case profile:
                           page = const ProfileScreen();
                           break;
-                        case paymentMethods:
-                          page = const PaymentMethodsPage();
-                          break;
+                        // case paymentMethods:
+                        //   page = const PaymentMethodsPage();
+                        //   break;
 
                         default:
                           page = buildDefaultPage();
@@ -1219,7 +1237,8 @@ class _MasterClasses extends StatelessWidget {
                 onTap: () {
                   if (!isActive) {
                     inActiveUserAccessDeniedDialog(context);
-                  } else {
+                  }
+                  else {
                     Get.back();
                     Get.to(const DrawerVideosMainPage());
                   }
@@ -1236,7 +1255,8 @@ class _MasterClasses extends StatelessWidget {
                 onTap: () {
                   if (!isActive) {
                     inActiveUserAccessDeniedDialog(context);
-                  } else {
+                  }
+                  else {
                     Get.back();
                     Get.to(const DowanloadsMainPage());
                   }
@@ -1253,7 +1273,8 @@ class _MasterClasses extends StatelessWidget {
                 onTap: () {
                   if (!isActive) {
                     inActiveUserAccessDeniedDialog(context);
-                  } else if (!isWebinarLive) {
+                  } else
+                    if (!isWebinarLive) {
                     Fluttertoast.showToast(
                         msg: 'Currently no webinar is live',
                         toastLength: Toast.LENGTH_SHORT,

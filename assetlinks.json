@@ -1,12 +1,13 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
     "target": {
       "namespace": "android_app",
-      "package_name": "eagle.forexmountains.com",
+      "package_name": "com.app.forex_mountain",
       "sha256_cert_fingerprints": [
-        "F8:0D:9D:25:08:01:67:64:79:50:18:96:CC:BB:CF:97:E7:1F:22:9B",
-        "46:C5:25:00:B6:9E:53:84:44:7A:DF:4B:B2:F9:D3:20:50:64:F1:AF:08:43:1D:F4:01:AF:FE:BF:3F:71:BA:E3"
+        "E6:21:A5:63:91:8F:20:25:72:AC:5E:60:B4:B1:66:0F:D7:5C:72:D9:3C:A1:99:E4:71:CC:FA:CA:86:2C:83:61"
       ]
     }
   }

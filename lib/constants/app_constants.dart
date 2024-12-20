@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 
 class AppConstants {
   // static const String authorizationToken = 'BIZZCOIN@BIZZTRADEPRO@TRANSFER';
-  static const String authorizationToken = 'MyWealthClub@741852963';
+  static const String authorizationToken = 'forexmountain@741852963';
   static const String baseUrlTest = 'https://eagle.forexmountains.com/api/';
   static const String siteUrl = 'https://eagle.forexmountains.com/';
   static const String baseUrl = 'https://eagle.forexmountains.com/api/';
@@ -48,6 +48,9 @@ class AppConstants {
   static const String myInbox = 'inbox';
   static const String loginLogs = 'get-login-logs';
 
+  //Deposit Request
+  static const String depositRequest ='customer/deposit';
+  static const String putDepositRequest ='customer/deposit-submit';
   //subscription
   static const String mySubscription = 'customer/my-subscription';
   static const String subscriptionRequestHistory =
@@ -183,6 +186,7 @@ class SPConstants {
   static const String defaultReferralId = 'default_referral_id';
   static const String customerDashboard = 'customer_dashboard';
   static const String user = 'user';
+  static const String userFrom = 'user_from';
 
   static const String pdfLink = 'pdfLink';
   static const String pptLink = 'pptLink';

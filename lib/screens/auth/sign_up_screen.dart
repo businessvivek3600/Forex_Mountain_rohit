@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -736,6 +737,8 @@ class _SignUpScreenState extends State<SignUpScreen>
                                   ? () async {
                                 final deviceIdProvider = DeviceIdProvider();
                                 String? deviceId = await deviceIdProvider.getDeviceId();
+                                String? token = await FirebaseMessaging.instance.getToken();
+                                print("Device ID----------------********------------------: $token");
                                 print("Device ID----------------------------------: $deviceId");
                                       if (_formKey.currentState?.validate() ??
                                           false) {
@@ -757,7 +760,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                                                   _sUserNameController.text,
                                               placement_username: '',
                                               country_code: '',
-                                              device_id: deviceId.toString(),
+                                              device_id: token.toString(),
                                             ));
                                         // _formKey.currentState?.validate();
                                       }

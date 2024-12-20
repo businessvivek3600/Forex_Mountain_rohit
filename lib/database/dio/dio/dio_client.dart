@@ -1,5 +1,6 @@
 import 'dart:io';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import '/constants/app_constants.dart';
 import '/utils/default_logger.dart';
@@ -15,6 +16,7 @@ class DioClient {
   late Dio dio;
   late String token;
   String? _userToken;
+
 
   DioClient(
     this.baseUrl,
@@ -164,4 +166,67 @@ class DioClient {
       rethrow;
     }
   }
+
+
+  Future<Response> postMultipart(
+      String uri, {
+        required Map<String, dynamic> data,
+        bool addToken = false,
+      }) async {
+    try {
+      // Prepare form data
+      FormData formData = FormData();
+      formData.fields.addAll(data.entries.map((e) => MapEntry(e.key, e.value.toString())));
+
+      if (addToken) {
+        formData.fields.add(MapEntry('login_token', _userToken ?? ''));
+      }
+
+      infoLog('Multipart Data', uri, formData.fields.toString());
+
+      // Create MultipartRequest like in multipartRequest
+      var request = http.MultipartRequest('POST', Uri.parse(baseUrl + uri));
+
+      // Add headers from your existing headers
+      request.headers.addAll({
+        'Content-Type': 'multipart/form-data',
+        'x-api-key': AppConstants.authorizationToken,
+      });
+
+      // If a user token is available, add it to the request fields
+      if (_userToken != null) {
+        request.fields['login_token'] = _userToken!;
+      }
+
+      // Add form data fields to the request
+      data.forEach((key, value) {
+        request.fields[key] = value.toString();
+      });
+
+      // Send the request
+      var response = await request.send();
+
+      // Convert the streamed response to a full response and return
+      var httpResponse = await http.Response.fromStream(response);
+
+      if (httpResponse.statusCode == 200) {
+        return Response(
+          data: httpResponse.body,
+          statusCode: httpResponse.statusCode,
+          requestOptions: RequestOptions(path: uri),
+        );
+      } else {
+        throw Exception('Failed to upload file with status code: ${httpResponse.statusCode}');
+      }
+    } on DioError catch (e) {
+      errorLog('DioError', e.message, e.response?.data.toString() ?? '');
+      rethrow;
+    } catch (e) {
+      errorLog('Exception', e.toString(), '');
+      rethrow;
+    }
+  }
+
+
+
 }

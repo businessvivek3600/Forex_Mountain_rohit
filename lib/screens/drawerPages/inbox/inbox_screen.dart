@@ -663,8 +663,8 @@ class _InboxMessageTileState extends State<_InboxMessageTile> {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.black26,
-                boxShadow: [
-                  const BoxShadow(
+                boxShadow: const [
+                  BoxShadow(
                       color: Colors.white10,
                       blurRadius: 2,
                       spreadRadius: 2,

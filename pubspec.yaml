@@ -104,7 +104,6 @@ dependencies:
   logger: ^2.4.0
   in_app_purchase: ^3.2.0
   permission_handler: ^11.3.1
-  pedometer: ^4.0.2
   vimeo_player_flutter: ^0.1.0
   flutter_app_badger: ^1.5.0
 
@@ -119,6 +118,8 @@ dependencies:
   flutter_html: any
   collection: any
   android_id: ^0.4.0
+  file_picker: ^8.1.6
+  image_picker: ^1.1.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

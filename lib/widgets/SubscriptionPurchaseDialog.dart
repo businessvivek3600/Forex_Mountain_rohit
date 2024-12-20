@@ -217,86 +217,86 @@ class _SubscriptionPurchaseDialogState extends State<SubscriptionPurchaseDialog>
                     ),
                   ),
                   //coupon code field
-                  if (provider.selectedPaymentTypeKey != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: TextFormField(
-                                  controller: provider.voucherCodeController,
-                                  readOnly: provider.couponVerified != null,
-                                  cursorColor: Colors.white,
-                                  style: const TextStyle(color: Colors.white),
-                                  decoration: InputDecoration(
-                                      hintText:
-                                          provider.selectedPaymentTypeKey ==
-                                                  'E-Pin'
-                                              ? 'Enter voucher code'
-                                              : 'Enter MCC Coupon Code',
-                                      hintStyle: const TextStyle(
-                                          color: Colors.white70),
-                                      border: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                              color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                              color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                              color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      suffixIcon:
-                                          buildCouponFieldSuffix(provider)),
-                                ),
-                              ),
-                            ],
-                          ),
-                          height10(5),
-                          if (provider.couponVerified != null &&
-                              provider.couponVerified!)
-                            RichText(
-                                text: TextSpan(children: [
-                              const TextSpan(
-                                  text: 'Coupon Applied: ',
-                                  style: TextStyle(color: Colors.green)),
-                              TextSpan(
-                                  text: provider.voucherCodeController.text,
-                                  style: const TextStyle(
-                                      color: Colors.green,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
-                            ])),
-                          height10(16),
-                        ],
-                      ),
-                    ),
+                  // if (provider.selectedPaymentTypeKey != null)
+                  //   Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 16),
+                  //     child: Column(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         Row(
+                  //           children: <Widget>[
+                  //             Expanded(
+                  //               child: TextFormField(
+                  //                 controller: provider.voucherCodeController,
+                  //                 readOnly: provider.couponVerified != null,
+                  //                 cursorColor: Colors.white,
+                  //                 style: const TextStyle(color: Colors.white),
+                  //                 decoration: InputDecoration(
+                  //                     hintText:
+                  //                         provider.selectedPaymentTypeKey ==
+                  //                                 'E-Pin'
+                  //                             ? 'Enter voucher code'
+                  //                             : 'Enter MCC Coupon Code',
+                  //                     hintStyle: const TextStyle(
+                  //                         color: Colors.white70),
+                  //                     border: OutlineInputBorder(
+                  //                         borderSide: const BorderSide(
+                  //                             color: Colors.white),
+                  //                         borderRadius:
+                  //                             BorderRadius.circular(5)),
+                  //                     enabledBorder: OutlineInputBorder(
+                  //                         borderSide: const BorderSide(
+                  //                             color: Colors.white),
+                  //                         borderRadius:
+                  //                             BorderRadius.circular(5)),
+                  //                     focusedBorder: OutlineInputBorder(
+                  //                         borderSide: const BorderSide(
+                  //                             color: Colors.white),
+                  //                         borderRadius:
+                  //                             BorderRadius.circular(5)),
+                  //                     suffixIcon:
+                  //                         buildCouponFieldSuffix(provider)),
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //         height10(5),
+                  //         if (provider.couponVerified != null &&
+                  //             provider.couponVerified!)
+                  //           RichText(
+                  //               text: TextSpan(children: [
+                  //             const TextSpan(
+                  //                 text: 'Coupon Applied: ',
+                  //                 style: TextStyle(color: Colors.green)),
+                  //             TextSpan(
+                  //                 text: provider.voucherCodeController.text,
+                  //                 style: const TextStyle(
+                  //                     color: Colors.green,
+                  //                     fontSize: 18,
+                  //                     fontWeight: FontWeight.bold)),
+                  //           ])),
+                  //         height10(16),
+                  //       ],
+                  //     ),
+                  //   ),
 
-                  //discount note
-                  if (provider.discount_note != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        children: [
-                          capText(
-                            provider.discount_note!,
-                            context,
-                            useGradient: true,
-                            fontWeight: FontWeight.w500,
-                            textAlign: TextAlign.center,
-                          ),
-                          height10(16),
-                        ],
-                      ),
-                    ),
+                  // //discount note
+                  // if (provider.discount_note != null)
+                  //   Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 16),
+                  //     child: Column(
+                  //       children: [
+                  //         capText(
+                  //           provider.discount_note!,
+                  //           context,
+                  //           useGradient: true,
+                  //           fontWeight: FontWeight.w500,
+                  //           textAlign: TextAlign.center,
+                  //         ),
+                  //         height10(16),
+                  //       ],
+                  //     ),
+                  //   ),
 
                   //packs
                   Expanded(

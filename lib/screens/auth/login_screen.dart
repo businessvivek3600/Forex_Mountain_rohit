@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:action_slider/action_slider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -269,9 +270,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child:
                   Icon(Icons.arrow_forward_ios_rounded, color: Colors.white))),
       action: (controller) async {
-        final deviceIdProvider = DeviceIdProvider();
-        String? deviceId = await deviceIdProvider.getDeviceId();
-        print("Device ID----------------------------------: $deviceId");
+        String? token = await FirebaseMessaging.instance.getToken();
+        print('FCM Token-----------------------------------: $token');
+
 
         if (_formKey.currentState?.validate() ?? false) {
           controller.loading(); //starts loading animation
@@ -283,8 +284,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 .login(LoginModel(
                   username: _userNameController.text,
                   password: _passwordController.text,
-                  device_id: deviceId.toString() ?? '',
-                device_name: deviceId.toString() ?? ''
+                  device_id: token.toString() ?? '',
+                device_name:token.toString() ?? ''
                 ))
                 .then((value) {
               if (value) {
@@ -296,8 +297,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           loginModel: LoginModel(
                             username: _userNameController.text,
                             password: _passwordController.text,
-                            device_id: deviceId.toString() ?? '',
-                            device_name: deviceId.toString() ?? ''
+                            device_id:token.toString() ?? '',
+                            device_name: token.toString() ?? ''
                           ),
                         )));
               } else {
@@ -461,7 +462,8 @@ class _LoginScreenState extends State<LoginScreen> {
     primaryFocus?.unfocus();
     final deviceIdProvider = DeviceIdProvider();
     String? deviceId = await deviceIdProvider.getDeviceId();
-    print("Device ID----------------********------------------: $deviceId");
+    String? token = await FirebaseMessaging.instance.getToken();
+    print("Device ID----------------********------------------: $token");
 
     if (_formKey.currentState?.validate() ?? false) {
       //--- trigger Password Save
@@ -472,8 +474,8 @@ class _LoginScreenState extends State<LoginScreen> {
             .login(LoginModel(
               username: _userNameController.text,
               password: _passwordController.text,
-            device_id: deviceId.toString() ?? '',
-            device_name: deviceId.toString() ?? ''
+            device_id: token.toString() ?? '',
+            device_name: token.toString() ?? ''
             ))
             .then((value) {
           if (value) {

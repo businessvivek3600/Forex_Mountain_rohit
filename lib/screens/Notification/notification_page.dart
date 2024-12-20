@@ -76,7 +76,7 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: AppBar(
         title: titleLargeText('Notifications', context),
         shadowColor: Colors.white,
-        actions: [
+        actions: const [
           // ElevatedButton(
           //     onPressed: () {
           //       showDialog<void>(
