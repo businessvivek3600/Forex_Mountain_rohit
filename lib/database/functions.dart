@@ -160,7 +160,7 @@ Future<String?> getDeviceToken({String? username}) async {
   //   _deviceToken = await FirebaseMessaging.instance.getAPNSToken();
   // } else {
   // }
-  warningLog('--------Device Token---------- $_deviceToken');
+  warningLog('--------Device Token---11------- $_deviceToken');
 
   return _deviceToken;
 }

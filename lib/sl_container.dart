@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:forex_mountain/providers/deposit_request_provider.dart';
 import 'package:get_it/get_it.dart';
 import '/screens/youtube_video_play_widget.dart';
 import '/constants/app_constants.dart';
@@ -36,14 +37,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'database/databases/firebase_database.dart';
 import 'database/dio/dio/logging_interceptor.dart';
+import 'database/repositories/deposit_repo.dart';
 import 'database/repositories/support_repo.dart';
 import 'providers/web_view_provider.dart';
 import 'screens/youtube_video_play_widget copy.dart';
 import 'utils/device_info.dart';
 
-final sl = GetIt.I;
+final  sl = GetIt.instance;
 Future<void> initRepos() async {
   // Core
+  sl.registerLazySingleton<DepositRepo>(() => DepositRepo(dioClient: sl(), sharedPreferences: sl()));
   if (!sl.isRegistered<DeviceInfoConfig>()) {
     sl.registerLazySingleton(() => DeviceInfoConfig());
   }
@@ -133,6 +136,9 @@ Future<void> initRepos() async {
   }
   if (!sl.isRegistered<InboxProvider>()) {
     sl.registerLazySingleton(() => InboxProvider(inboxRepo: sl()));
+  }
+  if (!sl.isRegistered<DepositRequestProvider>()) {
+    sl.registerLazySingleton(() => DepositRequestProvider(depositRepo: sl()));
   }
   if (!sl.isRegistered<TeamViewProvider>()) {
     sl.registerLazySingleton(() => TeamViewProvider(teamViewRepo: sl()));

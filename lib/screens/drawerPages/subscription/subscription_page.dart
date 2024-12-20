@@ -50,11 +50,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
   Widget _returnDialog() {
     return
-        //
-        //  Platform.isIOS
-        //     ? const SubscriptionPurchaseDialogIOS()
-        //     :
-        //
+
+         Platform.isIOS
+            ? const SubscriptionPurchaseDialogIOS()
+            :
+
         const SubscriptionPurchaseDialog();
   }
 

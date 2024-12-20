@@ -50,11 +50,11 @@ class _CustomOrientationPlayerState extends State<CustomOrientationPlayer> {
       await Future(() async {
       });
     } else {
-      inActiveUserAccessDeniedDialog(
-        context,
-        onCancel: () => Get.back(),
-        onOk: () => Get.back(),
-      );
+      // inActiveUserAccessDeniedDialog(
+      //   context,
+      //   onCancel: () => Get.back(),
+      //   onOk: () => Get.back(),
+      // );
     }
   }
 

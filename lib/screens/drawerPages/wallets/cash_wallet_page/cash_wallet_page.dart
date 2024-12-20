@@ -464,48 +464,50 @@ class _FundTransferWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
+          width: double.infinity,
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(30),
               topLeft: Radius.circular(30),
             ),
-            color: Colors.white,
+            color: mainColor,
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              titleLargeText('Add Funds from:', context, color: Colors.black),
+              titleLargeText('Add Funds from:', context, color: Colors.white),
               height20(),
               Wrap(
                 spacing: 20,
                 runSpacing: 20,
                 children: [
-                  if (provider.btn_fund_coinpayment)
-                    buildCard(
-                      context,
-                      title: 'CoinPayment',
-                      onTap: () => checkServiceEnableORDisable(
-                          'mobile_is_cash_wallet', () {
-                        Get.back();
-                        Get.to(CashWalletAddFundFromCoinPayment());
-                      }),
-                      color: Colors.blue,
-                    ),
-                  if (provider.btn_fund_card)
-                    buildCard(
-                      context,
-                      title: 'Card',
-                      onTap: () => checkServiceEnableORDisable(
-                          'mobile_is_cash_wallet', () {
-                        Get.back();
-                        Get.to(CashWalletAddFundFromCardPayment());
-                      }),
-                      color: Colors.green,
-                    ),
+                  // if (provider.btn_fund_coinpayment)
+                  //   buildCard(
+                  //     context,
+                  //     title: 'CoinPayment',
+                  //     onTap: () => checkServiceEnableORDisable(
+                  //         'mobile_is_cash_wallet', () {
+                  //       Get.back();
+                  //       Get.to(CashWalletAddFundFromCoinPayment());
+                  //     }),
+                  //     color: Colors.blue,
+                  //   ),
+                  // if (provider.btn_fund_card)
+                  //   buildCard(
+                  //     context,
+                  //     title: 'Card',
+                  //     onTap: () => checkServiceEnableORDisable(
+                  //         'mobile_is_cash_wallet', () {
+                  //       Get.back();
+                  //       Get.to(CashWalletAddFundFromCardPayment());
+                  //     }),
+                  //     color: Colors.green,
+                  //   ),
                   if (provider.btn_fund_cash_wallet)
                     buildCard(
                       context,
+
                       title: 'NG Cash Wallet',
                       onTap: () => checkServiceEnableORDisable(
                           'mobile_is_cash_wallet', () {
@@ -517,6 +519,7 @@ class _FundTransferWidget extends StatelessWidget {
                   buildCard(
                     context,
                     title: 'Transfer To Other Member',
+
                     onTap: () => checkServiceEnableORDisable(
                         'mobile_is_cash_wallet', () {
                       Get.back();

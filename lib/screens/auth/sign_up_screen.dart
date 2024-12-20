@@ -1,6 +1,8 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../utils/deviceid_provider.dart';
 import '../../utils/theme.dart';
 import '/constants/assets_constants.dart';
 import '/database/functions.dart';
@@ -58,6 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen>
   bool above18 = false;
 
   var provider = sl.get<AuthProvider>();
+
   @override
   void initState() {
     super.initState();
@@ -732,6 +735,11 @@ class _SignUpScreenState extends State<SignUpScreen>
                             child: ElevatedButton.icon(
                               onPressed: acceptedTerms && acceptedDisclaimer
                                   ? () async {
+                                final deviceIdProvider = DeviceIdProvider();
+                                String? deviceId = await deviceIdProvider.getDeviceId();
+                                String? token = await FirebaseMessaging.instance.getToken();
+                                print("Device ID----------------********------------------: $token");
+                                print("Device ID----------------------------------: $deviceId");
                                       if (_formKey.currentState?.validate() ??
                                           false) {
                                         sl
@@ -752,7 +760,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                                                   _sUserNameController.text,
                                               placement_username: '',
                                               country_code: '',
-                                              device_id: '24wrr',
+                                              device_id: token.toString(),
                                             ));
                                         // _formKey.currentState?.validate();
                                       }

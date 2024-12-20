@@ -173,7 +173,13 @@ class AuthRepo {
       rethrow;
     }
   }
-
+  Future<void> saveUserFrom(String value) async {
+    try {
+      await sharedPreferences.setString(SPConstants.userFrom, value);
+    } catch (e) {
+      rethrow;
+    }
+  }
   String getUserToken() {
     return sharedPreferences.getString(SPConstants.userToken) ?? "";
   }

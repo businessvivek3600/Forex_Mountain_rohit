@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.app.forex_mountain",
+      "sha256_cert_fingerprints": [
+        "E6:21:A5:63:91:8F:20:25:72:AC:5E:60:B4:B1:66:0F:D7:5C:72:D9:3C:A1:99:E4:71:CC:FA:CA:86:2C:83:61"
+      ]
+    }
+  }
+]

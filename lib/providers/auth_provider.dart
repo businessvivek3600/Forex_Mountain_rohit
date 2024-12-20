@@ -44,6 +44,7 @@ class AuthProvider with ChangeNotifier {
   String? default_referral_id;
   String? privacy;
   String? term;
+  String userFrom = '';
   String? cancellation_policy;
   List<SignUpCountry> countriesList = [];
   List<String> restrictTexts = [];
@@ -285,6 +286,7 @@ class AuthProvider with ChangeNotifier {
 
       if (apiResponse.response != null &&
           apiResponse.response!.statusCode == 200) {
+        print("response ${apiResponse.response!.data}");
         Map map = apiResponse.response!.data;
         UserData? _userData;
         String? loginToken;
@@ -297,17 +299,21 @@ class AuthProvider with ChangeNotifier {
         } catch (e) {}
         if (status) {
           try {
+            infoLog('login response---------- ${map['user_from']}');
             _userData = UserData.fromJson(map['userData']);
+            var _userFrom = map['user_from'];
             var cacheModel = APICacheDBModel(
                 key: SPConstants.user, syncData: jsonEncode(map['userData']));
             await APICacheManager().addCacheData(cacheModel);
             userData = _userData;
+           userFrom = _userFrom;
             // sl.get<SettingsRepo>().setBiometric(true);
             await fcmSubscriptionRepo.subscribeToTopic(SPConstants.topic_all);
             await fcmSubscriptionRepo.subscribeToTopic(SPConstants.topic_event);
             if (status && loginToken != null && loginToken.isNotEmpty) {
               authRepo.saveUserToken(loginToken);
               authRepo.saveUser(userData);
+              authRepo.saveUserFrom(map['user_from']);
             }
           } catch (e) {
             print('user could not be generated ${_userData?.toJson()} \n $e');

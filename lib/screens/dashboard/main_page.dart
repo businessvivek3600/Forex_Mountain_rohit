@@ -239,6 +239,7 @@ class _MainPageState extends State<MainPage>
 
   @override
   Widget build(BuildContext context) {
+    infoLog(authProvider.userFrom);
     getDeviceToken();
     final size = MediaQuery.of(context).size;
     return Consumer<AuthProvider>(
@@ -256,13 +257,14 @@ class _MainPageState extends State<MainPage>
                 drawer: const CustomDrawer(),
                 body: Stack(
                   children: [
+                    // if(authProvider.userFrom =="1")
                     buildBody(context, dashBoardProvider, authProvider, size),
                     //buildTawkChatButton(authProvider),
                   ],
                 ),
-                floatingActionButton: authProvider.userData.kyc != '1'
-                    ? buildKYCButton(dashBoardProvider)
-                    : null,
+                // floatingActionButton: authProvider.userData.kyc != '1'
+                //     ? buildKYCButton(dashBoardProvider)
+                //     : null,
                 // floatingActionButton: GestureDetector(
                 //   onTap: () => Get.to(TawkChatPage(
                 //       username: authProvider.userData.username ?? '',
@@ -287,42 +289,42 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-  Widget buildTawkChatButton(AuthProvider authProvider) {
-    return FloatingChatButton(
-      shouldPutWidgetInCircle: false,
-      chatIconBackgroundColor: Colors.transparent,
-      chatIconBorderWidth: 0,
-      chatIconBorderColor: Colors.transparent,
-      chatIconColor: Colors.transparent,
-      chatIconVerticalOffset: 120,
-      chatIconHorizontalOffset: 5,
-      onTap: (ctx) => print('Floating Chat Button Tapped!'),
-      chatIconWidget: GestureDetector(
-        onTap: () => Get.to(TawkChatPage()),
-        child: Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(
-                  left: 20, top: 20, bottom: 10, right: 10),
-              // color: redDark,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                    color: Color(0xFF03A84E), shape: BoxShape.circle),
-                child: assetSvg(Assets.chat, width: 15),
-              ),
-            ),
-            Positioned(
-              top: 0,
-              right: 0,
-              left: 0,
-              child: assetImages('168-r-br.png'),
-            )
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget buildTawkChatButton(AuthProvider authProvider) {
+  //   return FloatingChatButton(
+  //     shouldPutWidgetInCircle: false,
+  //     chatIconBackgroundColor: Colors.transparent,
+  //     chatIconBorderWidth: 0,
+  //     chatIconBorderColor: Colors.transparent,
+  //     chatIconColor: Colors.transparent,
+  //     chatIconVerticalOffset: 120,
+  //     chatIconHorizontalOffset: 5,
+  //     onTap: (ctx) => print('Floating Chat Button Tapped!'),
+  //     chatIconWidget: GestureDetector(
+  //       onTap: () => Get.to(TawkChatPage()),
+  //       child: Stack(
+  //         children: [
+  //           Container(
+  //             padding: const EdgeInsets.only(
+  //                 left: 20, top: 20, bottom: 10, right: 10),
+  //             // color: redDark,
+  //             child: Container(
+  //               padding: const EdgeInsets.all(10),
+  //               decoration: const BoxDecoration(
+  //                   color: Color(0xFF03A84E), shape: BoxShape.circle),
+  //               child: assetSvg(Assets.chat, width: 15),
+  //             ),
+  //           ),
+  //           Positioned(
+  //             top: 0,
+  //             right: 0,
+  //             left: 0,
+  //             child: assetImages('168-r-br.png'),
+  //           )
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Container buildBody(BuildContext context, DashBoardProvider dashBoardProvider,
       AuthProvider authProvider, Size size) {
@@ -402,8 +404,8 @@ class _MainPageState extends State<MainPage>
                              */
 
                               // Trading view,
-                              buildTradingViewWidget(context, size,
-                                  dashBoardProvider, authProvider),
+                              // buildTradingViewWidget(context, size,
+                              //     dashBoardProvider, authProvider),
                               // height10(),
                               // platinum member logo
 
@@ -435,7 +437,8 @@ class _MainPageState extends State<MainPage>
                               */
                             ],
                           ),
-                          // if (Platform.isAndroid)
+                          if (Platform.isAndroid)
+                            // if(authProvider.userFrom =="1")
                           buildSubscriptionHistory(
                               context, size, dashBoardProvider, authProvider),
                           height20(),
@@ -451,7 +454,7 @@ class _MainPageState extends State<MainPage>
                           ...buildTargetProgressCards(dashBoardProvider),
                           ...buildTiers(context, dashBoardProvider),
                           height20(),
-                          // // buildEventsTicketCard(context),
+                          // buildEventsTicketCard(context),
                           // height100(),
                         ],
                       ),
@@ -461,7 +464,7 @@ class _MainPageState extends State<MainPage>
               ],
             ),
           ),
-          // buildDrawerMenuButton(dashBoardProvider),
+          // buildDrawerMenuButton(dashBoardProvider,authProvider),
           // buildSQRCodeContainer(dashBoardProvider),
         ],
       ),
@@ -547,6 +550,7 @@ class _MainPageState extends State<MainPage>
     int activeMember =
         int.parse(dashBoardProvider.member_sale['active_member'] ?? '0');
     int member = int.parse(dashBoardProvider.member_sale['member'] ?? '0');
+    double totalEarnings =double.parse(dashBoardProvider.member_sale['income_total'] ?? '0');
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -593,6 +597,13 @@ class _MainPageState extends State<MainPage>
             context,
             'Total Active Member',
             activeMember.toDouble(),
+            currencyIcon,
+            isCount: true,
+          ),
+          _buildStatisticsGridViewItem(
+            context,
+            'Total Earning',
+           totalEarnings.toDouble(),
             currencyIcon,
             isCount: true,
           ),
@@ -779,7 +790,7 @@ class _MainPageState extends State<MainPage>
         style: TextStyle(color: appLogoColor),
       ),
     );
-  }
+ }
 
   PreferredSize buildAppLogo(
       DashBoardProvider dashBoardProvider, AuthProvider authProvider) {
@@ -1065,8 +1076,8 @@ class _MainPageState extends State<MainPage>
         Container(
           height: dashBoardProvider.loadingDash ||
                   dashBoardProvider.subscriptionPacks.isNotEmpty
-              ? size.height * 0.25
-              : size.height * 0.20,
+              ? size.height * 0.27
+              : size.height * 0.22,
           child: !dashBoardProvider.loadingDash &&
                   (!dashBoardProvider.hasSubscription ||
                       dashBoardProvider.subscriptionPacks.isEmpty)
@@ -1084,6 +1095,7 @@ class _MainPageState extends State<MainPage>
                     builder: (context, constraints) {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           bodyLargeText(
                             "You don't have any subscription yet.",
@@ -1120,6 +1132,7 @@ class _MainPageState extends State<MainPage>
                   ),
                 )
               : ListView(
+            shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -1225,22 +1238,24 @@ class _MainPageState extends State<MainPage>
                                         color: Colors.white60),
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.access_time_filled_rounded,
-                                        color: color3, size: 20),
-                                    width5(),
-                                    Expanded(
-                                      child: capText(
-                                        DateFormat().add_yMMMEd().format(
-                                            DateTime.parse(
-                                                pack.createdAt ?? '')),
-                                        context,
-                                        color: const Color.fromARGB(
-                                            255, 255, 255, 255),
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.access_time_filled_rounded,
+                                          color: color3, size: 20),
+                                      width5(),
+                                      Expanded(
+                                        child: capText(
+                                          DateFormat().add_yMMMEd().format(
+                                              DateTime.parse(
+                                                  pack.createdAt ?? '')),
+                                          context,
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -1317,19 +1332,21 @@ class _MainPageState extends State<MainPage>
                                   ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  Icon(Icons.access_time_filled_rounded,
-                                      color: color3, size: 20),
-                                  width5(),
-                                  Expanded(
-                                    child: Skeleton(
-                                      height: 20,
-                                      width: 50,
-                                      borderRadius: BorderRadius.circular(10),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.access_time_filled_rounded,
+                                        color: color3, size: 20),
+                                    width5(),
+                                    Expanded(
+                                      child: Skeleton(
+                                        height: 20,
+                                        width: 50,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -1803,35 +1820,35 @@ class _MainPageState extends State<MainPage>
     ];
   }
 
-  buildCardFeatureListview(
-      BuildContext context, Size size, DashBoardProvider dashBoardProvider) {
-    return Container(
-      height: size.height * 0.3,
-      width: double.maxFinite,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          UiCategoryTitleContainer(
-              child: bodyLargeText('Buy Credit Cards'.toUpperCase(), context)),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-              scrollDirection: Axis.horizontal,
-              children: [
-                if (!dashboardProvider.loadingDash)
-                  ...dashboardProvider.cards
-                      .map(
-                        (card) => buildMainPageCardImageWidget(
-                            context, size, dashBoardProvider, card),
-                      )
-                      .toList(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // buildCardFeatureListview(
+  //     BuildContext context, Size size, DashBoardProvider dashBoardProvider) {
+  //   return Container(
+  //     height: size.height * 0.3,
+  //     width: double.maxFinite,
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         UiCategoryTitleContainer(
+  //             child: bodyLargeText('Buy Credit Cards'.toUpperCase(), context)),
+  //         Expanded(
+  //           child: ListView(
+  //             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+  //             scrollDirection: Axis.horizontal,
+  //             children: [
+  //               if (!dashboardProvider.loadingDash)
+  //                 ...dashboardProvider.cards
+  //                     .map(
+  //                       (card) => buildMainPageCardImageWidget(
+  //                           context, size, dashBoardProvider, card),
+  //                     )
+  //                     .toList(),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   buildMainPageCardImageWidget(BuildContext context, Size size,
       DashBoardProvider dashBoardProvider, Map<String, dynamic> card) {
@@ -2196,45 +2213,45 @@ Future<dynamic> inActiveUserAccessDeniedDialog(BuildContext context,
     reverseBtnOrder: true,
   );
   return dialog.show();
-  // return Get.defaultDialog(
-  //   title: 'Access Denied',
-  //   radius: 10,
-  //   middleText: 'You are not active user. Please subscribe to get access.',
-  //   confirmTextColor: Colors.white,
-  //   titleStyle: const TextStyle(color: Colors.white),
-  //   middleTextStyle: const TextStyle(color: Colors.white70),
-  //   backgroundColor: bColor(1),
-  //   actions: [
-  //     Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         OutlinedButton(
-  //           style: OutlinedButton.styleFrom(
-  //             side: const BorderSide(
-  //                 color: appLogoColor, width: 1, style: BorderStyle.solid),
-  //             shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(30)),
-  //           ),
-  //           onPressed: () => Get.back(),
-  //           child: const Text('Not Now', style: TextStyle(color: Colors.white)),
-  //         ),
-  //         FilledButton(
-  //           style: FilledButton.styleFrom(
-  //             backgroundColor: appLogoColor,
-  //             shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(30)),
-  //           ),
-  //           onPressed: () {
-  //             Get.back();
-  //             Get.to(() => const SubscriptionPage(initPurchaseDialog: true));
-  //           },
-  //           child: const Text('Subscribe Now',
-  //               style: TextStyle(color: Colors.white)),
-  //         ),
-  //       ],
-  //     ),
-  //   ],
-  // );
+  return Get.defaultDialog(
+    title: 'Access Denied',
+    radius: 10,
+    middleText: 'You are not active user. Please subscribe to get access.',
+    confirmTextColor: Colors.white,
+    titleStyle: const TextStyle(color: Colors.white),
+    middleTextStyle: const TextStyle(color: Colors.white70),
+    backgroundColor: bColor(1),
+    actions: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(
+                  color: appLogoColor, width: 1, style: BorderStyle.solid),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+            ),
+            onPressed: () => Get.back(),
+            child: const Text('Not Now', style: TextStyle(color: Colors.white)),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: appLogoColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+            ),
+            onPressed: () {
+              Get.back();
+              Get.to(() => const SubscriptionPage(initPurchaseDialog: true));
+            },
+            child: const Text('Subscribe Now',
+                style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    ],
+  );
 }
 
 class _BuildUpcomingEventCard extends StatelessWidget {

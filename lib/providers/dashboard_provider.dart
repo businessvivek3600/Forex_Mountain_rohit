@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:forex_mountain/utils/my_logger.dart';
 import '../database/model/response/login_logs_model.dart';
-import '../screens/drawerPages/step_counter/step_history_model.dart';
 import '/database/model/response/income_activity_model.dart';
 import '/database/model/response/trade_idea_model.dart';
 import '/database/model/response/yt_video_model.dart';
@@ -969,26 +968,6 @@ class DashBoardProvider extends ChangeNotifier {
       }
     } catch (e) {
       errorLog('UploadSteps $e');
-    }
-  }
-  List<PadomerData> stepHistory = [];
-  Future<void> getStepsHistory(Map<String, dynamic> data) async {
-
-    try {
-      if (isOnline) {
-        ApiResponse apiResponse = await dashBoardRepo.getStepsHistory(data);
-        if (apiResponse.response != null &&
-            apiResponse.response!.statusCode == 200) {
-          print("__________________Stepper APiHistory--------------");
-          var data = apiResponse.response!.data;
-          stepHistory = PadomerDataResponse.fromJson(data).padomerData;
-          notifyListeners();
-        }
-      } else {
-        Toasts.showWarningNormalToast('You are offline');
-      }
-    } catch (e) {
-      errorLog('Get History $e');
     }
   }
 
