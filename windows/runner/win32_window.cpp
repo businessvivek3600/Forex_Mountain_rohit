@@ -160,7 +160,7 @@ LRESULT CALLBACK Win32Window::WndProc(HWND const window,
                                       LPARAM const lparam) noexcept {
   if (message == WM_NCCREATE) {
     auto window_struct = reinterpret_cast<CREATESTRUCT*>(lparam);
-    SetWindowLongPtr(window, GWLP_USERDATA,
+    SetWindowLongPtr(window, GWLP_userData,
                      reinterpret_cast<LONG_PTR>(window_struct->lpCreateParams));
 
     auto that = static_cast<Win32Window*>(window_struct->lpCreateParams);
@@ -235,7 +235,7 @@ void Win32Window::Destroy() {
 
 Win32Window* Win32Window::GetThisFromHandle(HWND const window) noexcept {
   return reinterpret_cast<Win32Window*>(
-      GetWindowLongPtr(window, GWLP_USERDATA));
+      GetWindowLongPtr(window, GWLP_userData));
 }
 
 void Win32Window::SetChildContent(HWND content) {

@@ -180,6 +180,10 @@ class AuthRepo {
       rethrow;
     }
   }
+  String getUserFrom() {
+      return sharedPreferences.getString(SPConstants.userFrom) ?? "";
+
+  }
   String getUserToken() {
     return sharedPreferences.getString(SPConstants.userToken) ?? "";
   }

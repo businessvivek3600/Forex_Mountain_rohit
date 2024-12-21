@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:forex_mountain/utils/default_logger.dart';
 import 'package:http/http.dart'as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,6 +71,7 @@ class DepositRequestProvider extends ChangeNotifier {
       if (apiResponse.response != null &&
           apiResponse.response!.statusCode == 200) {
         // Parse JSON into DepositRequest model
+        infoLog("___________deposit__________________");
         print(apiResponse.response!.data);
         _depositRequest =
             DepositRequest.fromJson(apiResponse.response!.data);

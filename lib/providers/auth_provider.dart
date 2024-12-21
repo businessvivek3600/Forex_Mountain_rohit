@@ -37,7 +37,7 @@ class AuthProvider with ChangeNotifier {
   final FCMSubscriptionRepo fcmSubscriptionRepo;
   AuthProvider({required this.fcmSubscriptionRepo, required this.authRepo});
 
-  late UserData userData;
+ late UserData userData;
   CompanyInfoModel? companyInfo;
   MWC_Content mwc_content = MWC_Content();
   List<Cancellation> link_pages = [];
@@ -64,7 +64,12 @@ class AuthProvider with ChangeNotifier {
     _isRemember = value;
     notifyListeners();
   }
+  String getUserFromSaved() {
+    userFrom = authRepo.getUserFrom();
+    notifyListeners();
+    return userFrom;
 
+  }
   Future registration(RegisterModel register) async {
     isLoading = true;
     notifyListeners();
@@ -292,28 +297,28 @@ class AuthProvider with ChangeNotifier {
         String? loginToken;
         String message = '';
         bool status = false;
+        String _userFrom = '';
+
         try {
           status = map["status"];
           message = map["message"];
           loginToken = map["login_token"];
+          userFrom = map["user_from"];
         } catch (e) {}
         if (status) {
           try {
-            infoLog('login response---------- ${map['user_from']}');
             _userData = UserData.fromJson(map['userData']);
-            var _userFrom = map['user_from'];
             var cacheModel = APICacheDBModel(
                 key: SPConstants.user, syncData: jsonEncode(map['userData']));
             await APICacheManager().addCacheData(cacheModel);
-            userData = _userData;
-           userFrom = _userFrom;
             // sl.get<SettingsRepo>().setBiometric(true);
             await fcmSubscriptionRepo.subscribeToTopic(SPConstants.topic_all);
             await fcmSubscriptionRepo.subscribeToTopic(SPConstants.topic_event);
             if (status && loginToken != null && loginToken.isNotEmpty) {
               authRepo.saveUserToken(loginToken);
               authRepo.saveUser(userData);
-              authRepo.saveUserFrom(map['user_from']);
+              authRepo.saveUserFrom(_userFrom);
+          ;
             }
           } catch (e) {
             print('user could not be generated ${_userData?.toJson()} \n $e');
