@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../screens/drawerPages/whats_new_page.dart';
 import '../screens/youtube_video_play_widget.dart';
+import '../sl_container.dart';
 import '/database/model/response/additional/mcc_content_models.dart';
 import '../screens/drawerPages/downlines/my_incomes_page.dart';
 import '../screens/drawerPages/downlines/team_view/fancy_team_view.dart';
@@ -65,8 +66,10 @@ class CustomDrawer extends StatefulWidget {
 
 class _CustomDrawerState extends State<CustomDrawer> {
   final controller = ScrollController();
+  var authProvider = sl.get<AuthProvider>();
   @override
   void initState() {
+
     super.initState();
   }
 
@@ -113,14 +116,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             buildMasterClass(context, authProvider),
+                            if(authProvider.userFrom == "1") height5(),
+                            if(authProvider.userFrom == "1")  buildCompanyTradeIdea(context, authProvider),
                             height5(),
-                            buildCompanyTradeIdea(context, authProvider),
-                            height5(),
+                            if(authProvider.userFrom == "1")
                             capText('Components', context,
                                 color: Colors.white70,
                                 fontWeight: FontWeight.bold),
-                            height10(),
+                            if(authProvider.userFrom == "1")  height10(),
                             // Inbox
+                            if(authProvider.userFrom == "1")
                             DrawerTileItem(
                               onTap: () {
                                 dashBoardProvider.setDrawerTile(inbox);
@@ -151,7 +156,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                             //downlines
                             //downlines
-                            buildDownlinesExpansionTile(
+                            if(authProvider.userFrom == "1")    buildDownlinesExpansionTile(
                                 size, dashBoardProvider),
                             height10(),
 
@@ -171,7 +176,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             //  height10(),
 
                            ///  Subscription
-                            if (Platform.isAndroid)
+                            if(authProvider.userFrom == "1")     if (Platform.isAndroid)
                               DrawerTileItem(
                                 onTap: () {
                                   dashBoardProvider
@@ -186,8 +191,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     dashBoardProvider.selectedDrawerTile ==
                                         'Subscription',
                               ),
-                            height10(),
-                            DrawerTileItem(
+                            if(authProvider.userFrom == "1")     height10(),
+                            if(authProvider.userFrom == "1")      DrawerTileItem(
                               onTap: () {
                                 dashBoardProvider
                                     .setDrawerTile('Deposit Request');
@@ -201,7 +206,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               dashBoardProvider.selectedDrawerTile ==
                                   'Subscription',
                             ),
-                            height10(),
+                            if(authProvider.userFrom == "1")    height10(),
                             ///Gift Voucher
                             // // if (Platform.isAndroid)
                             // DrawerTileItem(
@@ -233,18 +238,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             // ),
                             // height10(),
                             //Downloads
-                            buildDownloadExpansionTile(size, dashBoardProvider),
-                            height10(),
+                            if(authProvider.userFrom == "1")    buildDownloadExpansionTile(size, dashBoardProvider),
+                            if(authProvider.userFrom == "1")      height10(),
 
                             ///Wallets
-                            buildWalletsExpansionTile(size, dashBoardProvider),
-                            height10(),
+                            if(authProvider.userFrom == "1")      buildWalletsExpansionTile(size, dashBoardProvider),
+                            if(authProvider.userFrom == "1")     height10(),
 
-                            capText('User', context,
+                            if(authProvider.userFrom == "1")     capText('User', context,
                                 color: Colors.white70,
                                 fontWeight: FontWeight.bold),
-                            height10(),
-                            buildProfileExpansionTile(size, dashBoardProvider),
+                            if(authProvider.userFrom == "1")      height10(),
+                            if(authProvider.userFrom == "1")       buildProfileExpansionTile(size, dashBoardProvider),
                             // height10(),
                             // DrawerTileItem(
                             //   onTap: () {
@@ -260,14 +265,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             //   trailing: assetImages(Assets.newPng,
                             //       width: 25, height: 25),
                             // ),
-                            height10(),
+                            if(authProvider.userFrom == "1")      height10(),
                             //Others
-                            capText('Others', context,
+                            if(authProvider.userFrom == "1")      capText('Others', context,
                                 color: Colors.white70,
                                 fontWeight: FontWeight.bold),
-                            height10(),
+                            if(authProvider.userFrom == "1")      height10(),
                             ...drawerOtherItems.map((e) => buildOthersTile(
-                                e, context, size, dashBoardProvider)),
+                                e, context,authProvider, size, dashBoardProvider)),
 
                             // whatsNew
                             // DrawerTileItem(
@@ -286,13 +291,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             // ),
                             // height10(),
 
-                            buildAppPagesExpansionTile(
+                            if(authProvider.userFrom == "1")    buildAppPagesExpansionTile(
                                 size, dashBoardProvider, authProvider),
 
 
-                            height10(),
+                            if(authProvider.userFrom == "1")     height10(),
                             if(authProvider.userData.username == "TESTTEST01")
-                            DrawerTileItem(
+                              if(authProvider.userFrom == "1")     DrawerTileItem(
                               deleteAccount: true,
                               onTap: () {
                                 AwesomeDialog(
@@ -376,19 +381,24 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 
   Column buildOthersTile(
-    List<dynamic> e,
-    BuildContext context,
-    // AuthProvider authProvider,
-    Size size,
-    DashBoardProvider dashBoardProvider,
-  ) {
+      List<dynamic> e,
+      BuildContext context,
+      AuthProvider authProvider,
+      Size size,
+      DashBoardProvider dashBoardProvider,
+       // Added AuthProvider as a parameter
+      ) {
+    // Conditional rendering based on authProvider.userFrom
+    if (e[0] == 'Notifications' && authProvider.userFrom != "1") return Column();
+    if (e[0] == 'Settings' && authProvider.userFrom != "1") return Column();
+    if (e[0] == 'Support' && authProvider.userFrom != "1") return Column();
+
     return Column(
       children: [
         Stack(
           children: [
             DrawerTileItem(
               onTap: () {
-                // HapticFeedback.vibrate();
                 if (e[0] == 'Logout') {
                   AwesomeDialog(
                     dialogType: DialogType.question,
@@ -409,11 +419,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     },
                     reverseBtnOrder: true,
                   ).show();
-                } else if (e[0] == 'Notifications') {
+                } else if (e[0] == 'Notifications' && authProvider.userFrom == "1") {
                   Get.to(const NotificationPage());
-                } else if (e[0] == 'Settings') {
+                } else if (e[0] == 'Settings' && authProvider.userFrom == "1") {
                   Get.to(const SettingsPage());
-                } else if (e[0] == 'Support') {
+                } else if (e[0] == 'Support' && authProvider.userFrom == "1") {
                   Get.to(const SupportPage());
                 } else if (e[0] == 'Login Logs') {
                   Get.to(const MyLoginLogsPage());
@@ -426,7 +436,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             ),
             if (e[0] == 'Notifications' &&
                 Provider.of<NotificationProvider>(context, listen: true)
-                        .totalUnread >
+                    .totalUnread >
                     0)
               Positioned(
                 right: 10,
@@ -438,8 +448,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                     child: capText(
                       '${Provider.of<NotificationProvider>(context, listen: true).totalUnread}',
                       context,
@@ -453,6 +462,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
       ],
     );
   }
+
 
   Column buildComponentsTile(List<dynamic> e, BuildContext context, Size size,
       DashBoardProvider dashBoardProvider) {
@@ -1266,8 +1276,8 @@ class _MasterClasses extends StatelessWidget {
               ),
             ),
             // Daily webinars
-            width5(),
-            Expanded(
+            if(authProvider.userFrom == "1")   width5(),
+            if(authProvider.userFrom == "1")     Expanded(
               flex: 3,
               child: _SectionTile(
                 onTap: () {

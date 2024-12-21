@@ -17,6 +17,7 @@ import 'package:forex_mountain/database/model/response/base/user_model.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '/screens/drawerPages/wallets/cash_wallet_page/cash_wallet_page.dart';
 import '/screens/drawerPages/wallets/commission_wallet/commission_wallet_page.dart';
 import '../../database/databases/firebase_database.dart';
@@ -94,8 +95,6 @@ class _MainPageState extends State<MainPage>
 
   @override
   void initState() {
-    // setErrorBuilder();
-
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (notificationPaylod != null) {
@@ -239,7 +238,6 @@ class _MainPageState extends State<MainPage>
 
   @override
   Widget build(BuildContext context) {
-    infoLog(authProvider.userFrom);
     getDeviceToken();
     final size = MediaQuery.of(context).size;
     return Consumer<AuthProvider>(
@@ -373,6 +371,7 @@ class _MainPageState extends State<MainPage>
                               //       child: const Text('In App Purchase')),
 
                               ///alerts
+                             if(authProvider.userFrom == "1")
                               if (dashboardProvider.alerts
                                   .where((element) => element.status == 1)
                                   .isNotEmpty)
@@ -385,11 +384,13 @@ class _MainPageState extends State<MainPage>
                                     horizontal: 8),
                                 backgroundColor: Colors.white12,
                               ),
+                              if(authProvider.userFrom == "1")
                               buildAccountStatistics(
                                   context, authProvider, dashBoardProvider),
+                              if(authProvider.userFrom == "1")
                               _buildTeamBuildingReferralLink(
                                   context, dashBoardProvider),
-                              height10(),
+                              if(authProvider.userFrom == "1") height10(),
 
                               /*
                              _buildPlaceholderIdField(
@@ -438,22 +439,22 @@ class _MainPageState extends State<MainPage>
                             ],
                           ),
                           if (Platform.isAndroid)
-                            // if(authProvider.userFrom =="1")
+                            if(authProvider.userFrom =="1")
                           buildSubscriptionHistory(
                               context, size, dashBoardProvider, authProvider),
-                          height20(),
+                          if(authProvider.userFrom == "1")   height20(),
 
                           /// Accademic Video
                           buildAccademicVideo(context),
                           height20(),
                           // buildCardFeatureListview(
                           //     context, size, dashBoardProvider),
-                          buildCommissionActivity(
+                          if(authProvider.userFrom == "1")      if(authProvider.userFrom == "1")  buildCommissionActivity(
                               context, size, dashBoardProvider),
-                          height20(),
-                          ...buildTargetProgressCards(dashBoardProvider),
-                          ...buildTiers(context, dashBoardProvider),
-                          height20(),
+                          if(authProvider.userFrom == "1")    height20(),
+                          if(authProvider.userFrom == "1")     ...buildTargetProgressCards(dashBoardProvider),
+                          if(authProvider.userFrom == "1")     ...buildTiers(context, dashBoardProvider),
+                          if(authProvider.userFrom == "1")      height20(),
                           // buildEventsTicketCard(context),
                           // height100(),
                         ],
