@@ -84,6 +84,7 @@ class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin, RouteAware {
   OverlayEntry? overlayEntry;
   int currentPage = 0;
+  String userFrom = "0";
   AnimationController? animationController;
   Animation<double>? animation;
   final RefreshController _refreshController =
@@ -92,6 +93,11 @@ class _MainPageState extends State<MainPage>
   var galleryProvider = sl.get<GalleryProvider>();
   var authProvider = sl.get<AuthProvider>();
   FirebaseDatabase firebaseDatabase = sl.get<FirebaseDatabase>();
+  Future<void> getUserFrom() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    userFrom = preferences.getString(SPConstants.userFrom) ?? "8";
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -107,14 +113,17 @@ class _MainPageState extends State<MainPage>
       dashboardProvider.getCustomerDashboard().then(
           (value) => showDashboardInitialPopUp(dashboardProvider, context));
       sl.get<NotificationProvider>().getUnRead();
+      getUserFrom();
       dashboardProvider.getDownloadsData();
       sl.get<SubscriptionProvider>().mySubscriptions();
       authProvider.getSignUpInitialData();
       galleryProvider.getGalleryData(false);
       sl.get<EventTicketsProvider>().getEventTickets(true);
       galleryProvider.getVideos(false);
+      authProvider.loadUserData();
       canShowNextDashPopUPBool.addListener(() {});
       checkForUpdate(context);
+      infoLog("Main Page get User Data--------------------------------${authProvider.userData.customerName}");
 
       //check if user is logged in and show bottom sheet to save password
       if (widget.loginModel != null) {
@@ -233,6 +242,7 @@ class _MainPageState extends State<MainPage>
     sl.get<EventTicketsProvider>().getEventTickets(true);
     galleryProvider.getGalleryData(false);
     galleryProvider.getVideos(false);
+
     _refreshController.refreshCompleted();
   }
 
@@ -252,10 +262,10 @@ class _MainPageState extends State<MainPage>
               child: Scaffold(
                 key: widget.dashScaffoldKey,
                 backgroundColor: Colors.transparent,
-                drawer: const CustomDrawer(),
+                drawer: CustomDrawer(userFrom: userFrom,),
                 body: Stack(
                   children: [
-                    // if(authProvider.userFrom =="1")
+                    // if(userFrom =="1")
                     buildBody(context, dashBoardProvider, authProvider, size),
                     //buildTawkChatButton(authProvider),
                   ],
@@ -371,10 +381,11 @@ class _MainPageState extends State<MainPage>
                               //       child: const Text('In App Purchase')),
 
                               ///alerts
-                             if(authProvider.userFrom == "1")
+
                               if (dashboardProvider.alerts
                                   .where((element) => element.status == 1)
                                   .isNotEmpty)
+                                // if (userFrom == "1")
                                 const MainPageAlertsSlider(),
                               height10(),
                               AppLockAuthSuggestionWidget(
@@ -384,13 +395,13 @@ class _MainPageState extends State<MainPage>
                                     horizontal: 8),
                                 backgroundColor: Colors.white12,
                               ),
-                              if(authProvider.userFrom == "1")
-                              buildAccountStatistics(
-                                  context, authProvider, dashBoardProvider),
-                              if(authProvider.userFrom == "1")
-                              _buildTeamBuildingReferralLink(
-                                  context, dashBoardProvider),
-                              if(authProvider.userFrom == "1") height10(),
+                              if (userFrom == "1")
+                                buildAccountStatistics(
+                                    context, authProvider, dashBoardProvider),
+                              if (userFrom == "1")
+                                _buildTeamBuildingReferralLink(
+                                    context, dashBoardProvider),
+                              if (userFrom == "1") height10(),
 
                               /*
                              _buildPlaceholderIdField(
@@ -439,22 +450,26 @@ class _MainPageState extends State<MainPage>
                             ],
                           ),
                           if (Platform.isAndroid)
-                            if(authProvider.userFrom =="1")
-                          buildSubscriptionHistory(
-                              context, size, dashBoardProvider, authProvider),
-                          if(authProvider.userFrom == "1")   height20(),
+                            if (userFrom == "1")
+                              buildSubscriptionHistory(context, size,
+                                  dashBoardProvider, authProvider),
+                          if (userFrom == "1") height20(),
 
                           /// Accademic Video
                           buildAccademicVideo(context),
                           height20(),
                           // buildCardFeatureListview(
                           //     context, size, dashBoardProvider),
-                          if(authProvider.userFrom == "1")      if(authProvider.userFrom == "1")  buildCommissionActivity(
-                              context, size, dashBoardProvider),
-                          if(authProvider.userFrom == "1")    height20(),
-                          if(authProvider.userFrom == "1")     ...buildTargetProgressCards(dashBoardProvider),
-                          if(authProvider.userFrom == "1")     ...buildTiers(context, dashBoardProvider),
-                          if(authProvider.userFrom == "1")      height20(),
+                          if (userFrom == "1")
+                            if (userFrom == "1")
+                              buildCommissionActivity(
+                                  context, size, dashBoardProvider),
+                          if (userFrom == "1") height20(),
+                          if (userFrom == "1")
+                            ...buildTargetProgressCards(dashBoardProvider),
+                          if (userFrom == "1")
+                            ...buildTiers(context, dashBoardProvider),
+                          if (userFrom == "1") height20(),
                           // buildEventsTicketCard(context),
                           // height100(),
                         ],
@@ -551,7 +566,8 @@ class _MainPageState extends State<MainPage>
     int activeMember =
         int.parse(dashBoardProvider.member_sale['active_member'] ?? '0');
     int member = int.parse(dashBoardProvider.member_sale['member'] ?? '0');
-    double totalEarnings =double.parse(dashBoardProvider.member_sale['income_total'] ?? '0');
+    double totalEarnings =
+        double.parse(dashBoardProvider.member_sale['income_total'] ?? '0');
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -604,7 +620,7 @@ class _MainPageState extends State<MainPage>
           _buildStatisticsGridViewItem(
             context,
             'Total Earning',
-           totalEarnings.toDouble(),
+            totalEarnings.toDouble(),
             currencyIcon,
             isCount: true,
           ),
@@ -791,7 +807,7 @@ class _MainPageState extends State<MainPage>
         style: TextStyle(color: appLogoColor),
       ),
     );
- }
+  }
 
   PreferredSize buildAppLogo(
       DashBoardProvider dashBoardProvider, AuthProvider authProvider) {
@@ -831,7 +847,7 @@ class _MainPageState extends State<MainPage>
 
           //
           buildDrawerMenuButton(dashBoardProvider, authProvider),
-          buildSQRCodeContainer(dashBoardProvider),
+          if (userFrom == "1") buildSQRCodeContainer(dashBoardProvider),
         ],
       ),
     );
@@ -1133,7 +1149,7 @@ class _MainPageState extends State<MainPage>
                   ),
                 )
               : ListView(
-            shrinkWrap: true,
+                  shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -1569,7 +1585,7 @@ class _MainPageState extends State<MainPage>
       Color? color}) {
     final customerId = authProvider.userData.username;
     String qrData =
-        "${AppConstants.siteUrl}${AppConstants.config}/${customerId!}";
+        "${AppConstants.siteUrl}${AppConstants.config}/${customerId}";
     return Container(
       height: size?.height,
       width: size?.width,

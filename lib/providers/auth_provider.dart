@@ -37,7 +37,7 @@ class AuthProvider with ChangeNotifier {
   final FCMSubscriptionRepo fcmSubscriptionRepo;
   AuthProvider({required this.fcmSubscriptionRepo, required this.authRepo});
 
- late UserData userData;
+  UserData userData = UserData();
   CompanyInfoModel? companyInfo;
   MWC_Content mwc_content = MWC_Content();
   List<Cancellation> link_pages = [];
@@ -57,6 +57,12 @@ class AuthProvider with ChangeNotifier {
     _selectedIndex = index;
     notifyListeners();
   }
+  Future<void> loadUserData() async {
+    userData = await authRepo.getUser() ?? UserData();
+
+
+    notifyListeners();
+  }
 
   bool get isRemember => _isRemember;
 
@@ -64,7 +70,7 @@ class AuthProvider with ChangeNotifier {
     _isRemember = value;
     notifyListeners();
   }
-  String getUserFromSaved() {
+  String getUserFrom() {
     userFrom = authRepo.getUserFrom();
     notifyListeners();
     return userFrom;
@@ -278,19 +284,17 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+
+
   Future<bool> login(LoginModel loginBody) async {
     bool loggedIn = false;
 
     if (isOnline) {
       showLoading(dismissable: false, useRootNavigator: true);
       log('loginBody ${loginBody.toJson()}');
-      // return false;
-      // await Future.delayed(Duration(milliseconds: 10000));
       ApiResponse apiResponse = await authRepo.login(loginBody);
-      // Navigator.of(Get.context!).pop();
 
-      if (apiResponse.response != null &&
-          apiResponse.response!.statusCode == 200) {
+      if (apiResponse.response != null && apiResponse.response!.statusCode == 200) {
         print("response ${apiResponse.response!.data}");
         Map map = apiResponse.response!.data;
         UserData? _userData;
@@ -303,31 +307,43 @@ class AuthProvider with ChangeNotifier {
           status = map["status"];
           message = map["message"];
           loginToken = map["login_token"];
-          userFrom = map["user_from"];
+          _userFrom = map["user_from"];
         } catch (e) {}
+
         if (status) {
           try {
             _userData = UserData.fromJson(map['userData']);
             var cacheModel = APICacheDBModel(
                 key: SPConstants.user, syncData: jsonEncode(map['userData']));
             await APICacheManager().addCacheData(cacheModel);
-            // sl.get<SettingsRepo>().setBiometric(true);
+
             await fcmSubscriptionRepo.subscribeToTopic(SPConstants.topic_all);
             await fcmSubscriptionRepo.subscribeToTopic(SPConstants.topic_event);
+
             if (status && loginToken != null && loginToken.isNotEmpty) {
               authRepo.saveUserToken(loginToken);
-              authRepo.saveUser(userData);
+              authRepo.saveUser(_userData);
+
+              SharedPreferences preferences = await SharedPreferences.getInstance();
+              preferences.setString(SPConstants.userFrom, _userFrom);
               authRepo.saveUserFrom(_userFrom);
-          ;
+              // Verify if userFrom was saved successfully
+              if (preferences.containsKey(SPConstants.userFrom)) {
+                print('userFrom is saved in SharedPreferences');
+                String? userFromValue = preferences.getString(SPConstants.userFrom);
+                print('Saved userFrom value: $userFromValue');
+              } else {
+                print('userFrom is not saved in SharedPreferences');
+              }
             }
           } catch (e) {
-            print('user could not be generated ${_userData?.toJson()} \n $e');
+            print('User could not be generated ${_userData?.toJson()} \n $e');
           }
         }
 
         Get.back();
         print('login response $map status $status');
-        if (status == false) {
+        if (!status) {
           Fluttertoast.showToast(msg: message, backgroundColor: Colors.red);
         }
         loggedIn = status;
@@ -340,14 +356,14 @@ class AuthProvider with ChangeNotifier {
           logger.e(' ${errorResponse.errors[0].message}',
               tag: 'login', error: errorResponse.errors);
         }
-        // Get.back();
-        Toasts.showErrorNormalToast('Some thing went wrong!');
+        Toasts.showErrorNormalToast('Something went wrong!');
       }
     } else {
       Toasts.showWarningNormalToast('You are offline');
     }
     return loggedIn;
   }
+
 
   bool loadingStates = false;
   List<States> states = [];

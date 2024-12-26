@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:forex_mountain/utils/default_logger.dart';
 import 'package:http/http.dart'as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -99,7 +100,7 @@ class DepositRequestProvider extends ChangeNotifier {
 
   ///put deposit request
   // Fetch Deposit Data
-  Future<void> putDepositData(Map<String, dynamic> data) async {
+  Future<void> putDepositData(Map<String,dynamic> data) async {
     if (isOnline) {
       if (_selectedFile != null) {
         try {
@@ -153,7 +154,6 @@ class DepositRequestProvider extends ChangeNotifier {
       );
     }
   }
-
 
 
 

@@ -81,14 +81,24 @@ class _CompanyTradeIdeasPageState extends State<CompanyTradeIdeasPage> {
   Widget build(BuildContext context) {
     return Consumer<DashBoardProvider>(builder: (context, provider, _) {
       return DefaultTabController(
-        length: 2,
+        length: 4,
         child: Scaffold(
             appBar: AppBar(
               title: titleLargeText('Company Trade Ideas', context,
                   color: Colors.white, useGradient: true),
               bottom: TabBar(
                 onTap: (index) {
-                  var tab = index == 0 ? 1 : 0;
+                  int tab;
+                  // Adjust the mapping to correspond to the tradeIdeaType for each tab
+                  if (index == 0) {
+                    tab = 1; // High Risk
+                  } else if (index == 1) {
+                    tab = 0; // Low Risk
+                  } else if (index == 2) {
+                    tab = 2; // Mid Risk
+                  } else {
+                    tab = 3; // Scalping
+                  }
 
                   if (tab != provider.tradeIdeaType) {
                     logger.i('index: $index');
@@ -101,6 +111,8 @@ class _CompanyTradeIdeasPageState extends State<CompanyTradeIdeasPage> {
                 tabs: const [
                   Tab(text: 'High Risk'),
                   Tab(text: 'Low Risk'),
+                  Tab(text: 'Mid Risk'),
+                  Tab(text: 'Scalping'),
                 ],
                 unselectedLabelColor: Colors.white54,
               ),
@@ -118,6 +130,8 @@ class _CompanyTradeIdeasPageState extends State<CompanyTradeIdeasPage> {
               child: TabBarView(
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
+                    _buildLoadMoreContainer(provider, context),
+                    _buildLoadMoreContainer(provider, context),
                     _buildLoadMoreContainer(provider, context),
                     _buildLoadMoreContainer(provider, context),
                   ]),

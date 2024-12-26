@@ -191,17 +191,17 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-        height10(),
-        if (isLoginDisabled)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.info_outline, color: Colors.amber, size: 15),
-              width5(7),
-              capText('Login process is temporary disabled.', context,
-                  color: Colors.grey[400])
-            ],
-          )
+        // height10(),
+        // if (isLoginDisabled)
+        //   Row(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       const Icon(Icons.info_outline, color: Colors.amber, size: 15),
+        //       width5(7),
+        //       capText('Login process is temporary disabled.', context,
+        //           color: Colors.grey[400])
+        //     ],
+        //   )
       ],
     );
   }
@@ -271,7 +271,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Icon(Icons.arrow_forward_ios_rounded, color: Colors.white))),
       action: (controller) async {
         String? token = await FirebaseMessaging.instance.getToken();
-        print('FCM Token-----------------------------------: $token');
+       infoLog('FCM Token-----------------------------------: $token');
 
 
         if (_formKey.currentState?.validate() ?? false) {
@@ -463,7 +463,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final deviceIdProvider = DeviceIdProvider();
     String? deviceId = await deviceIdProvider.getDeviceId();
     String? token = await FirebaseMessaging.instance.getToken();
-    print("Device ID----------------********------------------: $token");
+    infoLog('FCM Token-----------------------------------: $token');
 
     if (_formKey.currentState?.validate() ?? false) {
       //--- trigger Password Save

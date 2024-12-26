@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:math';
 
 import 'package:api_cache_manager/models/cache_db_model.dart';
 import 'package:api_cache_manager/utils/cache_manager.dart';
 import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:forex_mountain/utils/my_logger.dart';
 import '../database/model/response/login_logs_model.dart';
 import '../database/repositories/auth_repo.dart';
 import '/database/model/response/income_activity_model.dart';
@@ -815,6 +815,7 @@ class DashBoardProvider extends ChangeNotifier {
           apiResponse.response!.statusCode == 200) {
         bool status = false;
         map = apiResponse.response!.data;
+        infoLog("---------------------$map");
         try {
           status = map?["status"];
           if (map?['is_logged_in'] != 1) {
