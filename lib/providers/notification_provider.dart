@@ -27,7 +27,7 @@ class NotificationProvider with ChangeNotifier {
 
     // Print each notification data entry for better clarity
     for (var notification in notificationList) {
-      infoLog('Fetched Notification: $notification');
+      infoLog('Fetched Notification: ${notification}');
     }
   }
 

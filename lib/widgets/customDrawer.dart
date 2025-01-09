@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:forex_mountain/screens/drawerPages/deposit_request/deposite_request.dart';
 import 'package:get/get.dart';
 import 'package:forex_mountain/screens/drawerPages/downlines/my_login_logs_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../screens/drawerPages/whats_new_page.dart';
@@ -58,8 +59,8 @@ import '../screens/drawerPages/download_pages/drawer_video_player_page.dart';
 import '../screens/drawerPages/settings_page.dart';
 
 class CustomDrawer extends StatefulWidget {
-  const CustomDrawer({super.key, required this.userFrom});
-final String userFrom;
+  const CustomDrawer({super.key, });
+
   @override
   State<CustomDrawer> createState() => _CustomDrawerState();
 }
@@ -67,15 +68,25 @@ final String userFrom;
 class _CustomDrawerState extends State<CustomDrawer> {
   final controller = ScrollController();
   var authProvider = sl.get<AuthProvider>();
+  String userForm = '';
   @override
   void initState() {
+    _initializeToken();
 authProvider.loadUserData();
 infoLog("Main Page get User Data--------------------------------${authProvider.userData.customerName}");
     super.initState();
   }
+  Future<void> _initializeToken() async {
+    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      userForm = sharedPreferences.getString(SPConstants.userFrom) ?? "";
+    });
+    infoLog("UserFrom loaded successfully: $userForm");
 
+  }
   @override
   Widget build(BuildContext context) {
+
     List<List<dynamic>> drawerOtherItems = [
       ['Login Logs', Assets.logsSvg],
       ['Notifications', Assets.notification],
@@ -117,16 +128,16 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             buildMasterClass(context, authProvider),
-                            if(widget.userFrom == "1") height5(),
-                            if(widget.userFrom == "1")  buildCompanyTradeIdea(context, authProvider),
+                            if(userForm == "1") height5(),
+                            if(userForm == "1")  buildCompanyTradeIdea(context, authProvider),
                             height5(),
-                            if(widget.userFrom == "1")
+                            if(userForm == "1")
                             capText('Components', context,
                                 color: Colors.white70,
                                 fontWeight: FontWeight.bold),
-                            if(widget.userFrom == "1")  height10(),
+                            if(userForm== "1")  height10(),
                             // Inbox
-                            if(widget.userFrom == "1")
+                            if(userForm== "1")
                             DrawerTileItem(
                               onTap: () {
                                 dashBoardProvider.setDrawerTile(inbox);
@@ -157,7 +168,7 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
 
                             //downlines
                             //downlines
-                            if(widget.userFrom == "1")    buildDownlinesExpansionTile(
+                            if(userForm== "1")    buildDownlinesExpansionTile(
                                 size, dashBoardProvider),
                             height10(),
 
@@ -177,7 +188,7 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
                             //  height10(),
 
                            ///  Subscription
-                            if(widget.userFrom == "1")     if (Platform.isAndroid)
+                            if(userForm== "1")     if (Platform.isAndroid)
                               DrawerTileItem(
                                 onTap: () {
                                   dashBoardProvider
@@ -192,8 +203,8 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
                                     dashBoardProvider.selectedDrawerTile ==
                                         'Subscription',
                               ),
-                            if(widget.userFrom == "1")     height10(),
-                            if(widget.userFrom == "1")      DrawerTileItem(
+                            if(userForm== "1")     height10(),
+                            if(userForm== "1")      DrawerTileItem(
                               onTap: () {
                                 dashBoardProvider
                                     .setDrawerTile('Deposit ');
@@ -207,7 +218,7 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
                               dashBoardProvider.selectedDrawerTile ==
                                   'Subscription',
                             ),
-                            if(widget.userFrom == "1")    height10(),
+                            if(userForm== "1")    height10(),
                             ///Gift Voucher
                             // // if (Platform.isAndroid)
                             // DrawerTileItem(
@@ -239,18 +250,18 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
                             // ),
                             // height10(),
                             //Downloads
-                            if(widget.userFrom == "1")    buildDownloadExpansionTile(size, dashBoardProvider),
-                            if(widget.userFrom == "1")      height10(),
+                            if(userForm== "1")    buildDownloadExpansionTile(size, dashBoardProvider),
+                            if(userForm== "1")      height10(),
 
                             ///Wallets
-                            if(widget.userFrom == "1")      buildWalletsExpansionTile(size, dashBoardProvider),
-                            if(widget.userFrom == "1")     height10(),
+                            if(userForm== "1")      buildWalletsExpansionTile(size, dashBoardProvider),
+                            if(userForm== "1")     height10(),
 
-                            if(widget.userFrom == "1")     capText('User', context,
+                            if(userForm== "1")     capText('User', context,
                                 color: Colors.white70,
                                 fontWeight: FontWeight.bold),
-                            if(widget.userFrom == "1")      height10(),
-                            if(widget.userFrom == "1")       buildProfileExpansionTile(size, dashBoardProvider),
+                            if(userForm== "1")      height10(),
+                            if(userForm== "1")       buildProfileExpansionTile(size, dashBoardProvider),
                             // height10(),
                             // DrawerTileItem(
                             //   onTap: () {
@@ -266,12 +277,12 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
                             //   trailing: assetImages(Assets.newPng,
                             //       width: 25, height: 25),
                             // ),
-                            if(widget.userFrom == "1")      height10(),
+                            if(userForm== "1")      height10(),
                             //Others
-                            if(widget.userFrom == "1")      capText('Others', context,
+                            if(userForm== "1")      capText('Others', context,
                                 color: Colors.white70,
                                 fontWeight: FontWeight.bold),
-                            if(widget.userFrom == "1")      height10(),
+                            if(userForm== "1")      height10(),
                             ...drawerOtherItems.map((e) => buildOthersTile(
                                 e, context,authProvider, size, dashBoardProvider)),
 
@@ -292,13 +303,13 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
                             // ),
                             // height10(),
 
-                            if(widget.userFrom == "1")    buildAppPagesExpansionTile(
+                            if(userForm== "1")    buildAppPagesExpansionTile(
                                 size, dashBoardProvider, authProvider),
 
 
-                            if(widget.userFrom == "1")     height10(),
+                            if(userForm== "1")     height10(),
                             if(authProvider.userData.username == "TESTTEST01")
-                              if(widget.userFrom == "1")     DrawerTileItem(
+                              if(userForm== "1")     DrawerTileItem(
                               deleteAccount: true,
                               onTap: () {
                                 AwesomeDialog(
@@ -392,10 +403,10 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
       DashBoardProvider dashBoardProvider,
        // Added AuthProvider as a parameter
       ) {
-    // Conditional rendering based on widget.userFrom
-    if (e[0] == 'Notifications' && widget.userFrom != "1") return const Column();
-    if (e[0] == 'Settings' && widget.userFrom != "1") return const Column();
-    if (e[0] == 'Support' && widget.userFrom != "1") return const Column();
+    // Conditional rendering based on userForm
+    if (e[0] == 'Notifications' && userForm!= "1") return const Column();
+    if (e[0] == 'Settings' && userForm!= "1") return const Column();
+    if (e[0] == 'Support' && userForm!= "1") return const Column();
 
     return Column(
       children: [
@@ -423,11 +434,11 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
                     },
                     reverseBtnOrder: true,
                   ).show();
-                } else if (e[0] == 'Notifications' && widget.userFrom == "1") {
+                } else if (e[0] == 'Notifications' && userForm== "1") {
                   Get.to(const NotificationPage());
-                } else if (e[0] == 'Settings' && widget.userFrom == "1") {
+                } else if (e[0] == 'Settings' && userForm== "1") {
                   Get.to(const SettingsPage());
-                } else if (e[0] == 'Support' && widget.userFrom == "1") {
+                } else if (e[0] == 'Support' && userForm== "1") {
                   Get.to(const SupportPage());
                 } else if (e[0] == 'Login Logs') {
                   Get.to(const MyLoginLogsPage());
@@ -911,19 +922,19 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
     const String pdf = 'PDF';
     const String ppt = 'PPT';
     const String promotionalVideo = 'Promotional Video';
-    const String gallery = 'Gallery';
-    const String academicVideos = 'Academic Videos';
-    const String introVideo = 'Intro Video';
+    // const String gallery = 'Gallery';
+    // const String academicVideos = 'Academic Videos';
+    // const String introVideo = 'Intro Video';
 
     return expansionTile(
       title: 'Downloads',
       headerAsset: Assets.download,
       initiallyExpanded: dashBoardProvider.selectedDrawerTile == pdf ||
           dashBoardProvider.selectedDrawerTile == ppt ||
-          dashBoardProvider.selectedDrawerTile == promotionalVideo ||
-          dashBoardProvider.selectedDrawerTile == gallery ||
-          dashBoardProvider.selectedDrawerTile == academicVideos ||
-          dashBoardProvider.selectedDrawerTile == introVideo,
+          dashBoardProvider.selectedDrawerTile == promotionalVideo ,
+          // dashBoardProvider.selectedDrawerTile == gallery ||
+          // dashBoardProvider.selectedDrawerTile == academicVideos ||
+          // dashBoardProvider.selectedDrawerTile == introVideo,
       children: [
         Container(
           width: double.maxFinite,
@@ -940,10 +951,10 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
               ...[
                 pdf,
                 ppt,
-                gallery,
+                // gallery,
                 promotionalVideo,
-                introVideo,
-                academicVideos,
+                // introVideo,
+                // academicVideos,
               ].map(
                 (e) => Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -959,22 +970,22 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
                           page = MainPage();
                           launchTheLink(dashBoardProvider.pptLink ?? '');
                           break;
-                        case gallery:
-                          page = const GalleryMainPage();
-                          break;
+                        // case gallery:
+                        //   page = const GalleryMainPage();
+                        //   break;
                         case promotionalVideo:
                           page = DrawerVideoScreen(
                               url: dashBoardProvider.promotionalVideoLink ?? '',
                               title: promotionalVideo);
                           break;
-                        case introVideo:
-                          page = DrawerVideoScreen(
-                              url: dashBoardProvider.introVideoLink ?? '',
-                              title: introVideo);
-                          break;
-                        case academicVideos:
-                          page = const DrawerVideosMainPage();
-                          break;
+                        // case introVideo:
+                        //   page = DrawerVideoScreen(
+                        //       url: dashBoardProvider.introVideoLink ?? '',
+                        //       title: introVideo);
+                        //   break;
+                        // case academicVideos:
+                        //   page = const DrawerVideosMainPage();
+                        //   break;
                         default:
                           page = buildDefaultPage();
                           break;
@@ -985,12 +996,12 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
                         ? Assets.pdf
                         : e == ppt
                             ? Assets.ppt
-                            : e == gallery
-                                ? Assets.gallery
+                            // : e == gallery
+                            //     ? Assets.gallery
                                 : e == promotionalVideo
                                     ? Assets.video
-                                    : e == introVideo
-                                        ? Assets.video
+                                    // : e == introVideo
+                                    //     ? Assets.video
                                         : Assets.video,
                     title: e,
                     width: size.width * 0.7,
@@ -1226,7 +1237,7 @@ class _MasterClasses extends StatelessWidget {
   Widget build(BuildContext context) {
     final dashboardProvider = Provider.of<DashBoardProvider>(context);
     final authProvider = Provider.of<AuthProvider>(context);
-    bool isActive = authProvider.userData.salesActive == '1';
+    // bool isActive = authProvider.userData.salesActive == '1';
     bool isWebinarLive = dashboardProvider.wevinarEventVideo != null &&
         dashboardProvider.wevinarEventVideo!.status == '1';
 
@@ -1249,13 +1260,13 @@ class _MasterClasses extends StatelessWidget {
               flex: 4,
               child: _SectionTile(
                 onTap: () {
-                  if (!isActive) {
-                    inActiveUserAccessDeniedDialog(context);
-                  }
-                  else {
+                  // if (!isActive) {
+                  //   inActiveUserAccessDeniedDialog(context);
+                  // }
+                  // else {
                     Get.back();
                     Get.to(const DrawerVideosMainPage());
-                  }
+                  // }
                 },
                 title: 'Educational\nVideos',
                 image: Assets.videoPng,
@@ -1267,13 +1278,13 @@ class _MasterClasses extends StatelessWidget {
               flex: 4,
               child: _SectionTile(
                 onTap: () {
-                  if (!isActive) {
-                    inActiveUserAccessDeniedDialog(context);
-                  }
-                  else {
+                  // if (!isActive) {
+                  //   inActiveUserAccessDeniedDialog(context);
+                  // }
+                  // else {
                     Get.back();
                     Get.to(const DowanloadsMainPage());
-                  }
+                  // }
                 },
                 title: 'Educational\nDownloads',
                 image: Assets.downloadsPng,
@@ -1285,9 +1296,9 @@ class _MasterClasses extends StatelessWidget {
               flex: 3,
               child: _SectionTile(
                 onTap: () {
-                  if (!isActive) {
-                    inActiveUserAccessDeniedDialog(context);
-                  } else
+                  // if (!isActive) {
+                  //   inActiveUserAccessDeniedDialog(context);
+                  // } else
                     if (!isWebinarLive) {
                     Fluttertoast.showToast(
                         msg: 'Currently no webinar is live',

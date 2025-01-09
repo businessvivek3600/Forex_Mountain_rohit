@@ -123,7 +123,7 @@ class _MainPageState extends State<MainPage>
       authProvider.loadUserData();
       canShowNextDashPopUPBool.addListener(() {});
       checkForUpdate(context);
-      infoLog("Main Page get User Data--------------------------------${authProvider.userData.customerName}");
+
 
       //check if user is logged in and show bottom sheet to save password
       if (widget.loginModel != null) {
@@ -262,7 +262,7 @@ class _MainPageState extends State<MainPage>
               child: Scaffold(
                 key: widget.dashScaffoldKey,
                 backgroundColor: Colors.transparent,
-                drawer: CustomDrawer(userFrom: userFrom,),
+                drawer: CustomDrawer(),
                 body: Stack(
                   children: [
                     // if(userFrom =="1")

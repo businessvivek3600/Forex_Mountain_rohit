@@ -42,12 +42,8 @@ class _NotificationPageState extends State<NotificationPage> {
     sl.get<NotificationProvider>().init();
     FlutterAppBadger.removeBadge();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      String? token = await FirebaseMessaging.instance.getToken();
-        print('FCM Token-----------------------------------: $token');
-      errorLog((await FirebaseMessaging.instance.getToken()).toString());
-
       final args = ModalRoute.of(context)!.settings.arguments;
-      print('arguments--> $args ${args.runtimeType}');
+     errorLog('arguments-- 2> $args ${args.runtimeType}');
       if (args != null && args is String && args.isNotEmpty) {
         setState(() {
           fromNewNotification = true;
@@ -147,6 +143,7 @@ class _NotificationPageState extends State<NotificationPage> {
 class NotificationPageFirstMessageDialog extends StatelessWidget {
   const NotificationPageFirstMessageDialog({super.key, required this.data});
   final Map<String, dynamic> data;
+
   @override
   Widget build(BuildContext context) {
     var notification = FCMNotificationData.fromJson(data);

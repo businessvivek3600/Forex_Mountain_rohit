@@ -61,6 +61,7 @@ String token = "";
         msg: 'Please fill all required fields.',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red
       );
       return;
     }
@@ -74,6 +75,7 @@ String token = "";
         msg: 'Please upload a payment slip.',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red
       );
       return;
     }
@@ -90,7 +92,7 @@ String token = "";
       request.fields['payment_type'] = paymentType;
       request.fields['login_token'] = token;
       request.headers['Content-Type'] = 'application/json';
-      request.fields['X-API-KEY'] = AppConstants.authorizationToken;
+      request.headers['X-API-KEY'] = AppConstants.authorizationToken;
 
       var multipartFile = http.MultipartFile(
         'slip',

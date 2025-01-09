@@ -318,6 +318,7 @@ class AuthProvider with ChangeNotifier {
             await APICacheManager().addCacheData(cacheModel);
 
             await fcmSubscriptionRepo.subscribeToTopic(SPConstants.topic_all);
+            await fcmSubscriptionRepo.subscribeToTopic(SPConstants.topic_forex);
             await fcmSubscriptionRepo.subscribeToTopic(SPConstants.topic_event);
 
             if (status && loginToken != null && loginToken.isNotEmpty) {

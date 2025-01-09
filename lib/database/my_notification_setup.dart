@@ -82,7 +82,7 @@ bool _notificationsEnabled = false;
 late InitializationSettings initializationSettings;
 
 class MyNotification {
-  static const String tag = 'MyNotification';
+  static const String tag = 'Notification';
   Future<void> initialize() async {
     final FirebaseMessaging messaging = FirebaseMessaging.instance;
     await FirebaseMessaging.instance
@@ -179,6 +179,7 @@ class MyNotification {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _clearAppNotificationBadge();
+      infoLog('Notification Received: ${message.data}', tag);
       _handleNotificationData(message, true, fromBg: false);
     });
     FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
@@ -374,6 +375,7 @@ Future<void> _handleNotificationData(RemoteMessage message, bool data,
     _body = parseHtmlString(message.data['body'] ?? '');
     payload = jsonEncode(message.data);
     _image = _getImageFromData(message);
+    infoLog('Data-based notification received with payload: $payload', MyNotification.tag);
   } else {
     _title = parseHtmlString(message.notification?.title ?? '');
     _body = parseHtmlString(message.notification?.body ?? '');
@@ -382,6 +384,7 @@ Future<void> _handleNotificationData(RemoteMessage message, bool data,
     } else if (Platform.isIOS) {
       _image = _getImageIosImage(message);
     }
+    infoLog('Notification-based notification received with title: $_title, body: $_body', MyNotification.tag);
   }
 
   ///
@@ -404,12 +407,13 @@ Future<void> _handleNotificationData(RemoteMessage message, bool data,
     // if ((topic == '' || topic == topics.testing.name)) {
     /// 3. store if notification user is not blank
     if (notificationUser != '' && topic == 'none') {
+      infoLog('Handling notification for user $notificationUser with topic $topic', MyNotification.tag);
       /// store
       ///check for type
       infoLog(
           'notification type is $type  and it has match with ${_matchType(type, notificationType.inbox)}',
           MyNotification.tag);
-      if (!_matchType(type, notificationType.inbox)) {
+      if (type == 'Notification' || !_matchType(type, notificationType.inbox)) {
         ///store notifications
         _saveNotification(_title, notificationUser, localUser,
             data: message.data);
@@ -446,10 +450,9 @@ Future<void> _handleNotificationData(RemoteMessage message, bool data,
           MyNotification.tag);
 
       /// 8. store notification if not match
-      if (!_matchType(type, notificationType.ytLive) &&
-          !_matchTopic(topic, topics.forex_signal)) {
+
         _saveNotification(_title, user, user, data: message.data);
-      }
+
       if (!fromBg) {
         if (_matchTopic(topic, topics.forex_signal)) {
           if (isUserLoggedIn) {
@@ -558,6 +561,7 @@ void _addToNotificationStream() async => sl
 
 Future<int> _storeNotification(String? title, String? userId,
     {dynamic data}) async {
+  errorLog('📦 Storing Notification: title=$title, userId=$userId, data=$data');
   return await sl
       .get<NotificationDatabaseHelper>()
       .createItem(title, userId, additional: data);
@@ -617,7 +621,7 @@ Future<void> _showTextNotification(
           presentAlert: true,
           presentBadge: true,
           presentSound: true);
-  NotificationDetails platformChannelSpecifics = NotificationDetails(
+  NotificationDetails platformChannelSpecifics = const NotificationDetails(
     android: androidPlatformChannelSpecifics,
     // iOS: iOSPlatformChannelSpecifics,
     // macOS: iOSPlatformChannelSpecifics,
