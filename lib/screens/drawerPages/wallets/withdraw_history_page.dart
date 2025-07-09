@@ -71,7 +71,7 @@ class _WithdrawRequestHistoryPageState
           elevation: 5,
           backgroundColor: mainColor,
           onPressed: _addNewRequest,
-          icon: Icon(Icons.add),
+          icon: const Icon(Icons.add),
           label: capText('Request', context),
         ),
         body: Container(
@@ -82,7 +82,7 @@ class _WithdrawRequestHistoryPageState
                 image: userAppBgImageProvider(context), fit: BoxFit.cover),
           ),
           child: provider.loadingWithdrawRequestHistory
-              ? Center(child: CircularProgressIndicator(color: Colors.white))
+              ? const Center(child: CircularProgressIndicator(color: Colors.white))
               : LoadMoreContainer(
                   finishWhen:
                       loadedHistory >= provider.totalWithdrawRequestHistory,
@@ -100,10 +100,10 @@ class _WithdrawRequestHistoryPageState
                                 itemBuilder: (context, index) =>
                                     buildTile(context, item.list[index]),
                                 separatorBuilder: (context, index) =>
-                                    Divider(color: Colors.grey),
+                                    const Divider(color: Colors.grey),
                                 itemCount: item.list.length,
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                               ));
                         });
                   }),
@@ -115,9 +115,9 @@ class _WithdrawRequestHistoryPageState
   Container buildHeader(
       HistoryWithDate<WithdrawRequestHistoryModel> item, BuildContext context) {
     return Container(
-      padding: EdgeInsetsDirectional.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsetsDirectional.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-          color: Color.fromARGB(149, 128, 128, 128),
+          color: const Color.fromARGB(149, 128, 128, 128),
           borderRadius: BorderRadius.circular(0)),
       child: Row(
         children: [
@@ -159,7 +159,7 @@ class _WithdrawRequestHistoryPageState
               color: Colors.white70),
         ],
       ),
-      trailing: Icon(Icons.arrow_forward_ios_rounded,
+      trailing: const Icon(Icons.arrow_forward_ios_rounded,
           size: 15, color: Colors.white70),
       onTap: () => _showDetails(history),
     );
@@ -202,6 +202,6 @@ class _WithdrawRequestHistoryPageState
   }
 
   Future<void> _addNewRequest() async {
-    Get.to(CommissionWithdrawRequestPage(fromHistory: true));
+    Get.to(const CommissionWithdrawRequestPage(fromHistory: true));
   }
 }

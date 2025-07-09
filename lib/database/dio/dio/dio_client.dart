@@ -168,56 +168,49 @@ class DioClient {
   }
 
 
+
   Future<Response> postMultipart(
       String uri, {
         required Map<String, dynamic> data,
         bool addToken = false,
       }) async {
     try {
-      // Prepare form data
+      // Create FormData instance
       FormData formData = FormData();
-      formData.fields.addAll(data.entries.map((e) => MapEntry(e.key, e.value.toString())));
 
+      // Add fields from the data map
+      data.forEach((key, value) {
+        if (value is List<int>) {
+          // Handle file data if necessary
+          formData.files.add(MapEntry(
+            key,
+            MultipartFile.fromBytes(value, filename: '$key.file'),
+          ));
+        } else {
+          // Add other fields as strings
+          formData.fields.add(MapEntry(key, value.toString()));
+        }
+      });
+
+      // Add a token if required
       if (addToken) {
         formData.fields.add(MapEntry('login_token', _userToken ?? ''));
       }
 
       infoLog('Multipart Data', uri, formData.fields.toString());
 
-      // Create MultipartRequest like in multipartRequest
-      var request = http.MultipartRequest('POST', Uri.parse(baseUrl + uri));
-
-      // Add headers from your existing headers
-      request.headers.addAll({
+      // Use Dio for sending the request
+      Dio dio = Dio();
+      dio.options.baseUrl = baseUrl;
+      dio.options.headers = {
         'Content-Type': 'multipart/form-data',
         'x-api-key': AppConstants.authorizationToken,
-      });
+      };
 
-      // If a user token is available, add it to the request fields
-      if (_userToken != null) {
-        request.fields['login_token'] = _userToken!;
-      }
+      // Make the POST request
+      Response response = await dio.post(uri, data: formData);
 
-      // Add form data fields to the request
-      data.forEach((key, value) {
-        request.fields[key] = value.toString();
-      });
-
-      // Send the request
-      var response = await request.send();
-
-      // Convert the streamed response to a full response and return
-      var httpResponse = await http.Response.fromStream(response);
-
-      if (httpResponse.statusCode == 200) {
-        return Response(
-          data: httpResponse.body,
-          statusCode: httpResponse.statusCode,
-          requestOptions: RequestOptions(path: uri),
-        );
-      } else {
-        throw Exception('Failed to upload file with status code: ${httpResponse.statusCode}');
-      }
+      return response;
     } on DioError catch (e) {
       errorLog('DioError', e.message, e.response?.data.toString() ?? '');
       rethrow;

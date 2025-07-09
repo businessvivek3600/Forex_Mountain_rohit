@@ -6,10 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:forex_mountain/test_pod_player.dart';
 import 'package:get/get.dart';
 import 'package:forex_mountain/utils/default_logger.dart';
-import 'package:pod_player/pod_player.dart';
 import '../../utils/deviceid_provider.dart';
 import '/database/functions.dart';
 import '/constants/assets_constants.dart';
@@ -70,6 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  List<String> demoDomains = ['demo.io', 'example.com', 'test.org'];
+  String? selectedDomain;
+
   @override
   void dispose() {
     _userNameController.dispose();
@@ -90,6 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     // logger.e('LoginScreen', tag: 'LoginScreen', error: 'error');
     // checkForUpdate(context);
+    final authProvider = Provider.of<AuthProvider>(context);
     double height = MediaQuery.of(context).size.height;
     return GestureDetector(
       onTap: () => primaryFocus?.unfocus(),
@@ -191,17 +193,17 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-        height10(),
-        if (isLoginDisabled)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.info_outline, color: Colors.amber, size: 15),
-              width5(7),
-              capText('Login process is temporary disabled.', context,
-                  color: Colors.grey[400])
-            ],
-          )
+        // height10(),
+        // if (isLoginDisabled)
+        //   Row(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       const Icon(Icons.info_outline, color: Colors.amber, size: 15),
+        //       width5(7),
+        //       capText('Login process is temporary disabled.', context,
+        //           color: Colors.grey[400])
+        //     ],
+        //   )
       ],
     );
   }
@@ -271,7 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Icon(Icons.arrow_forward_ios_rounded, color: Colors.white))),
       action: (controller) async {
         String? token = await FirebaseMessaging.instance.getToken();
-        print('FCM Token-----------------------------------: $token');
+       infoLog('FCM Token-----------------------------------: $token');
 
 
         if (_formKey.currentState?.validate() ?? false) {
@@ -351,6 +353,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.white54,
                 fontWeight: FontWeight.bold),
             height20(height * 0.05),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: DropdownButtonFormField<String>(
+                value: authProvider.selectedDomain != null
+                    ? authProvider.domainMap[authProvider.selectedDomain!]
+                    : null,
+                items: authProvider.domainList.map((domainValue) {
+                  return DropdownMenuItem<String>(
+                    value: domainValue,
+                    child: Text(domainValue),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    authProvider.updateSelectedDomain(value); // Stores the key
+                  }
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Select Domain',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
+                dropdownColor: Colors.black,
+                style: const TextStyle(color: Colors.white),
+                iconEnabledColor: Colors.white,
+              ),
+
+            ),
+            height10(),
             Row(
               children: <Widget>[
                 Expanded(
@@ -463,8 +494,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final deviceIdProvider = DeviceIdProvider();
     String? deviceId = await deviceIdProvider.getDeviceId();
     String? token = await FirebaseMessaging.instance.getToken();
-    print("Device ID----------------********------------------: $token");
-
+    infoLog('FCM Token-----------------------------------: $token');
+    final authProvider = sl.get<AuthProvider>();
     if (_formKey.currentState?.validate() ?? false) {
       //--- trigger Password Save
       TextInput.finishAutofillContext();
@@ -475,7 +506,8 @@ class _LoginScreenState extends State<LoginScreen> {
               username: _userNameController.text,
               password: _passwordController.text,
             device_id: token.toString() ?? '',
-            device_name: token.toString() ?? ''
+            device_name: token.toString() ?? '',
+          user_from: authProvider.selectedDomain,
             ))
             .then((value) {
           if (value) {

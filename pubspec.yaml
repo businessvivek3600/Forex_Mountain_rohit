@@ -120,6 +120,7 @@ dependencies:
   android_id: ^0.4.0
   file_picker: ^8.1.6
   image_picker: ^1.1.2
+  modal_progress_hud_nsn: ^0.5.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -26,6 +26,7 @@ class SettingsRepo {
   //new features notification
   Future<void> enableNewFeatures() async =>
       await fcmSubscriptionRepo.subscribeToTopic(SPConstants.topic_testing);
+  // Future<void> newTopic() async => await fcmSubscriptionRepo.
   Future<void> disableNewFeatures() async =>
       await fcmSubscriptionRepo.unSubscribeToTopic(SPConstants.topic_testing);
   bool get getNewFeaturesValue =>

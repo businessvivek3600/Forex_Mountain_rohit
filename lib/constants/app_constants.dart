@@ -204,6 +204,7 @@ class SPConstants {
   static const String topic_all = 'subscribe_to_all';
   static const String topic_event = 'subscribe_to_event';
   static const String topic_testing = 'subscribe_to_testing';
+  static const String topic_forex = 'forex_signal';
 
   static const String fcmWebKey =
       'AAAA1zQKpYE:APA91bHID4fhyPM-OQ9FLbjh00jT9M9IMeO9PPkaYIPlfKwv0ttgZiiMcYPQFGJpjlMtZUR_g8FCc2rmNmxmbXXwyxSDaGgSi4eM7AYpDKC9OLTkebXdCdV7dZALR-xdxFad3u5sPC7G';

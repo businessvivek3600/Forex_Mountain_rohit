@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forex_mountain/utils/default_logger.dart';
 import '/constants/app_constants.dart';
 import '/database/my_notification_setup.dart';
 import '/providers/auth_provider.dart';
@@ -16,12 +17,13 @@ class NotificationDatabaseHelper {
     try {
       database = await sql.openDatabase('$dbName.db', version: 1,
           onCreate: (sql.Database database, int version) async {
-        await createTables(database).then((value) => print(
-            '😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍 Notification DatabaseHelper created 😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍'));
+        await createTables(database).then((value) => infoLog(
+            '😍 Database created: $dbName.db, Table: $tableName'));
       });
+      infoLog('🎉 Database opened successfully: $dbName.db');
     } catch (e) {
-      print(
-          '**************************** Notification DatabaseHelper could not created ***************************');
+      errorLog(
+          '❌ Notification DatabaseHelper could not created❌');
     }
   }
 
@@ -33,15 +35,18 @@ class NotificationDatabaseHelper {
   }
 
   Future<void> createTables(sql.Database database) async {
-    await database.execute(
-        """CREATE TABLE $tableName(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        title TEXT,
-        userId TEXT,
-        isRead INTEGER,
-        data TEXT,
-        createdAt TEXT,
-        updatedAt TEXT)""");
+    final createTableQuery = """CREATE TABLE $tableName(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    title TEXT,
+    userId TEXT,
+    isRead INTEGER,
+    data TEXT,
+    createdAt TEXT,
+    updatedAt TEXT)""";
+    await database.execute(createTableQuery);
+    infoLog('🛠️ Table created with query: $createTableQuery');
   }
+
 
   //create new item
   Future<int> createItem(String? title, String? userId,
@@ -54,9 +59,10 @@ class NotificationDatabaseHelper {
       'createdAt': DateTime.now().toIso8601String(),
       'updatedAt': DateTime.now().toIso8601String()
     };
+    infoLog('📝 Inserting data into $tableName: $data');
     final id = await database.insert(tableName, data,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
-    print('notification created in db with id $id');
+    infoLog('✅notification created in db with id $id');
     return id;
   }
 
@@ -69,16 +75,18 @@ class NotificationDatabaseHelper {
       where: 'userId IN(?,?,?,?)',
       whereArgs: isLoggedIn
           ? [
-              '${(await sl.get<AuthRepo>().getUserID()).toLowerCase()}',
+              ((await sl.get<AuthRepo>().getUserID()).toLowerCase()),
               'none',
-              '${topics.subscribe_to_all.name}',
-              '${topics.subscribe_to_testing.name}'
+              (topics.subscribe_to_all.name),
+              (topics.subscribe_to_testing.name),
+                // (topics.forex_signal)
             ]
           : [
               'none',
-              '${topics.subscribe_to_all.name}',
-              '${topics.subscribe_to_testing.name}',
-              '${topics.platinum.name}',
+              (topics.subscribe_to_all.name),
+              (topics.subscribe_to_testing.name),
+              (topics.platinum.name),
+              // (topics.forex_signal)
             ],
     ))
         .reversed

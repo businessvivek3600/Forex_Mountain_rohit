@@ -42,29 +42,12 @@ class _NotificationPageState extends State<NotificationPage> {
     sl.get<NotificationProvider>().init();
     FlutterAppBadger.removeBadge();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      String? token = await FirebaseMessaging.instance.getToken();
-        print('FCM Token-----------------------------------: $token');
-      errorLog((await FirebaseMessaging.instance.getToken()).toString());
-
       final args = ModalRoute.of(context)!.settings.arguments;
-      print('arguments--> $args ${args.runtimeType}');
+     errorLog('arguments-- 2> $args ${args.runtimeType}');
       if (args != null && args is String && args.isNotEmpty) {
         setState(() {
           fromNewNotification = true;
         });
-        /*  showDialog<void>(
-          context: context,
-          barrierColor: Colors.transparent,
-          barrierDismissible: true,
-          builder: (BuildContext dialogContext) {
-            return NotificationPageFirstMessageDialog(data: jsonDecode(args));
-          },
-        );
-        sl.get<NotificationProvider>().markRead(
-            await (sl.get<NotificationProvider>().notifications.stream.first)
-                .then((value) => value.first['id']));
-
-       */
       }
     });
   }
@@ -76,36 +59,11 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: AppBar(
         title: titleLargeText('Notifications', context),
         shadowColor: Colors.white,
-        actions: const [
-          // ElevatedButton(
-          //     onPressed: () {
-          //       showDialog<void>(
-          //         context: context,
-          //         barrierColor: Colors.transparent,
-          //         barrierDismissible: true,
-          //         builder: (BuildContext dialogContext) {
-          //           return NotificationPageFirstMessageDialog(
-          //             data: jsonDecode(ModalRoute.of(context)!
-          //                 .settings
-          //                 .arguments
-          //                 .toString()),
-          //           );
-          //         },
-          //       );
-          //     },
-          //     child: Text('Test')),
-        ],
+
       ),
       body: Container(
         height: double.maxFinite,
         width: double.maxFinite,
-        // decoration: BoxDecoration(
-        //   image: DecorationImage(
-        //     image: userAppBgImageProvider(context),
-        //     fit: BoxFit.cover,
-        //     opacity: 0.5,
-        //   ),
-        // ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -136,16 +94,6 @@ class _NotificationPageState extends State<NotificationPage> {
                 },
               ),
             ),
-            // ElevatedButton(
-            //     onPressed: () async {
-            //       await FirebaseMessaging.instance.subscribeToTopic('monthly');
-            //     },
-            //     child: Text('Subscribe')),
-            // Center(
-            //   child: bodyLargeText(
-            //       (ModalRoute.of(context)!.settings.arguments).toString(),
-            //       context),
-            // ),
           ],
         ),
       ),
@@ -171,23 +119,19 @@ class _NotificationPageState extends State<NotificationPage> {
               Get.back();
               Get.back();
             },
-            // onPressed: () => forex_mountain
-            //     .navigatorKey.currentState
-            //     ?.pushNamedAndRemoveUntil(
-            //         MainPage.routeName, (r) => false),
             child: bodyLargeText('Go to DashBoard', context))
       ],
     );
   }
 
   ListView buildList(AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-    // print(snapshot.data?.first);
-
     return ListView.builder(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         itemCount: snapshot.data!.length,
         itemBuilder: (context, index) {
+          infoLog("${snapshot.data![index]}");
+          infoLog("_____________________________________");
           var notification = snapshot.data![index];
           return NotificationPageTileWidget(
               notification: notification,
@@ -199,6 +143,7 @@ class _NotificationPageState extends State<NotificationPage> {
 class NotificationPageFirstMessageDialog extends StatelessWidget {
   const NotificationPageFirstMessageDialog({super.key, required this.data});
   final Map<String, dynamic> data;
+
   @override
   Widget build(BuildContext context) {
     var notification = FCMNotificationData.fromJson(data);
@@ -511,6 +456,7 @@ class _NotificationPageTileWidgetState
       expanded = widget.expanded;
       () => sl.get<NotificationProvider>().markRead(widget.notification['id']);
     });
+    print('Notification Data: ${widget.notification}');
   }
 
   @override
@@ -529,9 +475,6 @@ class _NotificationPageTileWidgetState
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              // color: widget.notification['isRead'] != 0
-              //     ? Colors.white10
-              //     : Colors.white24,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -608,17 +551,6 @@ class _NotificationPageTileWidgetState
                                   stalePeriod: const Duration(days: 7),
                                 )),
                               ),
-                            // Container(
-                            //   height: 40,
-                            //   width: 80,
-                            //   decoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.circular(5),
-                            //     image: DecorationImage(
-                            //       image: netImageProvider(data.image!),
-                            //       fit: BoxFit.contain,
-                            //     ),
-                            //   ),
-                            // ),
                           ],
                         );
                       }),
@@ -668,7 +600,6 @@ class _NotificationPageTileWidgetState
                                   cacheManager: CacheManager(Config(
                                     "${AppConstants.appName}_notification_${widget.notification['createdAt']}",
                                     stalePeriod: const Duration(days: 7),
-                                    //one week cache period
                                   )),
                                 ),
                               ),
@@ -706,7 +637,6 @@ class _NotificationPageTileWidgetState
                     var data = FCMNotificationData.fromJson(
                         jsonDecode(widget.notification['data']));
                     return capText(
-                        // '${DateFormat().add_yMMMd().add_jms().format(DateTime.parse(widget.notification['createdAt']))}',
                         '${DateFormat().add_yMMMd().format(DateTime.parse(widget.notification['createdAt']))}',
                         context,
                         color: widget.notification['isRead'] != 0

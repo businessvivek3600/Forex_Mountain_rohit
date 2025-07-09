@@ -24,7 +24,7 @@ class DepositRepo {
   }
 
   Future<ApiResponse> putDepositRequest({
-    required Map<String, dynamic> data,
+    required Map<String,dynamic> data,
   }) async {
     try {
       // Using the updated postMultipart method from DioClient
