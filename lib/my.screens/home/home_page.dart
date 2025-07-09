@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:forex_mountain/utils/sizedbox_utils.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../constants/assets_constants.dart';
 import '../../database/functions.dart';
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: mainColor,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.white),
+          icon: const Icon(Iconsax.element_4, color:  Colors.amber),
           onPressed: () {
             // Handle menu button press
           },

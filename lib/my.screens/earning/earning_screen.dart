@@ -21,7 +21,7 @@ class _EarningScreenState extends State<EarningScreen> {
       backgroundColor: mainColor,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.white),
+          icon: const Icon(Iconsax.element_4,color:   Colors.amber),
           onPressed: () {
             // Handle menu button press
           },
