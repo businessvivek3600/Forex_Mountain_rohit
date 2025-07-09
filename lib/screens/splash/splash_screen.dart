@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:get/get.dart';
 import 'package:forex_mountain/database/my_notification_setup.dart';
+import '../../platform_selection.dart';
 import '../../utils/my_logger.dart';
 import '/utils/app_lock_authentication.dart';
 import '/database/repositories/settings_repo.dart';
@@ -60,10 +61,19 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    sl.get<NetworkInfo>().checkConnectivity(context);
-    sl.get<AuthProvider>().getSignUpInitialData();
+    // Delay navigation to CustomSelectionScreen
+    Timer(const Duration(seconds: 2), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PlatformSelectionScreen(),
+        ),
+      );
+    });
+    // sl.get<NetworkInfo>().checkConnectivity(context);
+    // sl.get<AuthProvider>().getSignUpInitialData();
     super.initState();
-    initController();
+    // initController();
   }
 
   void initController() {
