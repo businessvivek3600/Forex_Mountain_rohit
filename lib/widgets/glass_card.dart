@@ -40,12 +40,12 @@ class GlassCard extends StatelessWidget {
         boxShadow: [
           boxShadow ??
               BoxShadow(
-                color: Colors.black.withOpacity(0.15),
+                color: Colors.white.withOpacity(0.05),
                 blurRadius: 12,
                 offset: const Offset(4, 6),
               ),
         ],
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
+        border: Border.all(color: Colors.white.withOpacity(0.5)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
