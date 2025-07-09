@@ -154,7 +154,8 @@ class DashboardRepo {
     } catch (e) {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
     }
-  }
+  } 
+  
   Future<ApiResponse> getStepsHistory(Map<String, dynamic> data) async {
     try {
       Response response = await dioClient.post(AppConstants.getStepHistory,

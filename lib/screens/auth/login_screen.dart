@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       //     child: Text('Play Video')),
                                       height100(height * 0.1),
                                       buildHeader(height, context),
-                                      height100(height * 0.05),
+                                      height100(height * 0.07),
                                       buildForm(height),
                                       height10(),
                                       buildLoginButton(context),
