@@ -53,6 +53,24 @@ class AuthProvider with ChangeNotifier {
   int _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;
 
+  /// Holds the domain key-value pairs from the API (e.g., {"1": "Default", "2": "https://..."})
+  Map<String, String> domainMap = {};
+
+  /// Returns just the list of domain values for UI display
+  List<String> get domainList => domainMap.values.toList();
+
+  /// Holds the currently selected domain
+  String? selectedDomain;
+
+  /// Updates the selected domain
+  void updateSelectedDomain(String value) {
+    // Reverse lookup the key using the selected value
+    selectedDomain = domainMap.entries
+        .firstWhere((entry) => entry.value == value)
+        .key;
+    notifyListeners();
+  }
+
   updateSelectedIndex(int index) {
     _selectedIndex = index;
     notifyListeners();
@@ -182,6 +200,11 @@ class AuthProvider with ChangeNotifier {
       if (apiResponse.response != null &&
           apiResponse.response!.statusCode == 200) {
         map = apiResponse.response!.data;
+        // ✅ Debug: Print full response data
+
+        if (map != null && map['url_list'] != null) {
+          domainMap = Map<String, String>.from(map['url_list']);
+        }
         bool status = false;
         try {
           status = map?["status"];
@@ -297,6 +320,7 @@ class AuthProvider with ChangeNotifier {
       if (apiResponse.response != null && apiResponse.response!.statusCode == 200) {
         print("response ${apiResponse.response!.data}");
         Map map = apiResponse.response!.data;
+
         UserData? _userData;
         String? loginToken;
         String message = '';
