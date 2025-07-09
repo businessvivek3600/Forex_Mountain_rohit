@@ -486,13 +486,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 : lastDate,
                             firstDate: DateTime(1970),
                             lastDate: lastDate);
-                        if (date != null) {
-                          setState(() {
-                            _dobController.text =
-                                DateFormat('yyyy-MM-dd').format(date);
-                          });
-                        }
-                      },
+                        setState(() {
+                          _dobController.text =
+                              DateFormat('yyyy-MM-dd').format(date);
+                        });
+                                            },
                       icon: const Icon(
                         Icons.calendar_month,
                         color: Colors.white70,

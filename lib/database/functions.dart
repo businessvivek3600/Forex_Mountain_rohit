@@ -388,23 +388,17 @@ Future<bool> setupAppRating(int hours) async {
   var dt = DateTime.now();
   var prefs = await SharedPreferences.getInstance();
   String? scheduledDate = prefs.getString(SPConstants.ratingScheduleDate);
-  if (scheduledDate == null) {
-    showRating = false;
-    await prefs.setString(SPConstants.ratingScheduleDate,
-        dt.add(Duration(hours: hours)).toIso8601String());
-    print(
-        'user was not scheduled to rate  ${scheduledDate} show rating $showRating');
-  } else if (DateTime.parse(scheduledDate).isBefore(dt)) {
-    showRating = true;
-    await prefs.setString(SPConstants.ratingScheduleDate,
-        dt.add(Duration(hours: hours)).toIso8601String());
-    print(
-        'user is now mature to rate the app ${scheduledDate} show rating $showRating');
-  } else {
-    showRating = false;
-    print(
-        'user is not mature to rate the app ${scheduledDate} show rating $showRating');
-  }
+  if (DateTime.parse(scheduledDate).isBefore(dt)) {
+  showRating = true;
+  await prefs.setString(SPConstants.ratingScheduleDate,
+      dt.add(Duration(hours: hours)).toIso8601String());
+  print(
+      'user is now mature to rate the app ${scheduledDate} show rating $showRating');
+} else {
+  showRating = false;
+  print(
+      'user is not mature to rate the app ${scheduledDate} show rating $showRating');
+}
   return showRating;
 }
 

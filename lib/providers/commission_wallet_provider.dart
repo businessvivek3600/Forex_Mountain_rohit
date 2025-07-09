@@ -51,8 +51,8 @@ class CommissionWalletProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map?["status"];
-          if (map?['is_logged_in'] != 1) {
+          status = map["status"];
+          if (map['is_logged_in'] != 1) {
             logOut('getCommissionWalletHistory');
           }
         } catch (e) {}
@@ -380,8 +380,8 @@ class CommissionWalletProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map?["status"];
-          if (map?['is_logged_in'] != 1) {
+          status = map["status"];
+          if (map['is_logged_in'] != 1) {
             logOut('getCommissionWalletHistory');
           }
         } catch (e) {}

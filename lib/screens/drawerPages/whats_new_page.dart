@@ -57,7 +57,6 @@ class _WhatsNewPageState extends State<WhatsNewPage> {
 
 class _WhatsNewView extends StatelessWidget {
   const _WhatsNewView({
-    super.key,
     required this.data,
   });
 

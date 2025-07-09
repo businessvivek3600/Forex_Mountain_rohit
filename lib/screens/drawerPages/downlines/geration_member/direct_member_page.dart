@@ -347,9 +347,7 @@ class _DirectMembersPageState extends State<DirectMembersPage> {
 }
 
 class _FilterGenerationMemberDialog extends StatefulWidget {
-  const _FilterGenerationMemberDialog({
-    super.key,
-  });
+  const _FilterGenerationMemberDialog();
 
   @override
   State<_FilterGenerationMemberDialog> createState() =>
@@ -603,7 +601,7 @@ class _FilterGenerationMemberDialogState
 }
 
 class _MemberTile extends StatelessWidget {
-  const _MemberTile({super.key, required this.user});
+  const _MemberTile({required this.user});
 
   final UserData user;
   @override

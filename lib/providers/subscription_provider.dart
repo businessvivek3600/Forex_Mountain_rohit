@@ -69,8 +69,8 @@ class SubscriptionProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map?["status"];
-          if (map?['is_logged_in'] != 1) {
+          status = map["status"];
+          if (map['is_logged_in'] != 1) {
             logOut('getSubscription');
           }
         } catch (e) {}
@@ -83,8 +83,8 @@ class SubscriptionProvider extends ChangeNotifier {
               await APICacheManager().addCacheData(cacheModel);
             } catch (e) {}
             try {
-              if (map?['userData'] != null) {
-                sl.get<AuthProvider>().updateUser(map?['userData']);
+              if (map['userData'] != null) {
+                sl.get<AuthProvider>().updateUser(map['userData']);
               }
             } catch (e) {}
           }
@@ -190,8 +190,8 @@ class SubscriptionProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map?["status"];
-          if (map?['is_logged_in'] != 1) {
+          status = map["status"];
+          if (map['is_logged_in'] != 1) {
             logOut('subscriptionRequestHistory');
           }
         } catch (e) {}

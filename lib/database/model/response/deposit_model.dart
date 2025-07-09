@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 class DepositRequest {
   final bool status;

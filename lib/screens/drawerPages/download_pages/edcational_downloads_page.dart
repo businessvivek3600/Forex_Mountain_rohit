@@ -149,7 +149,7 @@ class _DowanloadsMainPageState extends State<DowanloadsMainPage> {
 }
 
 class _DowloadTileWidget extends StatefulWidget {
-  const _DowloadTileWidget({super.key, required this.file});
+  const _DowloadTileWidget({required this.file});
   final DownloadFilesModel file;
   @override
   State<_DowloadTileWidget> createState() => _DowloadTileWidgetState();

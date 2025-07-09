@@ -1034,7 +1034,6 @@ class Upgrader with WidgetsBindingObserver {
 
 class _DialogWidget extends StatelessWidget {
   _DialogWidget({
-    super.key,
     required this.borderRadius,
     required this.elevation,
     required this.padding,

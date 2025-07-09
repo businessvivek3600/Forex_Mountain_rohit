@@ -735,7 +735,7 @@ class PlayerProvider extends ChangeNotifier {
 */
 
 class _LiveYTPlayer extends StatefulWidget {
-  const _LiveYTPlayer({super.key, required this.videoId, this.data});
+  const _LiveYTPlayer({required this.videoId, this.data});
   final String videoId;
   final bool isLive = true;
   final Map<String, dynamic>? data;

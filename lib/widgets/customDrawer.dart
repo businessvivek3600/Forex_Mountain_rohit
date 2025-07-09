@@ -1229,9 +1229,7 @@ infoLog("Main Page get User Data--------------------------------${authProvider.u
 }
 
 class _MasterClasses extends StatelessWidget {
-  const _MasterClasses({
-    super.key,
-  });
+  const _MasterClasses();
 
   @override
   Widget build(BuildContext context) {
@@ -1337,8 +1335,7 @@ class _MasterClasses extends StatelessWidget {
 
 class _SectionTile extends StatelessWidget {
   const _SectionTile(
-      {super.key,
-      required this.title,
+      {required this.title,
       required this.image,
       required this.onTap,
       this.leading});

@@ -524,7 +524,7 @@ class _TeamViewUserIconWidgetState extends State<TeamViewUserIconWidget>
 }
 
 class _MessageDialog extends StatefulWidget {
-  const _MessageDialog({super.key, required this.user});
+  const _MessageDialog({required this.user});
 
   final TeamDownlineUser user;
   @override

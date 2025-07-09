@@ -41,8 +41,8 @@ class GalleryProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map?["status"];
-          if (map?['is_logged_in'] != 1) {
+          status = map["status"];
+          if (map['is_logged_in'] != 1) {
             logOut('galleryData');
           }
         } catch (e) {}
@@ -101,13 +101,13 @@ class GalleryProvider extends ChangeNotifier {
           map = apiResponse.response!.data;
           bool status = false;
           try {
-            status = map?["status"];
-            if (map?['is_logged_in'] != 1) {
+            status = map["status"];
+            if (map['is_logged_in'] != 1) {
               logOut('galleryData');
             }
           } catch (e) {}
           try {
-            if (status && map != null) {
+            if (status) {
               try {
                 var cacheModel = APICacheDBModel(
                     key: AppConstants.galleryDetail + header,
@@ -166,14 +166,14 @@ class GalleryProvider extends ChangeNotifier {
           map = apiResponse.response!.data;
           bool status = false;
           try {
-            status = map?["status"];
-            infoLog('getVideos status ${map?['is_logged_in']}');
-            if (map?['is_logged_in'] != 1) {
+            status = map["status"];
+            infoLog('getVideos status ${map['is_logged_in']}');
+            if (map['is_logged_in'] != 1) {
               logOut('getVideos');
             }
           } catch (e) {}
           try {
-            if (status && map != null) {
+            if (status) {
               try {
                 var cacheModel = APICacheDBModel(
                     key: AppConstants.getVideos, syncData: jsonEncode(map));
@@ -272,13 +272,13 @@ class GalleryProvider extends ChangeNotifier {
           map = apiResponse.response!.data;
           bool status = false;
           try {
-            status = map?["status"];
-            if (map?['is_logged_in'] != 1) {
+            status = map["status"];
+            if (map['is_logged_in'] != 1) {
               logOut('getImportantDownloads');
             }
           } catch (e) {}
           try {
-            if (status && map != null) {
+            if (status) {
               try {
                 var cacheModel = APICacheDBModel(
                     key: AppConstants.getImportantDownloads,

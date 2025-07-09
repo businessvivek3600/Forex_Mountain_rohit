@@ -152,7 +152,7 @@ class _HoldingTankPageState extends State<HoldingTankPage> {
 }
 
 class _MemberTile extends StatelessWidget {
-  const _MemberTile({super.key, required this.user});
+  const _MemberTile({required this.user});
   final UserData user;
 
   @override
@@ -265,7 +265,7 @@ class _MemberTile extends StatelessWidget {
 }
 
 class _PlaceUserSubmitWidget extends StatefulWidget {
-  const _PlaceUserSubmitWidget({super.key, required this.id, this.onSuccess});
+  const _PlaceUserSubmitWidget({required this.id, this.onSuccess});
   final String id;
   final Function? onSuccess;
 

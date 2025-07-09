@@ -41,8 +41,8 @@ class EventTicketsProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map?["status"];
-          if (map?['is_logged_in'] != 1) {
+          status = map["status"];
+          if (map['is_logged_in'] != 1) {
             logOut('getEventTickets');
           }
         } catch (e) {}
@@ -125,12 +125,12 @@ class EventTicketsProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map?["status"];
-          if (map?['is_logged_in'] != 1) {
+          status = map["status"];
+          if (map['is_logged_in'] != 1) {
             logOut('buyEventTicketsRequest');
           }
         } catch (e) {}
-        if (status && map != null) {
+        if (status) {
           try {
             selectedTicket = EventTickets.fromJson(map['event']);
             notifyListeners();

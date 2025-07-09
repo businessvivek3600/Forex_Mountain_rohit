@@ -216,7 +216,7 @@ class _MatrixAnalyzerPageState extends State<MatrixAnalyzerPage> {
 }
 
 class _MatrixTree extends StatefulWidget {
-  _MatrixTree({super.key, required this.username, required this.onTap});
+  _MatrixTree({required this.username, required this.onTap});
   final String username;
   final Function(MatrixUser user) onTap;
   @override
@@ -524,7 +524,6 @@ class _MatrixTreeState extends State<_MatrixTree> {
 
 class _TeamViewUserIconWidget extends StatefulWidget {
   const _TeamViewUserIconWidget({
-    super.key,
     required this.user,
     required this.loadingNodeId,
     required this.context,

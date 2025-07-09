@@ -51,10 +51,10 @@ class SupportProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map?["status"];
+          status = map["status"];
         } catch (e) {}
         try {
-          if (map?['is_logged_in'] != 1) {
+          if (map['is_logged_in'] != 1) {
             logOut('getTickets');
           }
         } catch (e) {}
@@ -66,7 +66,7 @@ class SupportProvider extends ChangeNotifier {
               await APICacheManager().addCacheData(cacheModel);
             } catch (e) {}
             try {
-              sl.get<AuthProvider>().updateUser(map?["userData"]);
+              sl.get<AuthProvider>().updateUser(map["userData"]);
             } catch (e) {}
           }
         } catch (e) {
@@ -175,10 +175,10 @@ class SupportProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map?["status"];
+          status = map["status"];
         } catch (e) {}
         try {
-          if (map?['is_logged_in'] != 1) {
+          if (map['is_logged_in'] != 1) {
             logOut('getTicketDetail');
           }
         } catch (e) {}
@@ -191,8 +191,8 @@ class SupportProvider extends ChangeNotifier {
               await APICacheManager().addCacheData(cacheModel);
             } catch (e) {}
             try {
-              if (map?['userData'] != null) {
-                sl.get<AuthProvider>().updateUser(map?['userData']);
+              if (map['userData'] != null) {
+                sl.get<AuthProvider>().updateUser(map['userData']);
               }
             } catch (e) {}
           }

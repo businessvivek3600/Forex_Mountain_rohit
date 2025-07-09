@@ -232,7 +232,6 @@ enum _TradeStatus { active, inactive, closed }
 
 class _TradeTile extends StatelessWidget {
   _TradeTile({
-    super.key,
     required this.trade,
   });
   final TradeIdeaModel trade;

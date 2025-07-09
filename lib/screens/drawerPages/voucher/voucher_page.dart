@@ -620,7 +620,6 @@ class _GiftVoucherPageState extends State<GiftVoucherPage>
 
 class _TabBarWidget extends StatefulWidget {
   const _TabBarWidget({
-    super.key,
     required this.sectionHeight,
     required this.provider,
     required this.packages,

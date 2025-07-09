@@ -378,7 +378,7 @@ class _SubscriptionPurchaseDialogIOSState
 
 class _PacksList extends StatefulWidget {
   const _PacksList(
-      {super.key, required this.packages, this.selected, this.onTap});
+      {required this.packages, this.selected, this.onTap});
   final List<SubscriptionPackage> packages;
   final SubscriptionPackage? selected;
   final Function(MapEntry)? onTap;
@@ -1869,7 +1869,7 @@ class _PurchasePrecessSheet extends StatelessWidget {
 
 class _PurchaseDetails extends StatelessWidget {
   const _PurchaseDetails(
-      {super.key, required this.productDetail, required this.purchaseDetails});
+      {required this.productDetail, required this.purchaseDetails});
   final MyProducts productDetail;
   final PurchaseDetails purchaseDetails;
   final Color normalColor = Colors.black87;

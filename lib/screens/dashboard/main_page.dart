@@ -1942,7 +1942,7 @@ class _MainPageState extends State<MainPage>
 }
 
 class _EventsSliderWidget extends StatefulWidget {
-  _EventsSliderWidget({super.key, required this.listBanners});
+  _EventsSliderWidget({required this.listBanners});
   List<BannerModel> listBanners;
 
   @override
@@ -2077,7 +2077,7 @@ class _EventsSliderWidgetState extends State<_EventsSliderWidget> {
 }
 
 class _MainPageAccademicVideoList extends StatelessWidget {
-  const _MainPageAccademicVideoList({super.key});
+  const _MainPageAccademicVideoList();
 
   @override
   Widget build(BuildContext context) {
@@ -2669,9 +2669,7 @@ class UiCategoryTitleContainer extends StatelessWidget {
 }
 
 class _MainPagePlacementIdWidget extends StatefulWidget {
-  const _MainPagePlacementIdWidget({
-    super.key,
-  });
+  const _MainPagePlacementIdWidget();
 
   @override
   State<_MainPagePlacementIdWidget> createState() =>
@@ -2952,7 +2950,6 @@ class _MainPagePlacementIdWidgetState
 
 class _DashBoardCustomerRewardTile extends StatefulWidget {
   const _DashBoardCustomerRewardTile({
-    super.key,
     required this.completed,
     required this.active,
     required this.sumPair,
@@ -3113,8 +3110,7 @@ class _DashBoardCustomerRewardTileState
 
 class _BarChartWidget extends StatefulWidget {
   const _BarChartWidget(
-      {super.key,
-      required this.legs,
+      {required this.legs,
       required this.customerReward,
       required this.color});
   final List<GetActiveLegModel> legs;

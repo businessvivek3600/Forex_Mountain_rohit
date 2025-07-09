@@ -17,7 +17,7 @@ showLoading(
 }
 
 class _DefaultLoadingWidget extends StatelessWidget {
-  const _DefaultLoadingWidget({super.key, required this.width});
+  const _DefaultLoadingWidget({required this.width});
   final double width;
 
   @override

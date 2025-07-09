@@ -104,9 +104,7 @@ class _YoutubePlayerPageNewState extends State<YoutubePlayerPageNew> {
 }
 
 class _buildControls extends StatelessWidget {
-  const _buildControls({
-    super.key,
-  });
+  const _buildControls();
 
   @override
   Widget build(BuildContext context) {

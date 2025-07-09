@@ -453,9 +453,7 @@ class _CashWalletPageState extends State<CashWalletPage> {
 
 class _FundTransferWidget extends StatelessWidget {
   const _FundTransferWidget(
-    this.provider, {
-    super.key,
-  });
+    this.provider);
   final CashWalletProvider provider;
 
   @override
@@ -570,7 +568,6 @@ class _FundTransferWidget extends StatelessWidget {
 
 class _TransferToOtherWidget extends StatefulWidget {
   const _TransferToOtherWidget({
-    super.key,
     required this.currencyIcon,
   });
 
