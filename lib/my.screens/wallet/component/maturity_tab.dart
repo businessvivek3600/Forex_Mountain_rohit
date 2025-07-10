@@ -1,5 +1,6 @@
 // screens/wallet/widget/maturity_tab.dart
 import 'package:flutter/material.dart';
+import 'package:forex_mountain/my.screens/wallet/component/transfer_to_wallet.dart';
 import 'package:forex_mountain/my.screens/wallet/component/withdraw_screen.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -46,7 +47,7 @@ class MaturityTab extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => WithdrawScreen(),));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const WithdrawScreen(),));
                         },
                         icon: const Icon(Iconsax.wallet_check),
                         label: const Text('Withdraw'),
@@ -62,7 +63,10 @@ class MaturityTab extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const TransferToWallet(),));
+
+                        },
                         icon: const Icon(Iconsax.import),
                         label: const Text('Transfer'),
                       ),
