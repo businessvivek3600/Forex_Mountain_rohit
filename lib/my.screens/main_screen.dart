@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:forex_mountain/my.screens/wallet/wallet_screen.dart';
 
 import '../utils/color.dart';
+import 'earning/earning_screen.dart';
 import 'home/home_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -15,8 +17,8 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _screens = [
     const HomePage(),
-    const Center(child: Text('Earnings Screen')),
-    const Center(child: Text('Wallet Screen')),
+    const EarningScreen(),
+    const WalletScreen(),
     const Center(child: Text('Profile Screen')),
   ];
 

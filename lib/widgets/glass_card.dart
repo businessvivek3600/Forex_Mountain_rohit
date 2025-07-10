@@ -9,7 +9,7 @@ class GlassCard extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final double borderRadius;
   final double blurSigma;
-  final List<Color> gradientColors;
+  final List<Color>? gradientColors;
   final BoxShadow? boxShadow;
 
   const GlassCard({
@@ -19,33 +19,34 @@ class GlassCard extends StatelessWidget {
     this.padding = const EdgeInsets.all(16),
     this.borderRadius = 16,
     this.blurSigma = 8,
-    this.gradientColors = const [
-      Color.fromRGBO(255, 255, 255, 0.1),
-      Color.fromRGBO(255, 255, 255, 0.05),
-    ],
+    this.gradientColors,
     this.boxShadow,
   });
 
   @override
   Widget build(BuildContext context) {
+  const  defaultGradient  = [
+    Color.fromRGBO(255, 255, 255, 0.1),
+    Color.fromRGBO(255, 255, 255, 0.05),
+    ];
     return Container(
       margin: margin,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         gradient: LinearGradient(
-          colors: gradientColors,
+          colors: gradientColors ?? defaultGradient,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           boxShadow ??
               BoxShadow(
-                color: Colors.black.withOpacity(0.15),
+                color: Colors.white.withOpacity(0.05),
                 blurRadius: 12,
                 offset: const Offset(4, 6),
               ),
         ],
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
+        border: Border.all(color: Colors.white.withOpacity(0.5)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),

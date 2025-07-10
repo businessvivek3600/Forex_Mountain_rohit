@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:forex_mountain/utils/sizedbox_utils.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../constants/assets_constants.dart';
 import '../../database/functions.dart';
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: mainColor,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.white),
+          icon: const Icon(Iconsax.element_4, color:  Colors.amber),
           onPressed: () {
             // Handle menu button press
           },
@@ -201,10 +202,70 @@ class HomeDashboard extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 16),
+
+          /// ✅ Add the 3 cards shown in the image
+          Column(
+            children: [
+              _buildBalanceCard(context, 'Transaction Wallet', '\$1,600.00'),
+              const SizedBox(height: 12),
+              _buildBalanceCard(context, 'FCT Income', '\$0.00'),
+              const SizedBox(height: 12),
+              _buildBalanceCard(context, 'SIP Income', '\$0.00'),
+            ],
+          ),
         ],
       ),
     );
   }
+  Widget _buildBalanceCard(BuildContext context, String title, String amount) {
+    return GlassCard(
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Center(
+              child: Icon(Icons.account_balance_wallet_rounded, color: Colors.amber, size: 24),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  amount,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: 0.6, // You can adjust this value dynamically
+                    backgroundColor: Colors.white.withOpacity(0.2),
+                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                    minHeight: 4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTeamBuildingReferralLink(
       BuildContext context) {
     return Column(
@@ -249,7 +310,7 @@ class HomeDashboard extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                        onPressed: () async => await Clipboard.setData(ClipboardData(
+                        onPressed: () async => await Clipboard.setData(const ClipboardData(
                             text: "https://my.forexmountains.com/signup/"))
                             .then((_) => Toasts.showFToast(
                             context, 'Link copied to clipboard.',
@@ -277,7 +338,7 @@ class HomeDashboard extends StatelessWidget {
                       sendTelegram(text: 'https://my.forexmountains.com/signup/'),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(7),
-                    child: Container(
+                    child: SizedBox(
                       width: 40,
                       height: 40,
                       child:
