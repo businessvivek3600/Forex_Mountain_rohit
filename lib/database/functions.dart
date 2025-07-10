@@ -388,7 +388,7 @@ Future<bool> setupAppRating(int hours) async {
   var dt = DateTime.now();
   var prefs = await SharedPreferences.getInstance();
   String? scheduledDate = prefs.getString(SPConstants.ratingScheduleDate);
-  if (DateTime.parse(scheduledDate).isBefore(dt)) {
+  if (DateTime.parse(scheduledDate!).isBefore(dt)) {
   showRating = true;
   await prefs.setString(SPConstants.ratingScheduleDate,
       dt.add(Duration(hours: hours)).toIso8601String());

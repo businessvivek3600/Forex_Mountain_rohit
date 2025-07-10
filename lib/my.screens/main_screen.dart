@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forex_mountain/my.screens/profile/profile_page.dart';
 import 'package:forex_mountain/my.screens/wallet/wallet_screen.dart';
 
 import '../utils/color.dart';
@@ -19,7 +20,7 @@ class _MainPageState extends State<MainPage> {
     const HomePage(),
     const EarningScreen(),
     const WalletScreen(),
-    const Center(child: Text('Profile Screen')),
+    const EditProfilePage(),
   ];
 
   @override

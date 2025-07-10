@@ -26,6 +26,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  
+
+
+
   //personal
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -488,7 +492,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             lastDate: lastDate);
                         setState(() {
                           _dobController.text =
-                              DateFormat('yyyy-MM-dd').format(date);
+                              DateFormat('yyyy-MM-dd').format(date!);
                         });
                                             },
                       icon: const Icon(

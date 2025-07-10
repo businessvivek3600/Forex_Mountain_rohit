@@ -443,7 +443,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               onEditingComplete: () {
                                 bool? validate =
                                     emailFormKey.currentState?.validate();
-                                if (validate) {
+                                if (validate!) {
                                   primaryFocus?.nextFocus();
                                 }
                               },
@@ -500,7 +500,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 primaryFocus?.unfocus();
                                 bool? validate =
                                     emailFormKey.currentState?.validate();
-                                if (validate) {
+                                if (validate!) {
                                   bool otpSent =
                                       await provider.getForgotPassEmailOtp(
                                           emailController.text);
@@ -524,7 +524,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               onPressed: () {
                                 bool? validate =
                                     emailFormKey.currentState?.validate();
-                                if (validate) {
+                                if (validate!) {
                                   setState(() {
                                     provider.setOtpSent(true);
                                     _boxControllers.forEach((element) {

@@ -41,7 +41,7 @@ class EventTicketsProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map["status"];
+          status = map!["status"];
           if (map['is_logged_in'] != 1) {
             logOut('getEventTickets');
           }
@@ -125,24 +125,24 @@ class EventTicketsProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map["status"];
+          status = map!["status"];
           if (map['is_logged_in'] != 1) {
             logOut('buyEventTicketsRequest');
           }
         } catch (e) {}
         if (status) {
           try {
-            selectedTicket = EventTickets.fromJson(map['event']);
+            selectedTicket = EventTickets.fromJson(map!['event']);
             notifyListeners();
           } catch (e) {}
           try {
-            if (map['wallet_balance'] != null && map['wallet_balance'] != '') {
+            if (map!['wallet_balance'] != null && map['wallet_balance'] != '') {
               walletBalance = double.parse(map['wallet_balance']);
               notifyListeners();
             }
           } catch (e) {}
           try {
-            if (map['payment_type'] != null) {
+            if (map!['payment_type'] != null) {
               paymentTypes.clear();
               map['payment_type'].entries.toList().forEach(
                   (e) => paymentTypes.addEntries([MapEntry(e.key, e.value)]));

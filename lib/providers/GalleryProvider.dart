@@ -41,7 +41,7 @@ class GalleryProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map["status"];
+          status = map!["status"];
           if (map['is_logged_in'] != 1) {
             logOut('galleryData');
           }
@@ -101,7 +101,7 @@ class GalleryProvider extends ChangeNotifier {
           map = apiResponse.response!.data;
           bool status = false;
           try {
-            status = map["status"];
+            status = map!["status"];
             if (map['is_logged_in'] != 1) {
               logOut('galleryData');
             }
@@ -166,7 +166,7 @@ class GalleryProvider extends ChangeNotifier {
           map = apiResponse.response!.data;
           bool status = false;
           try {
-            status = map["status"];
+            status = map!["status"];
             infoLog('getVideos status ${map['is_logged_in']}');
             if (map['is_logged_in'] != 1) {
               logOut('getVideos');
@@ -272,7 +272,7 @@ class GalleryProvider extends ChangeNotifier {
           map = apiResponse.response!.data;
           bool status = false;
           try {
-            status = map["status"];
+            status = map!["status"];
             if (map['is_logged_in'] != 1) {
               logOut('getImportantDownloads');
             }

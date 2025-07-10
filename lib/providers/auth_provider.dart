@@ -202,7 +202,7 @@ class AuthProvider with ChangeNotifier {
         map = apiResponse.response!.data;
         // ✅ Debug: Print full response data
 
-        if (map['url_list'] != null) {
+        if (map!['url_list'] != null) {
           domainMap = Map<String, String>.from(map['url_list']);
         }
         bool status = false;
@@ -407,7 +407,7 @@ class AuthProvider with ChangeNotifier {
         bool status = false;
         map = apiResponse.response!.data;
         try {
-          status = map["status"];
+          status = map!["status"];
         } catch (e) {}
         try {
           if (status) {
@@ -509,7 +509,7 @@ class AuthProvider with ChangeNotifier {
         userData = _userData;
         loginToken = (await SharedPreferences.getInstance())
             .getString(SPConstants.userToken);
-        authRepo.saveUserToken(loginToken);
+        authRepo.saveUserToken(loginToken!);
         authRepo.saveUser(userData);
       } catch (e) {
         // print('user could not be generated ${_userData?.toJson()} \n $e');
@@ -541,7 +541,7 @@ class AuthProvider with ChangeNotifier {
           apiResponse.response!.statusCode == 200) {
         map = apiResponse.response!.data;
         try {
-          if (map['is_logged_in'] != 1) {
+          if (map!['is_logged_in'] != 1) {
             logOut('commissionWithdrawal');
           }
         } catch (e) {}
