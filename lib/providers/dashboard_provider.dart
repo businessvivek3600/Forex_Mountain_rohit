@@ -200,7 +200,7 @@ class DashBoardProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map["status"];
+          status = map!["status"];
         } catch (e) {}
 
         try {
@@ -213,7 +213,7 @@ class DashBoardProvider extends ChangeNotifier {
             } catch (e) {}
 
             try {
-              sl.get<AuthProvider>().updateUser(map["userData"]);
+              sl.get<AuthProvider>().updateUser(map!["userData"]);
             } catch (e) {}
           }
         } catch (e) {
@@ -508,7 +508,7 @@ class DashBoardProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map["status"];
+          status = map!["status"];
           if (map['is_logged_in'] != 1) {
             logOut('getdashcarddetails');
           }
@@ -645,7 +645,7 @@ class DashBoardProvider extends ChangeNotifier {
         bool status = false;
         map = apiResponse.response!.data;
         try {
-          status = map["status"];
+          status = map!["status"];
         } catch (e) {}
         if (status && incomePage == 0) {
           try {
@@ -724,7 +724,7 @@ class DashBoardProvider extends ChangeNotifier {
         bool status = false;
         map = apiResponse.response!.data;
         try {
-          status = map["status"];
+          status = map!["status"];
           if (map['is_logged_in'] != 1) {
             logOut('getLoginLogs');
           }
@@ -817,7 +817,7 @@ class DashBoardProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         infoLog("---------------------$map");
         try {
-          status = map["status"];
+          status = map!["status"];
           if (map['is_logged_in'] != 1) {
             logOut('getTradeIdea');
           }
@@ -890,7 +890,7 @@ class DashBoardProvider extends ChangeNotifier {
         bool status = false;
         Map? map = apiResponse.response!.data;
         try {
-          status = map["status"];
+          status = map!["status"];
           if (map['is_logged_in'] != 1) {
             logOut('tradeIdeasDetails');
           }
@@ -899,7 +899,7 @@ class DashBoardProvider extends ChangeNotifier {
         }
         if (status) {
           try {
-            if (map['data'] != null) {
+            if (map!['data'] != null) {
               tradeIdeaModel = TradeIdeaModel.fromJson(map['data']);
             } else {
               tradeIdeaModel = TradeIdeaModel(isDeleted: true);

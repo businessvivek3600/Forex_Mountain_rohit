@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
     return  Scaffold(
       backgroundColor: mainColor,
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Iconsax.element_4, color:  Colors.amber),
           onPressed: () {

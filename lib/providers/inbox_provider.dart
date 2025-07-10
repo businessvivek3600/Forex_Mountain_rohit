@@ -45,7 +45,7 @@ class InboxProvider extends ChangeNotifier {
         bool status = false;
         //check for status and logged in value
         try {
-          status = map["status"];
+          status = map!["status"];
           if (map['is_logged_in'] != 1) {
             //logout and clear all data including cache
             logOut('myInbox');

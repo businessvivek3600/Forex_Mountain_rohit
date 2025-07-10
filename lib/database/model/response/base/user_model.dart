@@ -713,4 +713,7 @@ class UserData {
     data['currency_price'] = currency_price;
     return data;
   }
+
 }
+
+

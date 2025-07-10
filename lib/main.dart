@@ -169,7 +169,8 @@ Future<void> _crashlystics() async {
     //     fatal: true,
     //   );
     // }).sendPort);
-  } catch (e) {
+  } catch (e) { 
+    
     errorLog('FirebaseCrashlytics.instance : $e', 'main');
   }
   // FlutterError.onError = (FlutterErrorDetails details) {

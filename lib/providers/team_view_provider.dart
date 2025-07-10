@@ -63,7 +63,7 @@ class TeamViewProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map["status"];
+          status = map!["status"];
           if (map['is_logged_in'] != 1) {
             logOut('getCustomerTeam');
           }
@@ -140,7 +140,7 @@ class TeamViewProvider extends ChangeNotifier {
             apiResponse.response!.statusCode == 200) {
           map = apiResponse.response!.data;
           try {
-            status = map["status"] ?? false;
+            status = map!["status"] ?? false;
             if (map['is_logged_in'] != 1) {
               logOut('sendMessage');
             }
@@ -214,7 +214,7 @@ class TeamViewProvider extends ChangeNotifier {
         bool status = false;
         map = apiResponse.response!.data;
         try {
-          status = map["status"];
+          status = map!["status"];
         } catch (e) {}
         if (status && directMemberPage == 0) {
           try {
@@ -412,7 +412,7 @@ class TeamViewProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map["status"];
+          status = map!["status"];
           if (map['is_logged_in'] != 1) {
             logOut('getLiquidUsers');
           }
@@ -484,7 +484,7 @@ class TeamViewProvider extends ChangeNotifier {
             apiResponse.response!.statusCode == 200) {
           map = apiResponse.response!.data;
           try {
-            status = map["status"] ?? false;
+            status = map!["status"] ?? false;
             if (map['is_logged_in'] != 1) {
               logOut('placeUser');
             }
@@ -543,7 +543,7 @@ class TeamViewProvider extends ChangeNotifier {
         map = apiResponse.response!.data;
         bool status = false;
         try {
-          status = map["status"];
+          status = map!["status"];
           if (map['is_logged_in'] != 1) {
             logOut('getMatrixUsers');
           }

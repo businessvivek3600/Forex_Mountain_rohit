@@ -20,8 +20,9 @@ class _EarningScreenState extends State<EarningScreen> {
     return Scaffold(
       backgroundColor: mainColor,
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Iconsax.element_4,color:   Colors.amber),
+          icon: const Icon(Iconsax.element_4, color: Colors.amber),
           onPressed: () {
             // Handle menu button press
           },
