@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/widgets/glass_card.dart';
+import 'package:forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:forex_mountain/utils/picture_utils.dart'; // For userAppBgImageProvider
 
@@ -34,7 +35,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          
+
           Image(
             image: userAppBgImageProvider(context),
             fit: BoxFit.cover,
@@ -44,9 +45,8 @@ class _ChangePasswordState extends State<ChangePassword> {
       
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
-                child: GlassCard(
-                  borderRadius: 20,
-                  blurSigma: 12,
+                child: TransparentContainer(
+                
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,

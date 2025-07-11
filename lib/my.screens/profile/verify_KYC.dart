@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:forex_mountain/widgets/glass_card.dart';
 import 'package:forex_mountain/utils/picture_utils.dart'; // For userAppBgImageProvider()
@@ -16,7 +17,8 @@ class _VerifyKycState extends State<VerifyKyc> {
 
   String _selectedCountry = 'India';
   String _selectedDocumentType = 'Select';
-  final TextEditingController _documentNumberController = TextEditingController();
+  final TextEditingController _documentNumberController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -56,7 +58,7 @@ class _VerifyKycState extends State<VerifyKyc> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.black,
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         title: const Text("Verify KYC", style: TextStyle(color: Colors.white)),
@@ -74,9 +76,7 @@ class _VerifyKycState extends State<VerifyKyc> {
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              child: GlassCard(
-                borderRadius: 20,
-                blurSigma: 12,
+              child: TransparentContainer(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -99,8 +99,10 @@ class _VerifyKycState extends State<VerifyKyc> {
                       decoration: InputDecoration(
                         labelText: 'Country',
                         labelStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon: const Icon(Icons.public, color: Colors.white),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        prefixIcon:
+                            const Icon(Icons.public, color: Colors.white),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                       style: const TextStyle(color: Colors.white),
                       items: _countries.map((String country) {
@@ -125,8 +127,10 @@ class _VerifyKycState extends State<VerifyKyc> {
                       decoration: InputDecoration(
                         labelText: 'Document Type',
                         labelStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon: const Icon(Icons.description, color: Colors.white),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        prefixIcon:
+                            const Icon(Icons.description, color: Colors.white),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                       style: const TextStyle(color: Colors.white),
                       items: _documentTypes.map((String type) {
@@ -150,8 +154,10 @@ class _VerifyKycState extends State<VerifyKyc> {
                       decoration: InputDecoration(
                         labelText: 'Document Number',
                         labelStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon: const Icon(Icons.badge, color: Colors.white),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        prefixIcon:
+                            const Icon(Icons.badge, color: Colors.white),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white),
                         ),
@@ -164,11 +170,14 @@ class _VerifyKycState extends State<VerifyKyc> {
                       width: double.infinity,
                       child: OutlinedButton.icon(
                         onPressed: _uploadDocument,
-                        icon: const Icon(Icons.file_upload, color: Colors.white),
-                        label: const Text("Upload Document", style: TextStyle(color: Colors.white)),
+                        icon:
+                            const Icon(Icons.file_upload, color: Colors.white),
+                        label: const Text("Upload Document",
+                            style: TextStyle(color: Colors.white)),
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(color: Colors.white70),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ),
@@ -180,10 +189,12 @@ class _VerifyKycState extends State<VerifyKyc> {
                       child: OutlinedButton.icon(
                         onPressed: _uploadSelfie,
                         icon: const Icon(Icons.camera_alt, color: Colors.white),
-                        label: const Text("Upload Selfie", style: TextStyle(color: Colors.white)),
+                        label: const Text("Upload Selfie",
+                            style: TextStyle(color: Colors.white)),
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(color: Colors.white70),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ),
@@ -194,7 +205,10 @@ class _VerifyKycState extends State<VerifyKyc> {
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         onPressed: _submitKyc,
-                        icon: const Icon(Iconsax.verify),
+                        icon: const Icon(
+                          Iconsax.verify,
+                          color: Colors.amber,
+                        ),
                         label: const Text("Submit"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white.withOpacity(0.2),
@@ -202,11 +216,11 @@ class _VerifyKycState extends State<VerifyKyc> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
-                            side: const BorderSide(color: Colors.white70),
+                            side: const BorderSide(color: Colors.amber),
                           ),
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
