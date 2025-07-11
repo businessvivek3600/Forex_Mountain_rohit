@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:forex_mountain/my.screens/profile/change_password.dart';
 import 'package:forex_mountain/my.screens/profile/receiving_details.dart';
@@ -60,7 +61,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               child: Column(
                 children: [
                   const SizedBox(height: 16),
-                  GlassCard(
+                  TransparentContainer(
                     child: Column(
                       children: [
                         buildTextField("Firstname*", firstNameController),

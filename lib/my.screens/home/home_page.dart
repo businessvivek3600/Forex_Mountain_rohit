@@ -34,30 +34,29 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: mainColor,
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Iconsax.element_4, color:  Colors.amber),
+          icon: const Icon(Iconsax.element_4, color: Colors.amber),
           onPressed: () {
             // Handle menu button press
           },
         ),
-        title:   bodyLargeText('DASHBOARD', context,fontSize: 20),
+        title: bodyLargeText('DASHBOARD', context, fontSize: 20),
         backgroundColor: Colors.black,
         elevation: 0,
       ),
-      body:Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: userAppBgImageProvider(context),
-                fit: BoxFit.cover,
-              ),
-            ),
-
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: userAppBgImageProvider(context),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: const SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -138,7 +137,8 @@ class HomeDashboard extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: 0.7,
                         backgroundColor: Colors.white.withOpacity(0.15),
-                        valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor:
+                            const AlwaysStoppedAnimation<Color>(Colors.white),
                         minHeight: 4,
                       ),
                     ),
@@ -157,12 +157,18 @@ class HomeDashboard extends StatelessWidget {
               children: [
                 const Text(
                   'Lifetime Earnings',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
                 const SizedBox(height: 8),
                 const Text(
                   '\$0.00',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
                 const SizedBox(height: 16),
                 Center(
@@ -219,6 +225,7 @@ class HomeDashboard extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildBalanceCard(BuildContext context, String title, String amount) {
     return GlassCard(
       padding: const EdgeInsets.all(12),
@@ -232,7 +239,8 @@ class HomeDashboard extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Center(
-              child: Icon(Icons.account_balance_wallet_rounded, color: Colors.amber, size: 24),
+              child: Icon(Icons.account_balance_wallet_rounded,
+                  color: Colors.amber, size: 24),
             ),
           ),
           const SizedBox(width: 12),
@@ -247,7 +255,10 @@ class HomeDashboard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   amount,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
                 const SizedBox(height: 8),
                 ClipRRect(
@@ -255,7 +266,8 @@ class HomeDashboard extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: 0.6, // You can adjust this value dynamically
                     backgroundColor: Colors.white.withOpacity(0.2),
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(Colors.white),
                     minHeight: 4,
                   ),
                 ),
@@ -267,8 +279,7 @@ class HomeDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildTeamBuildingReferralLink(
-      BuildContext context) {
+  Widget _buildTeamBuildingReferralLink(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,8 +289,7 @@ class HomeDashboard extends StatelessWidget {
                 child: bodyLargeText('Share your referral link', context)),
             width5(),
             GestureDetector(
-                onTap: () => Share.share(createDeepLink(
-                    sponsor: "01061978")),
+                onTap: () => Share.share(createDeepLink(sponsor: "01061978")),
                 child: SizedBox(
                     width: 30,
                     height: 30,
@@ -302,7 +312,7 @@ class HomeDashboard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: capText(
-                         "https://my.forexmountains.com/signup/",
+                          "https://my.forexmountains.com/signup/",
                           context,
                           textAlign: TextAlign.start,
                           overflow: TextOverflow.ellipsis,
@@ -311,12 +321,14 @@ class HomeDashboard extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                        onPressed: () async => await Clipboard.setData(const ClipboardData(
-                            text: "https://my.forexmountains.com/signup/"))
+                        onPressed: () async => await Clipboard.setData(
+                                const ClipboardData(
+                                    text:
+                                        "https://my.forexmountains.com/signup/"))
                             .then((_) => Toasts.showFToast(
-                            context, 'Link copied to clipboard.',
-                            icon: Icons.copy,
-                            bgColor: appLogoColor.withOpacity(0.9))),
+                                context, 'Link copied to clipboard.',
+                                icon: Icons.copy,
+                                bgColor: appLogoColor.withOpacity(0.9))),
                         icon: const Icon(Icons.copy,
                             color: Colors.white, size: 15),
                       )
@@ -326,8 +338,8 @@ class HomeDashboard extends StatelessWidget {
               ),
               width10(),
               GestureDetector(
-                  onTap:  () =>
-                      sendWhatsapp(text: "https://my.forexmountains.com/signup/"),
+                  onTap: () => sendWhatsapp(
+                      text: "https://my.forexmountains.com/signup/"),
                   child: SizedBox(
                     width: 40,
                     height: 40,
@@ -335,15 +347,15 @@ class HomeDashboard extends StatelessWidget {
                   )),
               width10(),
               GestureDetector(
-                  onTap:  () =>
-                      sendTelegram(text: 'https://my.forexmountains.com/signup/'),
+                  onTap: () => sendTelegram(
+                      text: 'https://my.forexmountains.com/signup/'),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(7),
                     child: SizedBox(
                       width: 40,
                       height: 40,
                       child:
-                      assetSvg(Assets.telegramColored, fit: BoxFit.cover),
+                          assetSvg(Assets.telegramColored, fit: BoxFit.cover),
                     ),
                   )),
             ],
