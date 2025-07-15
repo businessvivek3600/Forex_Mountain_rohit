@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../utils/text.dart';
+
 class TreeViewPage extends StatefulWidget {
   const TreeViewPage({super.key});
 
@@ -49,9 +51,15 @@ class _TreeViewPageState extends State<TreeViewPage> {
     const nodeWidth = 100.0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1C1C1E),
-      body: Center(
-       child:  InteractiveViewer(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: bodyLargeText('My Generation Tree View', context, fontSize: 20),
+        elevation: 0,
+      ),
+      body: SafeArea(
+          child:
+   InteractiveViewer(
           boundaryMargin: EdgeInsets.all(0.0),
           minScale: 0.2,
           maxScale: 3.0,
