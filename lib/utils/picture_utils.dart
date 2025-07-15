@@ -54,7 +54,7 @@ ImageProvider assetImageProvider(String path, {BoxFit? fit}) =>
 
 ImageProvider userAppBgImageProvider(BuildContext context) {
   var userData = sl.get<AuthProvider>().userData;
-  String bgImage = '';
+  String bgImage = Assets.appUserBgImage;
   if (userData.anualMembership != null && userData.anualMembership == 1) {
     bgImage = Assets.appPlatinumUserBgImage;
     // print('You are platinum user 😊 ${bgImage}');

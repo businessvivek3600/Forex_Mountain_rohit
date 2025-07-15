@@ -1,20 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:forex_mountain/my.screens/drawer/my.downline/direct_member_screen.dart';
+import 'package:forex_mountain/my.screens/drawer/my.downline/my_team_view_screen.dart';
 import 'package:forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../constants/app_constants.dart';
 import '../../constants/assets_constants.dart';
 import '../../utils/picture_utils.dart';
+import 'my.downline/my_generation_team_view.dart';
 import 'packages/packages.dart';
 
 class CustomAppDrawer extends StatelessWidget {
-  final Function()? onLogout;
-  final Function()? onMyDownline;
-  final Function()? onMyTeam;
-  final Function()? onTreeView;
-
   // Add support callbacks if needed
   final Function()? onSupportChat;
   final Function()? onContactUs;
@@ -25,10 +23,6 @@ class CustomAppDrawer extends StatelessWidget {
 
   const CustomAppDrawer({
     super.key,
-    this.onLogout,
-    this.onMyDownline,
-    this.onMyTeam,
-    this.onTreeView,
     this.onSupportChat,
     this.onContactUs,
     this.userName,
@@ -106,19 +100,38 @@ class CustomAppDrawer extends StatelessWidget {
                       icon: Iconsax.people,
                       submenus: [
                         {
-                          'icon': Iconsax.user,
-                          'title': 'My Downline',
-                          'onTap': onMyDownline,
-                        },
-                        {
                           'icon': Iconsax.people,
                           'title': 'My Team',
-                          'onTap': onMyTeam,
+                          'onTap': () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MyTeamViewScreen(),
+                                ));
+                          },
                         },
+                        {
+                          'icon': Iconsax.user,
+                          'title': 'Direct Member',
+                          'onTap': () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>DirectMemberScreen(),
+                                ));
+                          },
+                        },
+
                         {
                           'icon': Iconsax.hierarchy,
                           'title': 'Generation Tree View',
-                          'onTap': onTreeView,
+                          'onTap': () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>TreeViewPage(),
+                                ));
+                          },
                         },
                       ],
                     ),
@@ -151,7 +164,9 @@ class CustomAppDrawer extends StatelessWidget {
                       CircleAvatar(
                         radius: 22,
                         backgroundImage: NetworkImage(
-                          (userImage?.isNotEmpty ?? false) ? userImage! : '',
+                          (userImage?.isNotEmpty ?? false)
+                              ? userImage!
+                              : 'https://icon-library.com/images/user-image-icon/user-image-icon-9.jpg',
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -181,7 +196,7 @@ class CustomAppDrawer extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTap: onLogout,
+                        onTap: () {},
                         child: const Icon(Icons.logout, color: Colors.white70),
                       ),
                     ],
@@ -255,8 +270,7 @@ class CustomAppDrawer extends StatelessWidget {
             child: ListTile(
               dense: true,
               visualDensity: VisualDensity.compact,
-              leading: Icon(submenu['icon'],
-                  size: 20, color: Colors.white),
+              leading: Icon(submenu['icon'], size: 20, color: Colors.white),
               title: Text(
                 submenu['title'],
                 style: const TextStyle(fontSize: 14, color: Colors.white),
