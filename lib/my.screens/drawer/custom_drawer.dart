@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../constants/app_constants.dart';
@@ -9,152 +10,184 @@ import '../../utils/picture_utils.dart';
 import 'packages/packages.dart';
 
 class CustomAppDrawer extends StatelessWidget {
-  final String? username;
   final Function()? onLogout;
   final Function()? onMyDownline;
   final Function()? onMyTeam;
   final Function()? onTreeView;
 
+  // Add support callbacks if needed
+  final Function()? onSupportChat;
+  final Function()? onContactUs;
+
+  final String? userName;
+  final String? userEmail;
+  final String? userImage;
+
   const CustomAppDrawer({
     super.key,
-    this.username = "FX0000322",
     this.onLogout,
     this.onMyDownline,
     this.onMyTeam,
     this.onTreeView,
+    this.onSupportChat,
+    this.onContactUs,
+    this.userName,
+    this.userEmail,
+    this.userImage,
   });
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Drawer(
       child: Container(
-        color: Colors.blueGrey.shade900,
-        width: size.width * 0.8,
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: userAppBgImageProvider(context),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: SafeArea(
           child: Column(
             children: [
-              // 🔝 Header
               Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Colors.amber,
-                      child: Icon(Iconsax.personalcard, color: Colors.white),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Welcome',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
-                            ),
-                          ),
-                          Text(
-                            username ?? '',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+                child: CachedNetworkImage(
+                  imageUrl: "${AppConstants.packageID}_app_dash_logo",
+                  placeholder: (context, url) => const SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: Colors.white30),
+                  ),
+                  errorWidget: (context, url, error) => SizedBox(
+                      height: 60, child: assetImages(Assets.appWebLogoWhite)),
+                  cacheManager: CacheManager(
+                    Config("${AppConstants.packageID}_app_dash_logo",
+                        stalePeriod: const Duration(days: 30)),
+                  ),
                 ),
               ),
-
-              Divider(color: Colors.white.withOpacity(0.2), thickness: 1),
-
-              // 📄 Drawer Items
+              const Divider(color: Colors.white24, thickness: 1),
               Expanded(
                 child: ListView(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 1),
                   children: [
-                    _buildDrawerItem(
-                      context,
-                      icon: Iconsax.box5,
-                      title: 'Packages',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => PackagesScreen()),
-                        );
-                      },
-                    ),
-
-                    // 🔽 ExpansionTile for Downline
-                    Theme(
-                      data: Theme.of(context).copyWith(
-                        dividerColor: Colors.transparent,
-                        unselectedWidgetColor: Colors.white70,
-                        textTheme: Theme.of(context).textTheme.copyWith(
-                          bodyLarge: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      child: ExpansionTile(
-                        tilePadding: const EdgeInsets.symmetric(horizontal: 20),
-                        collapsedIconColor: Colors.white70,
-                        iconColor: Colors.white,
-                        leading: const Icon(Iconsax.people, color: Colors.white),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: ListTile(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        leading: const Icon(Iconsax.box5,
+                            color: Colors.white, size: 24),
                         title: const Text(
-                          'Downline',
+                          'Packages',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
                           ),
                         ),
-                        childrenPadding: const EdgeInsets.only(left: 40),
-                        children: [
-                          _buildDrawerItem(
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 20),
+                        horizontalTitleGap: 12,
+                        onTap: () {
+                          Navigator.push(
                             context,
-                            icon: Iconsax.user,
-                            title: 'My Downline',
-                            onTap: onMyDownline,
-                            isChild: true,
-                          ),
-                          _buildDrawerItem(
-                            context,
-                            icon: Iconsax.people,
-                            title: 'My Team',
-                            onTap: onMyTeam,
-                            isChild: true,
-                          ),
-                          _buildDrawerItem(
-                            context,
-                            icon: Iconsax.hierarchy,
-                            title: 'Generation Tree View',
-                            onTap: onTreeView,
-                            isChild: true,
-                          ),
-                        ],
+                            MaterialPageRoute(builder: (_) => PackagesScreen()),
+                          );
+                        },
                       ),
                     ),
-
-                    // 🔚 Logout
-                    _buildDrawerItem(
+                    _buildExpansionTile(
                       context,
-                      icon: Iconsax.logout,
-                      title: 'Logout',
-                      onTap: onLogout,
-                      iconColor: Colors.redAccent,
-                      textColor: Colors.redAccent,
+                      title: 'Downline',
+                      icon: Iconsax.people,
+                      submenus: [
+                        {
+                          'icon': Iconsax.user,
+                          'title': 'My Downline',
+                          'onTap': onMyDownline,
+                        },
+                        {
+                          'icon': Iconsax.people,
+                          'title': 'My Team',
+                          'onTap': onMyTeam,
+                        },
+                        {
+                          'icon': Iconsax.hierarchy,
+                          'title': 'Generation Tree View',
+                          'onTap': onTreeView,
+                        },
+                      ],
+                    ),
+                    _buildExpansionTile(
+                      context,
+                      title: 'Support',
+                      icon: Iconsax.message_question,
+                      submenus: [
+                        {
+                          'icon': Iconsax.message,
+                          'title': 'Support Chat',
+                          'onTap': onSupportChat,
+                        },
+                        {
+                          'icon': Iconsax.call,
+                          'title': 'Contact Us',
+                          'onTap': onContactUs,
+                        },
+                      ],
                     ),
                   ],
                 ),
               ),
-
-              // ⬇ Footer
-              buildFooter(size, context),
+              TransparentContainer(
+                child: SizedBox(
+                  width: 220,
+                  height: 40,
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 22,
+                        backgroundImage: NetworkImage(
+                          (userImage?.isNotEmpty ?? false) ? userImage! : '',
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              userName ?? 'User Name',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              userEmail ?? 'email@example.com',
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: onLogout,
+                        child: const Icon(Icons.logout, color: Colors.white70),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -163,17 +196,19 @@ class CustomAppDrawer extends StatelessWidget {
   }
 
   Widget _buildDrawerItem(
-      BuildContext context, {
-        required IconData icon,
-        required String title,
-        Function()? onTap,
-        Color iconColor = Colors.white,
-        Color textColor = Colors.white,
-        bool isChild = false,
-      }) {
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    Function()? onTap,
+    Color iconColor = Colors.white,
+    Color textColor = Colors.white,
+    bool isChild = false,
+  }) {
     return ListTile(
       dense: true,
-      visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
+      visualDensity: const VisualDensity(vertical: -2),
+      contentPadding: EdgeInsets.symmetric(horizontal: isChild ? 8 : 20),
+      horizontalTitleGap: 12,
       leading: Icon(icon, color: iconColor, size: 20),
       title: Text(
         title,
@@ -184,36 +219,52 @@ class CustomAppDrawer extends StatelessWidget {
         ),
       ),
       onTap: onTap,
-      contentPadding: EdgeInsets.symmetric(horizontal: isChild ? 8 : 20),
-      horizontalTitleGap: 12,
     );
   }
 
-  Widget buildFooter(Size size, BuildContext context) {
-    return Container(
-      height: 25 + size.height * 0.07,
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Column(
-        children: [
-          CachedNetworkImage(
-            imageUrl: "${AppConstants.packageID}_app_dash_logo",
-            placeholder: (context, url) => const SizedBox(
-              height: 60,
-              width: 60,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white30,
-              ),
-            ),
-            errorWidget: (context, url, error) =>
-                SizedBox(height: 60, child: assetImages(Assets.appWebLogoWhite)),
-            cacheManager: CacheManager(
-              Config("${AppConstants.packageID}_app_dash_logo",
-                  stalePeriod: const Duration(days: 30)),
-            ),
+  Widget _buildExpansionTile(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required List<Map<String, dynamic>> submenus,
+  }) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        dividerColor: Colors.transparent,
+      ),
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.symmetric(horizontal: 20),
+        collapsedIconColor: Colors.white70,
+        iconColor: const Color.fromARGB(255, 243, 200, 6),
+        leading: Icon(icon, color: Colors.white),
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
           ),
-        ],
+        ),
+        children: submenus.map((submenu) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: ListTile(
+              dense: true,
+              visualDensity: VisualDensity.compact,
+              leading: Icon(submenu['icon'],
+                  size: 20, color: Colors.white),
+              title: Text(
+                submenu['title'],
+                style: const TextStyle(fontSize: 14, color: Colors.white),
+              ),
+              onTap: submenu['onTap'],
+            ),
+          );
+        }).toList(),
       ),
     );
   }
