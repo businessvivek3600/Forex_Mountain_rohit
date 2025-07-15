@@ -19,7 +19,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _screens = [
     const HomePage(),
     const EarningScreen(),
-    const WithdrawScreen(),
+    const WalletScreen(),
     const EditProfilePage(),
   ];
 

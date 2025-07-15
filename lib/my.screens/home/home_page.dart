@@ -1,7 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:forex_mountain/my.screens/drawer/custom_drawer.dart';
 import 'package:forex_mountain/utils/sizedbox_utils.dart';
+import 'package:forex_mountain/widgets/customDrawer.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../constants/assets_constants.dart';
@@ -12,6 +14,8 @@ import '../../utils/picture_utils.dart';
 import '../../utils/text.dart';
 import '../../utils/toasts.dart';
 import '../../widgets/glass_card.dart';
+import '../drawer/packages/packages.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,6 +25,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<_CardData> cardItems = [
     _CardData("Maturity Wallet", Icons.account_balance, "\$0.00"),
     _CardData("Transaction Wallet", Icons.wallet, "\$1,600.00"),
@@ -35,13 +40,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey, // Add the key
       backgroundColor: mainColor,
+      drawer: CustomAppDrawer(),
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Iconsax.element_4, color: Colors.amber),
           onPressed: () {
-            // Handle menu button press
+            _scaffoldKey.currentState?.openDrawer();
           },
         ),
         title: bodyLargeText('DASHBOARD', context, fontSize: 20),

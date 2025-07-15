@@ -106,29 +106,42 @@ class WithdrawRequestScreen extends StatelessWidget {
 
 // User ID
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  const Icon(Iconsax.profile_circle, color: Colors.lightBlueAccent, size: 18),
-                  const SizedBox(width: 10),
-                  Text(
-                    "User ID: ${entry.userId}",
-                    style: const TextStyle(color: Colors.white70, fontSize: 13.5),
-                  ),
-                ],
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Icon(Iconsax.profile_circle, color: Colors.lightBlueAccent, size: 18),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        "User ID: ${entry.userId}",
+                        style: const TextStyle(color: Colors.white70, fontSize: 13.5),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(width: 20),
-
+             Spacer(),
 // Name
-              Row(
-                children: [
-                  const Icon(Iconsax.user, color: Colors.white60, size: 18),
-                  const SizedBox(width: 10),
-                  Text(
-                    "Name: ${entry.name}",
-                    style: const TextStyle(color: Colors.white70, fontSize: 13.5),
-                  ),
-                ],
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Icon(Iconsax.user, color: Colors.white60, size: 18),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        "Name: ${entry.name}",
+                        style: const TextStyle(color: Colors.white70, fontSize: 13.5),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
