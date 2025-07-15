@@ -20,7 +20,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _screens = [
     const HomePage(),
     const EarningScreen(),
-    const WithdrawScreen(),
+    const WalletScreen(),
     const EditProfilePage(),
   ];
 
@@ -43,7 +43,7 @@ class _MainPageState extends State<MainPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: List.generate(4, (index) {
-            final isSelected = _currentIndex == index;
+            final  isSelected = _currentIndex == index;
 
             final icons = [
               [Icons.home_outlined, Icons.home_rounded, 'Home'],
