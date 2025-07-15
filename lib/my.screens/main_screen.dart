@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my.screens/profile/profile_page.dart';
+import 'package:forex_mountain/my.screens/wallet/component/withdraw_screen.dart';
 import 'package:forex_mountain/my.screens/wallet/wallet_screen.dart';
 
 import '../utils/color.dart';
