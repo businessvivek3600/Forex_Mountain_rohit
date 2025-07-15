@@ -4,6 +4,7 @@ import '../../utils/color.dart';
 import '../../utils/picture_utils.dart';
 import '../../utils/text.dart';
 import '../../widgets/glass_card.dart';
+
 import 'component/my_bonus_screen.dart';
 import 'component/payout_screen.dart';
 import 'component/withdraw_request_history.dart';
@@ -88,7 +89,8 @@ class _EarningScreenState extends State<EarningScreen> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 12),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                },
                                 child: const Text('Fund/Request'),
                               ),
                             ),
