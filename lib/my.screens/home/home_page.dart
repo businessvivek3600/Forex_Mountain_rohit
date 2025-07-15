@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey, // Add the key
       backgroundColor: mainColor,
-      drawer: CustomAppDrawer(),
+      drawer: const CustomAppDrawer(),
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         leading: IconButton(

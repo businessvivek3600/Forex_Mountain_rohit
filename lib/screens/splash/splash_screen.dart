@@ -73,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // sl.get<NetworkInfo>().checkConnectivity(context);
     // sl.get<AuthProvider>().getSignUpInitialData();
     super.initState();
-    // initController();
+    initController();
   }
 
   void initController() {
