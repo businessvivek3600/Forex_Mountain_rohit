@@ -11,7 +11,7 @@ import '../../constants/app_constants.dart';
 import '../../constants/assets_constants.dart';
 import '../../screens/drawerPages/support_pages/support_Page.dart';
 import '../../utils/picture_utils.dart';
-import 'my.downline/my_generation_team_view.dart';
+import 'my.downline/my_generation_team-view.dart';
 import 'packages/packages.dart';
 
 class CustomAppDrawer extends StatelessWidget {
@@ -131,7 +131,7 @@ class CustomAppDrawer extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>const TreeViewPage(),
+                                  builder: (context) =>const MyGenerationTeamView(),
                                 ));
                           },
                         },
