@@ -8,6 +8,7 @@ import 'package:iconsax/iconsax.dart';
 
 import '../../constants/app_constants.dart';
 import '../../constants/assets_constants.dart';
+import '../../screens/drawerPages/support_pages/support_Page.dart';
 import '../../utils/picture_utils.dart';
 import 'my.downline/my_generation_team_view.dart';
 import 'packages/packages.dart';
@@ -143,7 +144,13 @@ class CustomAppDrawer extends StatelessWidget {
                         {
                           'icon': Iconsax.message,
                           'title': 'Support Chat',
-                          'onTap': onSupportChat,
+                          'onTap':(){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>SupportPage(),
+                                ));
+                        },
                         },
                         {
                           'icon': Iconsax.call,
