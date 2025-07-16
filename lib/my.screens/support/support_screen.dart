@@ -1,22 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:forex_mountain/my.screens/drawer/my.downline/direct_member_screen.dart';
-import 'package:forex_mountain/my.screens/drawer/my.downline/my_team_view_screen.dart';
+import 'package:forex_mountain/constants/app_constants.dart';
+import 'package:forex_mountain/constants/assets_constants.dart';
+import 'package:forex_mountain/my.screens/drawer/packages/packages.dart';
+import 'package:forex_mountain/screens/drawerPages/support_pages/create_new_ticket.dart';
+import 'package:forex_mountain/screens/drawerPages/support_pages/support_Page.dart';
+import 'package:forex_mountain/utils/picture_utils.dart';
 import 'package:forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../constants/app_constants.dart';
-import '../../constants/assets_constants.dart';
-import '../../screens/drawerPages/support_pages/support_Page.dart';
-import '../../utils/picture_utils.dart';
-import 'my.downline/my_generation_team_view.dart';
-import 'packages/packages.dart';
-
 class CustomAppDrawer extends StatelessWidget {
-  // Add support callbacks if needed
-  final Function()? onSupportChat;
-  final Function()? onContactUs;
+  final Function()? onLogout;
+  final Function()? onMyDownline;
+  final Function()? onMyTeam;
+  final Function()? onTreeView;
+  final Function()? onSupport;
 
   final String? userName;
   final String? userEmail;
@@ -24,8 +23,11 @@ class CustomAppDrawer extends StatelessWidget {
 
   const CustomAppDrawer({
     super.key,
-    this.onSupportChat,
-    this.onContactUs,
+    this.onLogout,
+    this.onMyDownline,
+    this.onMyTeam,
+    this.onTreeView,
+    this.onSupport,
     this.userName,
     this.userEmail,
     this.userImage,
@@ -54,10 +56,14 @@ class CustomAppDrawer extends StatelessWidget {
                     height: 60,
                     width: 60,
                     child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.white30),
+                      strokeWidth: 2,
+                      color: Colors.white30,
+                    ),
                   ),
                   errorWidget: (context, url, error) => SizedBox(
-                      height: 60, child: assetImages(Assets.appWebLogoWhite)),
+                    height: 60,
+                    child: assetImages(Assets.appWebLogoWhite),
+                  ),
                   cacheManager: CacheManager(
                     Config("${AppConstants.packageID}_app_dash_logo",
                         stalePeriod: const Duration(days: 30)),
@@ -90,72 +96,68 @@ class CustomAppDrawer extends StatelessWidget {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => PackagesScreen()),
+                            MaterialPageRoute(
+                              builder: (_) =>  PackagesScreen(),
+                            ),
                           );
                         },
                       ),
                     ),
+
+                    // Downline section
                     _buildExpansionTile(
                       context,
                       title: 'Downline',
                       icon: Iconsax.people,
                       submenus: [
                         {
-                          'icon': Iconsax.people,
-                          'title': 'My Team',
-                          'onTap': () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MyTeamViewScreen(),
-                                ));
-                          },
+                          'icon': Iconsax.user,
+                          'title': 'My Downline',
+                          'onTap': onMyDownline,
                         },
                         {
-                          'icon': Iconsax.user,
-                          'title': 'Direct Member',
-                          'onTap': () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>DirectMemberScreen(),
-                                ));
-                          },
+                          'icon': Iconsax.people,
+                          'title': 'My Team',
+                          'onTap': onMyTeam,
                         },
-
                         {
                           'icon': Iconsax.hierarchy,
                           'title': 'Generation Tree View',
-                          'onTap': () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>TreeViewPage(),
-                                ));
-                          },
+                          'onTap': onTreeView,
                         },
                       ],
                     ),
+
+                    // Support section
                     _buildExpansionTile(
                       context,
                       title: 'Support',
                       icon: Iconsax.message_question,
                       submenus: [
                         {
-                          'icon': Iconsax.message,
-                          'title': 'Support Chat',
-                          'onTap':(){
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>SupportPage(),
-                                ));
-                        },
+                          'icon': Iconsax.message_text,
+                          'title': 'Support Tickets',
+                          'onTap': onSupport ??
+                              () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const SupportPage(),
+                                  ),
+                                );
+                              },
                         },
                         {
-                          'icon': Iconsax.call,
-                          'title': 'Contact Us',
-                          'onTap': onContactUs,
+                          'icon': Iconsax.add_circle,
+                          'title': 'Create Ticket',
+                          'onTap': () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (_) => const CreateSupportTicketPage(),
+                            );
+                          },
                         },
                       ],
                     ),
@@ -171,9 +173,7 @@ class CustomAppDrawer extends StatelessWidget {
                       CircleAvatar(
                         radius: 22,
                         backgroundImage: NetworkImage(
-                          (userImage?.isNotEmpty ?? false)
-                              ? userImage!
-                              : 'https://icon-library.com/images/user-image-icon/user-image-icon-9.jpg',
+                          (userImage?.isNotEmpty ?? false) ? userImage! : '',
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -203,8 +203,9 @@ class CustomAppDrawer extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
-                        child: const Icon(Icons.logout, color: Colors.white70),
+                        onTap: onLogout,
+                        child:
+                            const Icon(Icons.logout, color: Colors.white70),
                       ),
                     ],
                   ),
@@ -214,33 +215,6 @@ class CustomAppDrawer extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildDrawerItem(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    Function()? onTap,
-    Color iconColor = Colors.white,
-    Color textColor = Colors.white,
-    bool isChild = false,
-  }) {
-    return ListTile(
-      dense: true,
-      visualDensity: const VisualDensity(vertical: -2),
-      contentPadding: EdgeInsets.symmetric(horizontal: isChild ? 8 : 20),
-      horizontalTitleGap: 12,
-      leading: Icon(icon, color: iconColor, size: 20),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: textColor,
-          fontWeight: FontWeight.w500,
-          fontSize: 15,
-        ),
-      ),
-      onTap: onTap,
     );
   }
 
