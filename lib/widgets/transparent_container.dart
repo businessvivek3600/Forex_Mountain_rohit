@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 class TransparentContainer extends StatelessWidget {
@@ -8,12 +6,17 @@ class TransparentContainer extends StatelessWidget {
   final EdgeInsetsGeometry margin;
   final VoidCallback? onTap;
 
+  final double borderWidth;       // ✅ Customizable border width
+  final double borderBlurRadius;  // ✅ Customizable blur radius
+
   const TransparentContainer({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
     this.margin = const EdgeInsets.symmetric(vertical: 8),
     this.onTap,
+    this.borderWidth = 1.0,             // Default same as before
+    this.borderBlurRadius = 12.0,       // Default same as before
   });
 
   @override
@@ -35,13 +38,13 @@ class TransparentContainer extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.25),
-              blurRadius: 12,
+              blurRadius: borderBlurRadius, // 👈 Used here
               offset: const Offset(0, 8),
             ),
           ],
           border: Border.all(
             color: Colors.white.withOpacity(0.2),
-            width: 1,
+            width: borderWidth, // 👈 Used here
           ),
         ),
         child: Padding(
