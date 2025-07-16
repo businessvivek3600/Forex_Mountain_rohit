@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/widgets/transparent_container.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:timelines/timelines.dart';
 
 import '../../../utils/picture_utils.dart';
@@ -87,7 +88,7 @@ class _MyTeamViewScreenState extends State<MyTeamViewScreen> {
       return rawDate; // fallback if parsing fails
     }
   }
-
+  int? expandedIndex;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -113,122 +114,137 @@ class _MyTeamViewScreenState extends State<MyTeamViewScreen> {
               itemCount: users.length,
               itemBuilder: (context, index) {
                 final user = users[index];
+                final isExpanded = expandedIndex == index;
 
-                return  TransparentContainer(
+                return TransparentContainer(
+                  borderBlurRadius: 0.9,
+                  borderWidth: 1.5,
+                  onTap: () {
+                    setState(() {
+                      expandedIndex = isExpanded ? null : index;
+                    });
+                  },
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
+                      /// Username & Status
+                      /// Username & Status
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Shimmer.fromColors(
+                            baseColor: Colors.white,
+                            highlightColor: Colors.amber,
+                            child: Text(
+                              user["username"] ?? '',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade600,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Shimmer.fromColors(
+                              baseColor: Colors.white,
+                              highlightColor: Colors.lightGreenAccent,
+                              child: Text(
+                                user["status"] ?? '',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
 
                       const SizedBox(height: 6),
-                      GlassCard(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            /// Username & Status
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  user["username"] ?? '',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold, color: Colors.white),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.green.shade600,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    user["status"] ?? '',
-                                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              user["name"]?.toUpperCase() ?? '',
-                              style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white70),
-                            ),
-                            Row(
-                              children: [
-                                const Icon(Icons.email, size: 16, color: Colors.grey),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: Text(
-                                    user["email"] ?? '',
-                                    style: const TextStyle(
-                                        fontSize: 13, color: Colors.white54),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
+                      Text(
+                        user["name"]?.toUpperCase() ?? '',
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white70),
                       ),
-
-
-                      /// Referrer & Country
-                      Row(
-                        children: [
-                          const Icon(Icons.group, size: 16, color: Colors.grey),
-                          const SizedBox(width: 6),
-                          Text("Ref ID: ${user["referrer"]}",
-                              style: const TextStyle(
-                                  fontSize: 13, color: Colors.white54)),
-                          const Spacer(),
-                          const Icon(Icons.flag, size: 16, color: Colors.grey),
-                          const SizedBox(width: 6),
-                          Text(user["country"] ?? '',
-                              style: const TextStyle(
-                                  fontSize: 13, color: Colors.white54)),
-                        ],
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      /// DOJ
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_today,
-                              size: 16, color: Colors.blue),
-                          const SizedBox(width: 6),
-                          const Text("Joined:",
-                              style:
-                              TextStyle(fontSize: 13, color: Colors.white54)),
-                          const SizedBox(width: 4),
-                          Text(formatDate(user["doj"] ?? ''),
-                              style: const TextStyle(
-                                  fontSize: 13, color: Colors.white54)),
-                        ],
-                      ),
-
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(Icons.access_time_filled,
-                              size: 16, color: Colors.green),
+                          const Icon(Icons.email, size: 16, color: Colors.grey),
                           const SizedBox(width: 6),
-                          const Text("Active on:",
-                              style:
-                              TextStyle(fontSize: 13, color: Colors.white54)),
-                          const SizedBox(width: 4),
-                          Text(formatDate(user["activeDate"] ?? ''),
+                          Expanded(
+                            child: Text(
+                              user["email"] ?? '',
                               style: const TextStyle(
-                                  fontSize: 13, color: Colors.white54)),
+                                  fontSize: 13, color: Colors.white54),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ],
+                      ),
+
+                      /// Additional Details (shown only if expanded)
+                      /// Expanded content with animation
+                      AnimatedSize(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        child: isExpanded
+                            ? Column(
+                          children: [
+                            const SizedBox(height: 10),
+                            Divider(color: Colors.amber.shade800),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                const Icon(Icons.group, size: 16, color: Colors.grey),
+                                const SizedBox(width: 6),
+                                Text("Ref ID: ${user["referrer"]}",
+                                    style: const TextStyle(fontSize: 13, color: Colors.white54)),
+                                const Spacer(),
+                                const Icon(Icons.flag, size: 16, color: Colors.grey),
+                                const SizedBox(width: 6),
+                                Text(user["country"] ?? '',
+                                    style: const TextStyle(fontSize: 13, color: Colors.white54)),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Icon(Icons.calendar_today, size: 16, color: Colors.blue),
+                                const SizedBox(width: 6),
+                                const Text("Joined:",
+                                    style: TextStyle(fontSize: 13, color: Colors.white54)),
+                                const SizedBox(width: 4),
+                                Text(formatDate(user["doj"] ?? ''),
+                                    style: const TextStyle(fontSize: 13, color: Colors.white54)),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                const Icon(Icons.access_time_filled, size: 16, color: Colors.green),
+                                const SizedBox(width: 6),
+                                const Text("Active on:",
+                                    style: TextStyle(fontSize: 13, color: Colors.white54)),
+                                const SizedBox(width: 4),
+                                Text(formatDate(user["activeDate"] ?? ''),
+                                    style: const TextStyle(fontSize: 13, color: Colors.white54)),
+                              ],
+                            ),
+                          ],
+                        )
+                            : const SizedBox.shrink(),
                       ),
                     ],
                   ),
                 );
-
               },
             ),
           ),
