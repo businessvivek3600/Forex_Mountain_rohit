@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:forex_mountain/my.screens/drawer/my.downline/direct_member_screen.dart';
 import 'package:forex_mountain/my.screens/drawer/my.downline/my_team_view_screen.dart';
+import 'package:forex_mountain/my.screens/support/support_screen.dart';
 import 'package:forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -148,7 +149,7 @@ class CustomAppDrawer extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>SupportPage(),
+                                  builder: (context) =>SupportScreen(),
                                 ));
                         },
                         },
