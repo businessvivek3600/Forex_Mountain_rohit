@@ -73,12 +73,14 @@ class _TreeViewPageState extends State<TreeViewPage> {
         child: InteractiveViewer(
         panEnabled: true,
         scaleEnabled: true,
-        minScale: 0.2,
-        maxScale: 2.5,
+          boundaryMargin: EdgeInsets.all(30
+             ),
+          minScale: 0.1,
+          maxScale: 5.6,
         child: Center(
           child: SizedBox(
-            width: childNodes.length * nodeWidth, // Make it fit all child nodes
-            height: 250, // Adjust if needed to fit height
+            width: childNodes.length * nodeWidth,
+            height: 250,
             child: Column(
               children: [
                 const NodeWidget(label: '100001', isMain: true),
