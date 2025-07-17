@@ -1,83 +1,97 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:forex_mountain/my.screens/support/support_ticket.dart';
+import 'package:forex_mountain/my.screens/support/create_support_ticiket.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:forex_mountain/screens/drawerPages/support_pages/create_new_ticket.dart';
-import 'package:forex_mountain/utils/picture_utils.dart';
 
-class SupportScreen extends StatelessWidget {
+import '../../utils/picture_utils.dart';
+import '../../utils/text.dart'; // This should contain your image provider
+
+class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
 
   @override
+  State<SupportScreen> createState() => _SupportScreenState();
+}
+
+class _SupportScreenState extends State<SupportScreen> {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.lightBlueAccent,
-        icon: const Icon(Iconsax.add),
-        label: const Text('Open Ticket'),
-        onPressed: () {
-          // showModalBottomSheet(
-          //   context: context,
-          //   isScrollControlled: true,
-          //   backgroundColor: Colors.transparent,
-          //   builder: (_) => createsupp(),
-          // );
-        },
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: userAppBgImageProvider(context),
+          fit: BoxFit.cover,
+        ),
+
       ),
-      appBar: AppBar(
+      child: Scaffold(
+        extendBody: true,
         backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          'Support',
-          style: TextStyle(color: Colors.white),
+        appBar: AppBar(
+          title: bodyLargeText('Support', context, fontSize: 20),
+          backgroundColor: Colors.black,
+          elevation: 0,
         ),
-        centerTitle: true,
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: userAppBgImageProvider(context),
-            fit: BoxFit.cover,
-          ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const CreateSupportTicket()),
+            );
+          },
+          backgroundColor: Colors.lightBlueAccent,
+          icon: const Icon(Iconsax.add),
+          label: const Text("Open Ticket"),
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.07),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.white12),
-                  ),
+        body: const SafeArea(
+          child: Padding(
+            padding:
+            EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+            child: Column(
+              children: [
+                // Glass card with status counts
+                GlassCard(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildStatusCount("1", "Open", Colors.red),
-                      _buildStatusCount("0", "In Progress", Colors.green),
-                      _buildStatusCount("0", "Answered", Colors.blue),
-                      _buildStatusCount("0", "On Hold", Colors.orange),
-                      _buildStatusCount("0", "Closed", Colors.grey),
+                      _StatusCount(label: "Open", count: "1", color: Colors.red),
+                      _StatusCount(
+                          label: "In Progress", count: "0", color: Colors.green),
+                      _StatusCount(
+                          label: "Answered", count: "0", color: Colors.blue),
+                      _StatusCount(
+                          label: "On Hold", count: "0", color: Colors.orange),
+                      _StatusCount(label: "Closed", count: "0", color: Colors.grey),
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              // You can add a ticket list or content below this
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildStatusCount(String count, String label, Color color) {
+// Reusable widget for status items
+class _StatusCount extends StatelessWidget {
+  final String count;
+  final String label;
+  final Color color;
+
+  const _StatusCount({
+    Key? key,
+    required this.count,
+    required this.label,
+    required this.color,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Text(
@@ -97,6 +111,41 @@ class SupportScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+// Glassmorphic card widget
+class GlassCard extends StatelessWidget {
+  final Widget child;
+  final double blur;
+  final double opacity;
+  final double radius;
+
+  const GlassCard({
+    Key? key,
+    required this.child,
+    this.blur = 15,
+    this.opacity = 0.08,
+    this.radius = 20,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(opacity),
+            borderRadius: BorderRadius.circular(radius),
+            border: Border.all(color: Colors.white.withOpacity(0.15)),
+          ),
+          child: child,
+        ),
+      ),
     );
   }
 }
