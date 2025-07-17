@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../utils/picture_utils.dart';
 import '../../../utils/text.dart';
 
 class TreeViewPage extends StatefulWidget {
@@ -48,62 +49,72 @@ class _TreeViewPageState extends State<TreeViewPage> {
     ];
 
 /// Width reserved for each node
-    const nodeWidth = 100.0;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final double calculatedNodeWidth = (screenWidth - 40) / childNodes.length;
+    final double nodeWidth = calculatedNodeWidth < 60 ? 60 : calculatedNodeWidth;
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: bodyLargeText('My Generation Tree View', context, fontSize: 20),
-        elevation: 0,
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: userAppBgImageProvider(context),
+          fit: BoxFit.cover,
+        ),
       ),
-      body: SafeArea(
-          child:
-   InteractiveViewer(
-          boundaryMargin: EdgeInsets.all(0.0),
-          minScale: 0.2,
-          maxScale: 3.0,
-          scaleEnabled: true,
-          panEnabled: true,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 40),
-              child: Column(
-                children: [
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: bodyLargeText('My Generation Tree View', context, fontSize: 20),
+          elevation: 0,
+        ),
+        body: SafeArea(
+        child: InteractiveViewer(
+        panEnabled: true,
+        scaleEnabled: true,
+          boundaryMargin: EdgeInsets.all(30
+             ),
+          minScale: 0.1,
+          maxScale: 5.6,
+        child: Center(
+          child: SizedBox(
+            width: childNodes.length * nodeWidth,
+            height: 250,
+            child: Column(
+              children: [
+                const NodeWidget(label: '100001', isMain: true),
+                const SizedBox(height: 10),
 
-                  /// Main node
-                  /// A single node at the top, marked as the main node
-                  const NodeWidget(label: '100001', isMain: true),
-                  const SizedBox(height: 20),
-
-                  /// Connector
-                  /// Draws connecting lines between the main node and each child node
-                  CustomPaint(
-                    size: Size(childNodes.length * nodeWidth, 80),
-                    painter: ConnectorPainter(count: childNodes.length, nodeWidth: nodeWidth),
+                // Connector (custom lines)
+                CustomPaint(
+                  size: Size(childNodes.length * nodeWidth, 60), // Less height
+                  painter: ConnectorPainter(
+                    count: childNodes.length,
+                    nodeWidth: nodeWidth,
                   ),
-                  const SizedBox(height: 20),
+                ),
+                const SizedBox(height: 10),
 
-                  /// Children nodes aligned properly
-                  /// Uses a Row to horizontally lay out all child nodes.
-                  Row(
-                    children: List.generate(childNodes.length, (index) {
-                      return SizedBox(
-                        width: nodeWidth,
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: NodeWidget(label: childNodes[index]),
-                        ),
-                      );
-                    }),
-                  )
-                ],
-              ),
+                // Child nodes
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(childNodes.length, (index) {
+                    return SizedBox(
+                      width: nodeWidth,
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: NodeWidget(label: childNodes[index]),
+                      ),
+                    );
+                  }),
+                ),
+              ],
             ),
           ),
-
-        )
+        ),
+      ),
+      ),
 
       ),
     );

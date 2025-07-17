@@ -24,6 +24,7 @@ class _SupportScreenState extends State<SupportScreen> {
           image: userAppBgImageProvider(context),
           fit: BoxFit.cover,
         ),
+
       ),
       child: Scaffold(
         extendBody: true,
