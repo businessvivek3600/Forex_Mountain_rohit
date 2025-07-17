@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/constants/assets_constants.dart';
 
+import 'my.screens/drawer/my_login_screen.dart';
 import 'my.screens/main_screen.dart';
 import 'utils/picture_utils.dart';
 import 'utils/sizedbox_utils.dart';
@@ -48,7 +49,7 @@ class _PlatformSelectionScreenState extends State<PlatformSelectionScreen> {
                 title: "Economic",
                 icon: Icons.attach_money,
                 onPressed: () {
-                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage(),));
+                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginScreen(),));
                 },
               ),
             ],
