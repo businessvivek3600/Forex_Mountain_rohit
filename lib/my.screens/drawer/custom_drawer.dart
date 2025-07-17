@@ -9,16 +9,13 @@ import 'package:iconsax/iconsax.dart';
 
 import '../../constants/app_constants.dart';
 import '../../constants/assets_constants.dart';
-import '../../screens/drawerPages/support_pages/support_Page.dart';
 import '../../utils/picture_utils.dart';
 import 'my.downline/my_generation_team-view.dart';
 import 'packages/packages.dart';
 
 class CustomAppDrawer extends StatelessWidget {
-  // Add support callbacks if needed
   final Function()? onSupportChat;
   final Function()? onContactUs;
-
   final String? userName;
   final String? userEmail;
   final String? userImage;
@@ -58,7 +55,9 @@ class CustomAppDrawer extends StatelessWidget {
                         strokeWidth: 2, color: Colors.white30),
                   ),
                   errorWidget: (context, url, error) => SizedBox(
-                      height: 60, child: assetImages(Assets.appWebLogoWhite)),
+                    height: 60,
+                    child: assetImages(Assets.appWebLogoWhite),
+                  ),
                   cacheManager: CacheManager(
                     Config("${AppConstants.packageID}_app_dash_logo",
                         stalePeriod: const Duration(days: 30)),
@@ -66,149 +65,170 @@ class CustomAppDrawer extends StatelessWidget {
                 ),
               ),
               const Divider(color: Colors.white24, thickness: 1),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(vertical: 1),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: ListTile(
-                        dense: true,
-                        visualDensity: VisualDensity.compact,
-                        leading: const Icon(Iconsax.box5,
-                            color: Colors.white, size: 24),
-                        title: const Text(
-                          'Packages',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                        ),
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 20),
-                        horizontalTitleGap: 12,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => PackagesScreen()),
-                          );
-                        },
-                      ),
-                    ),
-                    _buildExpansionTile(
-                      context,
-                      title: 'Downline',
-                      icon: Iconsax.people,
-                      submenus: [
-                        {
-                          'icon': Iconsax.people,
-                          'title': 'My Team',
-                          'onTap': () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const MyTeamViewScreen(),
-                                ));
-                          },
-                        },
-                        {
-                          'icon': Iconsax.user,
-                          'title': 'Direct Member',
-                          'onTap': () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>const DirectMemberScreen(),
-                                ));
-                          },
-                        },
 
-                        {
-                          'icon': Iconsax.hierarchy,
-                          'title': 'Generation Tree View',
-                          'onTap': () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>const MyGenerationTeamView(),
-                                ));
-                          },
-                        },
-                      ],
-                    ),
-                    _buildExpansionTile(
-                      context,
-                      title: 'Support',
-                      icon: Iconsax.message_question,
-                      submenus: [
-                        {
-                          'icon': Iconsax.message,
-                          'title': 'Support Chat',
-                          'onTap':(){
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>SupportScreen(),
-                                ));
-                        },
-                        },
-                        {
-                          'icon': Iconsax.call,
-                          'title': 'Contact Us',
-                          'onTap': onContactUs,
-                        },
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              TransparentContainer(
-                child: SizedBox(
-                  width: 220,
-                  height: 40,
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundImage: NetworkImage(
-                          (userImage?.isNotEmpty ?? false)
-                              ? userImage!
-                              : 'https://icon-library.com/images/user-image-icon/user-image-icon-9.jpg',
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              userName ?? 'User Name',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+              /// Main content
+              Expanded(
+                child: Column(
+                  children: [
+                    /// Drawer menu list
+                    Expanded(
+                      child: ListView(
+                        padding: const EdgeInsets.symmetric(vertical: 1),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: ListTile(
+                              dense: true,
+                              visualDensity: VisualDensity.compact,
+                              leading: const Icon(Iconsax.box5,
+                                  color: Colors.white, size: 24),
+                              title: const Text(
+                                'Packages',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
                               ),
-                              overflow: TextOverflow.ellipsis,
+                              contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 20),
+                              horizontalTitleGap: 12,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => PackagesScreen()),
+                                );
+                              },
                             ),
-                            Text(
-                              userEmail ?? 'email@example.com',
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 12,
+                          ),
+                          _buildExpansionTile(
+                            context,
+                            title: 'Downline',
+                            icon: Iconsax.people,
+                            submenus: [
+                              {
+                                'icon': Iconsax.people,
+                                'title': 'My Team',
+                                'onTap': () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                        const MyTeamViewScreen()),
+                                  );
+                                },
+                              },
+                              {
+                                'icon': Iconsax.user,
+                                'title': 'Direct Member',
+                                'onTap': () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                        const DirectMemberScreen()),
+                                  );
+                                },
+                              },
+                              {
+                                'icon': Iconsax.hierarchy,
+                                'title': 'Generation Tree View',
+                                'onTap': () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                        const MyGenerationTeamView()),
+                                  );
+                                },
+                              },
+                            ],
+                          ),
+                         Padding(
+                           padding: const EdgeInsets.all(4.0),
+                           child: ListTile(
+                                dense: true,
+                                visualDensity: VisualDensity.compact,
+                                leading: const Icon(Iconsax.message_question,
+                                    color: Colors.white, size: 24),
+                                title: const Text(
+                                  'Support',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20),
+                                horizontalTitleGap: 12,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => SupportScreen()),
+                                  );
+                                },
                               ),
-                              overflow: TextOverflow.ellipsis,
+                         ),
+                      ]
+                      ),
+                    ),
+
+                    /// User Info Footer
+                    TransparentContainer(
+                      child: SizedBox(
+                        width: 220,
+                        height: 40,
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 22,
+                              backgroundImage: NetworkImage(
+                                (userImage?.isNotEmpty ?? false)
+                                    ? userImage!
+                                    : 'https://icon-library.com/images/user-image-icon/user-image-icon-9.jpg',
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    userName ?? 'User Name',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    userEmail ?? 'email@example.com',
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                // TODO: handle logout
+                              },
+                              child: const Icon(Icons.logout,
+                                  color: Colors.white70),
                             ),
                           ],
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: const Icon(Icons.logout, color: Colors.white70),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -218,39 +238,12 @@ class CustomAppDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawerItem(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    Function()? onTap,
-    Color iconColor = Colors.white,
-    Color textColor = Colors.white,
-    bool isChild = false,
-  }) {
-    return ListTile(
-      dense: true,
-      visualDensity: const VisualDensity(vertical: -2),
-      contentPadding: EdgeInsets.symmetric(horizontal: isChild ? 8 : 20),
-      horizontalTitleGap: 12,
-      leading: Icon(icon, color: iconColor, size: 20),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: textColor,
-          fontWeight: FontWeight.w500,
-          fontSize: 15,
-        ),
-      ),
-      onTap: onTap,
-    );
-  }
-
   Widget _buildExpansionTile(
-    BuildContext context, {
-    required String title,
-    required IconData icon,
-    required List<Map<String, dynamic>> submenus,
-  }) {
+      BuildContext context, {
+        required String title,
+        required IconData icon,
+        required List<Map<String, dynamic>> submenus,
+      }) {
     return Theme(
       data: Theme.of(context).copyWith(
         dividerColor: Colors.transparent,
