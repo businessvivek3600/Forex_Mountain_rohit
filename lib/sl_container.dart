@@ -39,6 +39,8 @@ import 'database/databases/firebase_database.dart';
 import 'database/dio/dio/logging_interceptor.dart';
 import 'database/repositories/deposit_repo.dart';
 import 'database/repositories/support_repo.dart';
+import 'my_forex_mountain/my.provider/my_auth_provider.dart';
+import 'my_forex_mountain/repositories/my_auth_repo.dart';
 import 'providers/web_view_provider.dart';
 import 'screens/youtube_video_play_widget copy.dart';
 import 'utils/device_info.dart';
@@ -192,5 +194,16 @@ Future<void> initRepos() async {
   }
   if (!sl.isRegistered<Connectivity>()) {
     sl.registerLazySingleton(() => Connectivity());
+  }
+
+  ///My FOREX MOUNTAIN
+  // Repositories
+  if (!sl.isRegistered<NewAuthRepo>()) {
+    sl.registerLazySingleton(() => NewAuthRepo(dioClient: sl(), sharedPreferences: sl()));
+  }
+
+// Providers
+  if (!sl.isRegistered<NewAuthProvider>()) {
+    sl.registerLazySingleton(() => NewAuthProvider(authRepository: sl()));
   }
 }

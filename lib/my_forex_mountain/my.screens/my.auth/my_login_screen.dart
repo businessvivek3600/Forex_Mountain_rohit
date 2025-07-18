@@ -1,5 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import '../../my.provider/my_auth_provider.dart';
 import '../main_screen.dart';
 
 import 'package:forex_mountain/utils/color.dart';
@@ -17,10 +20,11 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  bool _isLoading = false;
+
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<NewAuthProvider>(context, listen: false);
     return  Scaffold(
         backgroundColor: mainColor,
         body: Center(
@@ -87,14 +91,28 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: () {
-                      setState(() => _isLoading = true);
-                      Future.delayed(const Duration(seconds: 2), () {
-                        setState(() => _isLoading = false);
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage(),));
-                      });
+                    onPressed: () async {
+
+                      await authProvider.login(
+                        _usernameController.text.trim(),
+                        _passwordController.text.trim(),
+                      );
+                      if (authProvider.customer != null) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => MainPage()),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(authProvider.errorMessage ?? 'Login failed'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
-                    child: _isLoading
+
+                    child: authProvider.isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
                       'Sign in',
