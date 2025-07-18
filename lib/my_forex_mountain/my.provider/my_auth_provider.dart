@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import '../my.model/login_request_model.dart';
 import '../my.model/my_customer_model.dart';
+import '../my.model/sign_request_model.dart';
 import '../repositories/my_auth_repo.dart';
-
 
 class NewAuthProvider with ChangeNotifier {
   final NewAuthRepo authRepository;
@@ -32,8 +32,6 @@ class NewAuthProvider with ChangeNotifier {
       final response = await authRepository.login(loginRequest);
       final data = response.response?.data;
 
-
-
       if (data['customer'] != null) {
         _customer = MyCustomerModel.fromJson(data['customer']);
         _token = _customer?.loginToken;
@@ -46,6 +44,24 @@ class NewAuthProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> signUp(String customerMobile, confirmPassword, customerEmail,
+      firstName, lastname, password, sponsor, userName) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      final signUpRequest = SignupModel(
+          customerMobile: customerMobile,
+          confirmPassword: confirmPassword,
+          customerEmail: customerEmail,
+          firstName: firstName,
+          lastName: lastname,
+          password: password,
+          sponsorUsername: sponsor,
+          username: userName);
+    } catch (e) {}
   }
 
   void logout() {
