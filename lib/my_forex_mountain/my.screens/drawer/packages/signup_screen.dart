@@ -1,8 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:forex_mountain/my_forex_mountain/my.screens/drawer/my_login_screen.dart';
+
 import '../../../../screens/dashboard/main_page.dart';
 import 'package:forex_mountain/utils/color.dart';
+
+import '../../my.auth/login_screen.dart';
 
 class MySignupScreen extends StatefulWidget {
   const MySignupScreen({super.key});

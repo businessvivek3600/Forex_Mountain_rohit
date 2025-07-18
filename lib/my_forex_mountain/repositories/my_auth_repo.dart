@@ -7,6 +7,7 @@ import 'package:forex_mountain/my_forex_mountain/my.model/login_request_model.da
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../constants/app_constants.dart';
 import '../../database/dio/dio/dio_client.dart';
 import '../../database/dio/exception/api_error_handler.dart';
 import '../../database/functions.dart';
@@ -23,6 +24,15 @@ final SharedPreferences sharedPreferences;
 static const String tag = 'AuthRepo';
 
 final String url = MyAppConstants.baseUrl;
+
+  Future<void> saveUserToken(String token) async {
+    dioClient.updateUserToken(token);
+    try {
+      await sharedPreferences.setString(SPConstants.userToken, token);
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   ///:Login
   Future<ApiResponse> login(LoginRequestModel loginBody) async {
