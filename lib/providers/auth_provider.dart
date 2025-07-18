@@ -870,4 +870,12 @@ class AuthProvider with ChangeNotifier {
     loadingVerifyEmail = false;
     notifyListeners();
   }
+
+
+
+
+
+
+
+
 }
