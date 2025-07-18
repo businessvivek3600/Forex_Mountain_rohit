@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/constants/assets_constants.dart';
 
-import 'my.screens/drawer/my_login_screen.dart';
-import 'my.screens/main_screen.dart';
+
+import 'my_forex_mountain/my.screens/drawer/my_login_screen.dart';
 import 'utils/picture_utils.dart';
 import 'utils/sizedbox_utils.dart';
 
