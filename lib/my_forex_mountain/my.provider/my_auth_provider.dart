@@ -32,10 +32,12 @@ class NewAuthProvider with ChangeNotifier {
       final response = await authRepository.login(loginRequest);
       final data = response.response?.data;
 
-      _token = data['token'];
+
 
       if (data['customer'] != null) {
         _customer = MyCustomerModel.fromJson(data['customer']);
+        _token = _customer?.loginToken;
+        authRepository.saveUserToken(_token!);
         debugPrint('👤 Logged in user: ${_customer?.username}');
       }
     } catch (e) {
