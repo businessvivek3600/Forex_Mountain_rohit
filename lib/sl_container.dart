@@ -40,7 +40,9 @@ import 'database/dio/dio/logging_interceptor.dart';
 import 'database/repositories/deposit_repo.dart';
 import 'database/repositories/support_repo.dart';
 import 'my_forex_mountain/my.provider/my_auth_provider.dart';
+import 'my_forex_mountain/my.provider/my_dashboard_provider.dart';
 import 'my_forex_mountain/repositories/my_auth_repo.dart';
+import 'my_forex_mountain/repositories/my_dash_repo.dart';
 import 'providers/web_view_provider.dart';
 import 'screens/youtube_video_play_widget copy.dart';
 import 'utils/device_info.dart';
@@ -197,13 +199,20 @@ Future<void> initRepos() async {
   }
 
   ///My FOREX MOUNTAIN
-  // Repositories
+  ///My FOREX MOUNTAIN
+// Repositories
   if (!sl.isRegistered<NewAuthRepo>()) {
     sl.registerLazySingleton(() => NewAuthRepo(dioClient: sl(), sharedPreferences: sl()));
+  }
+  if (!sl.isRegistered<DashRepo>()) {
+    sl.registerLazySingleton(() => DashRepo(dioClient: sl(), sharedPreferences: sl()));
   }
 
 // Providers
   if (!sl.isRegistered<NewAuthProvider>()) {
     sl.registerLazySingleton(() => NewAuthProvider(authRepository: sl()));
+  }
+  if (!sl.isRegistered<MyDashboardProvider>()) {
+    sl.registerLazySingleton(() => MyDashboardProvider(dashRepo: sl()));
   }
 }

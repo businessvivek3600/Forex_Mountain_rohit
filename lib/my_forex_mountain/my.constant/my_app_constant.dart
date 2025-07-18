@@ -19,4 +19,7 @@ class MyAppConstants {
   static const String login = 'login';
   static const String logout = 'logout';
   static const String forgetPassword = 'forget-password';
+
+  ///Dashboard
+  static const String dashboard = 'dashboard';
 }
