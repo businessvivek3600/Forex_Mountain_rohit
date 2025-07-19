@@ -14,6 +14,7 @@ import '../../database/functions.dart';
 import '../../database/model/response/base/api_response.dart';
 import '../../utils/default_logger.dart';
 import '../my.constant/my_app_constant.dart';
+import '../my.model/sign_request_model.dart';
 
 
 class NewAuthRepo {
@@ -41,23 +42,33 @@ final String url = MyAppConstants.baseUrl;
       loginBody.device_id = fcmToken;
       loginBody.device_name = await getDeviceName();
 
-      // Print or log request info
-      debugPrint('🔗 API URL: $url${MyAppConstants.login}');
-      debugPrint('📦 POST BODY: ${loginBody.toJson()}');
-      warningLog('Device Token: ${loginBody.device_id}', tag);
-
-
-
       final response = await dioClient.post(
         url + MyAppConstants.login,
         data: loginBody.toJson(),
       );
-// Log the response
-      debugPrint('✅ RESPONSE DATA: ${response.data}');
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
     }
   }
+
+  /// Signup
+  Future<ApiResponse> signUp(SignupModel signupBody) async {
+    try {
+      debugPrint('🔗 API URL: $url${MyAppConstants.signup}');
+      debugPrint('📦 POST BODY: ${signupBody.toJson()}');
+
+      final response = await dioClient.post(
+        url + MyAppConstants.signup,
+        data: signupBody.toJson(),
+      );
+
+      debugPrint('✅ SIGNUP RESPONSE: ${response.data}');
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
 }
 

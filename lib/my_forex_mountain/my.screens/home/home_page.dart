@@ -7,6 +7,7 @@ import 'package:forex_mountain/widgets/customDrawer.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../constants/assets_constants.dart';
 import '../../../database/functions.dart';
 import '../../../screens/dashboard/main_page.dart';
@@ -95,6 +96,12 @@ class HomeDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MyDashboardProvider>(
         builder: (context, dashboardProvider, _) {
+          final dashboardData = dashboardProvider.dashboardData;
+
+          // Show shimmer while loading
+          if (dashboardData == null) {
+            return _buildShimmerPlaceholder();
+          }
       final memberSale = dashboardProvider.dashboardData?.memberSale;
       final customer = dashboardProvider.dashboardData?.customer;
 
@@ -209,65 +216,65 @@ class HomeDashboard extends StatelessWidget {
             const SizedBox(height: 16),
 
             /// Lifetime Earnings card
-            GlassCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Lifetime Earnings',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '\$${lifeTimeEarnings.toStringAsFixed(2)}', // Example usage again
-                    style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: Image.asset(
-                      'assets/images/earning.png',
-                      height: 100,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.amber),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                          onPressed: () {},
-                          child: const Text('Fund/Request'),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.amber),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                          onPressed: () {},
-                          child: const Text('Withdraw'),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
+            // GlassCard(
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       const Text(
+            //         'Lifetime Earnings',
+            //         style: TextStyle(
+            //             fontSize: 18,
+            //             fontWeight: FontWeight.bold,
+            //             color: Colors.white),
+            //       ),
+            //       const SizedBox(height: 8),
+            //       Text(
+            //         '\$${lifeTimeEarnings.toStringAsFixed(2)}', // Example usage again
+            //         style: const TextStyle(
+            //             fontSize: 24,
+            //             fontWeight: FontWeight.bold,
+            //             color: Colors.white),
+            //       ),
+            //       const SizedBox(height: 16),
+            //       Center(
+            //         child: Image.asset(
+            //           'assets/images/earning.png',
+            //           height: 100,
+            //           fit: BoxFit.contain,
+            //         ),
+            //       ),
+            //       const SizedBox(height: 16),
+            //       Row(
+            //         children: [
+            //           Expanded(
+            //             child: OutlinedButton(
+            //               style: OutlinedButton.styleFrom(
+            //                 side: const BorderSide(color: Colors.amber),
+            //                 foregroundColor: Colors.white,
+            //                 padding: const EdgeInsets.symmetric(vertical: 12),
+            //               ),
+            //               onPressed: () {},
+            //               child: const Text('Fund/Request'),
+            //             ),
+            //           ),
+            //           const SizedBox(width: 12),
+            //           Expanded(
+            //             child: OutlinedButton(
+            //               style: OutlinedButton.styleFrom(
+            //                 side: const BorderSide(color: Colors.amber),
+            //                 foregroundColor: Colors.white,
+            //                 padding: const EdgeInsets.symmetric(vertical: 12),
+            //               ),
+            //               onPressed: () {},
+            //               child: const Text('Withdraw'),
+            //             ),
+            //           ),
+            //         ],
+            //       )
+            //     ],
+            //   ),
+            // ),
+            // const SizedBox(height: 16),
 
             /// Additional balance cards
             Column(
@@ -452,6 +459,82 @@ class HomeDashboard extends StatelessWidget {
       ],
     );
   }
+}
+Widget _buildShimmerPlaceholder() {
+  return SingleChildScrollView(
+    child: Column(
+      children: [
+        height20(),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 6,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 14,
+            crossAxisSpacing: 12,
+            childAspectRatio: 1.4,
+          ),
+          itemBuilder: (_, __) => GlassCard(
+            child: Shimmer.fromColors(
+              baseColor: Colors.white10,
+              highlightColor: Colors.white24,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(height: 16, width: 80, color: Colors.white),
+                  const Spacer(),
+                  Container(height: 18, width: 100, color: Colors.white),
+                  const SizedBox(height: 8),
+                  Container(height: 4, width: double.infinity, color: Colors.white),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        GlassCard(
+          child: Shimmer.fromColors(
+            baseColor: Colors.white10,
+            highlightColor: Colors.white24,
+            child: Container(height: 180, width: double.infinity, color: Colors.white),
+          ),
+        ),
+        const SizedBox(height: 16),
+        ...List.generate(
+          3,
+              (index) => Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: GlassCard(
+              padding: const EdgeInsets.all(12),
+              child: Shimmer.fromColors(
+                baseColor: Colors.white10,
+                highlightColor: Colors.white24,
+                child: Row(
+                  children: [
+                    Container(width: 48, height: 48, color: Colors.white),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(height: 14, width: 100, color: Colors.white),
+                          const SizedBox(height: 4),
+                          Container(height: 16, width: 150, color: Colors.white),
+                          const SizedBox(height: 8),
+                          Container(height: 4, width: double.infinity, color: Colors.white),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _CardData {

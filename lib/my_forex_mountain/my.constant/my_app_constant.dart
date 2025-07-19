@@ -22,4 +22,13 @@ class MyAppConstants {
 
   ///Dashboard
   static const String dashboard = 'dashboard';
+  static const String earning = 'earning';
+  static const String payout = 'payout';
+  static const String withdrawList = 'withdraw_list';
+  static const String withdrawInvoice = 'withdraw_note';
+
+  ///wallet
+  static const String walletTransaction = 'transaction_wallet';
+  static const String walletMaturity= 'commission_wallet';
+  static const String walletFundRequest = 'fund_request_list';
 }

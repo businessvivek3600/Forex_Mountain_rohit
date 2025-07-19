@@ -1,69 +1,178 @@
-
-
-
 import 'package:flutter/material.dart';
+import 'package:forex_mountain/my_forex_mountain/my.model/my_fund_request.dart';
+import 'package:forex_mountain/my_forex_mountain/my.screens/wallet/widget/common_transaction_tab.dart';
+import 'package:forex_mountain/my_forex_mountain/my.screens/wallet/widget/transaction_card_shimmer.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../utils/color.dart';
 import '../../../../utils/picture_utils.dart';
 import '../../../../utils/text.dart';
 
+import '../../../my.provider/my_wallet_provider.dart';
 import '../../../widgets/transparent_container.dart';
 import '../model/fund_history_entry.dart';
 
-class FundHistoryScreen extends StatelessWidget {
-  final List<FundHistoryEntry> entries;
+class FundHistoryScreen extends StatefulWidget {
+  const FundHistoryScreen({
+    super.key,
+  });
 
-  FundHistoryScreen({super.key, required this.entries});
+  @override
+  State<FundHistoryScreen> createState() => _FundHistoryScreenState();
+}
+
+class _FundHistoryScreenState extends State<FundHistoryScreen> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_onScroll);
+    Future.microtask(() {
+      Provider.of<MyWalletProvider>(context, listen: false)
+          .resetAndFetchFundRequests();
+    });
+  }
+
+  void _onScroll() {
+    final provider = Provider.of<MyWalletProvider>(context, listen: false);
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 300 &&
+        provider.hasMoreFundData) {
+      provider.fetchFundRequests(loadMore: true);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: mainColor,
-      appBar: AppBar(
-        title: bodyLargeText('Fund Request', context, fontSize: 20),
-        backgroundColor: Colors.black,
-        elevation: 0,
-      ),
-      body: Container(
-    width: double.infinity,
-    height: double.infinity,
-    decoration: BoxDecoration(
-    image: DecorationImage(
-    image: userAppBgImageProvider(context),
-    fit: BoxFit.cover,
-    ),
-    ),
-    child: SafeArea(
-    child: Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            SizedBox(height: 16,),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: entries.length,
-              itemBuilder: (context, index) {
-                return buildFundHistoryCard(entries[index]);
-              },
-            ),
-          ],
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: userAppBgImageProvider(context),
+          fit: BoxFit.cover,
         ),
       ),
-    ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: bodyLargeText('Fund Request', context, fontSize: 20),
+          backgroundColor: Colors.black,
+          elevation: 0,
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Consumer<MyWalletProvider>(
+              builder: (context, provider, _) {
+                if (provider.isFundRequestLoading &&
+                    provider.fundRequestList.isEmpty) {
+                  return ListView.builder(
+                    itemCount: 6,
+                    padding: const EdgeInsets.all(16),
+                    itemBuilder: (_, __) =>
+                        buildShimmerTransactionCard(), // Use shimmer widget here
+                  );
+                }
+
+                if (provider.error != null) {
+                  return Center(child: Text(provider.error!));
+                }
+
+                return ListView.builder(
+                  controller: _scrollController,
+                  itemCount: provider.fundRequestList.length +
+                      (provider.hasMoreFundData ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index < provider.fundRequestList.length) {
+                      return buildFundHistoryCard(
+                          provider.fundRequestList[index]);
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                  },
+                );
+              },
+            ),
+          ),
+        ),
       ),
     );
   }
-  Widget buildFundHistoryCard(FundHistoryEntry entry) {
-    Color statusColor =
-    entry.status == 'Completed' ? Colors.greenAccent : Colors.redAccent;
+
+  Widget buildFundHistoryCard(MyFundRequestModel entry) {
+    Color statusColor;
+    switch (entry.status) {
+      case '1':
+        statusColor = Colors.greenAccent;
+        break;
+      case '2':
+        statusColor = Colors.redAccent;
+        break;
+      default:
+        statusColor = Colors.orangeAccent;
+    }
+
+
+
 
     return TransparentContainer(
+
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       onTap: () {
-        // Optional: Show full details or navigate
-        debugPrint("Tapped fund request: ${entry.requestId}");
+        if (entry.transactionFile != null && entry.transactionFile!.isNotEmpty) {
+          showDialog(
+            context: context,
+            builder: (_) => Dialog(
+              backgroundColor: Colors.transparent,
+              insetPadding: const EdgeInsets.all(16),
+              child: Stack(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    padding: const EdgeInsets.only(top: 40, left: 16, right: 16, bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        entry.transactionFile!,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const Center(child: CircularProgressIndicator());
+                        },
+                        errorBuilder: (context, error, stackTrace) =>
+                        const Center(child: Icon(Icons.broken_image, color: Colors.redAccent)),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    child: IconButton(
+                      icon:  Icon(Icons.close, color: Colors.redAccent.shade100, size: 30),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +186,7 @@ class FundHistoryScreen extends StatelessWidget {
                   const Icon(Iconsax.calendar, color: Colors.white70, size: 16),
                   const SizedBox(width: 6),
                   Text(
-                    entry.date,
+                    entry.createdAt,
                     style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 12.5,
@@ -88,13 +197,13 @@ class FundHistoryScreen extends StatelessWidget {
               ),
               Container(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: statusColor.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  entry.status,
+                  entry.statusText,
                   style: TextStyle(
                     color: statusColor,
                     fontSize: 12,
@@ -114,7 +223,7 @@ class FundHistoryScreen extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  "Request ID: ${entry.requestId}",
+                  "Request ID: ${entry.orderId}",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14.5,
@@ -151,7 +260,7 @@ class FundHistoryScreen extends StatelessWidget {
                       color: Colors.greenAccent, size: 16),
                   const SizedBox(width: 6),
                   Text(
-                    entry.fundAmount,
+                    entry.totalAmount,
                     style: const TextStyle(
                       color: Colors.greenAccent,
                       fontWeight: FontWeight.bold,
@@ -163,35 +272,8 @@ class FundHistoryScreen extends StatelessWidget {
             ],
           ),
 
-          // Row 4: Optional Proof Link
-          if (entry.proofFileUrl != null) ...[
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                const Icon(Iconsax.document, color: Colors.blueAccent, size: 16),
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () {
-                    // TODO: Open the file or show in modal
-                    debugPrint('Open file: ${entry.proofFileUrl}');
-                  },
-                  child: const Text(
-                    'View Proof File',
-                    style: TextStyle(
-                      color: Colors.cyanAccent,
-                      decoration: TextDecoration.underline,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ]
         ],
       ),
     );
   }
-
-
 }

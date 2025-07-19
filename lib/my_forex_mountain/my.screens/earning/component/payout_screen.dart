@@ -1,91 +1,113 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/widgets/glass_card.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../utils/color.dart';
 import '../../../../utils/picture_utils.dart';
 import '../../../../utils/text.dart';
+import '../../../my.model/my_payout_model.dart';
+import '../../../my.provider/my_earning_provider.dart';
 import '../../../widgets/transparent_container.dart';
 
-class PayoutScreen extends StatelessWidget {
+class PayoutScreen extends StatefulWidget {
   PayoutScreen({super.key});
 
-  final List<PayoutEntry> payoutEntries = [
-    PayoutEntry(
-      date: '2025-07-06',
-      amount: '200',
-      status: 'Paid',
-      details: 'Transfer successful to UPI account.',
-    ),
-    PayoutEntry(
-      date: '2025-07-05',
-      amount: '786.65',
-      status: 'Paid',
-      details: '',
-    ),
-    PayoutEntry(
-      date: '2025-07-03',
-      amount: '1200',
-      status: 'Pending',
-      details: 'Awaiting admin approval.',
-    ),
-    PayoutEntry(
-      date: '2025-07-02',
-      amount: '430',
-      status: 'Cancelled',
-      details: 'Incorrect account details provided.',
-    ),
-    PayoutEntry(
-      date: '2025-07-01',
-      amount: '999.99',
-      status: 'Paid',
-      details: 'Instant payout processed.',
-    ),
-  ];
+  @override
+  State<PayoutScreen> createState() => _PayoutScreenState();
+}
+
+class _PayoutScreenState extends State<PayoutScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    final provider = Provider.of<MyEarningProvider>(context, listen: false);
+    provider.resetPayouts();
+    provider.fetchPayoutData();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 100) {
+        provider.fetchPayoutData(loadMore: true);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: mainColor,
-      appBar: AppBar(
-        title: bodyLargeText('Payout', context, fontSize: 20),
-        backgroundColor: Colors.black,
-        elevation: 0,
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: userAppBgImageProvider(context),
-            fit: BoxFit.cover,
-          ),
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: userAppBgImageProvider(context),
+          fit: BoxFit.cover,
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ListView.builder(
-              itemCount: payoutEntries.length,
-              itemBuilder: (context, index) {
-                return buildPayoutCard(payoutEntries[index]);
-              },
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: bodyLargeText('Payout', context, fontSize: 20),
+          backgroundColor: Colors.black,
+          elevation: 0,
+        ),
+        body:
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Consumer<MyEarningProvider>(
+                builder: (_, provider, __) {
+                  if (provider.isFirstLoadPayout) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (provider.payoutErrorMessage != null) {
+                    return Center(child: Text(provider.payoutErrorMessage!));
+                  }
+
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      provider.resetPayouts();
+                      await provider.fetchPayoutData();
+                    },
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: provider.payouts.length +
+                          (provider.hasMorePayout ? 1 : 0), // +1 for loader
+                      itemBuilder: (context, index) {
+                        if (index == provider.payouts.length) {
+                          return const Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+
+                        return buildPayoutCard(provider.payouts[index]);
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),
-      ),
+
     );
   }
 
-  Widget buildPayoutCard(PayoutEntry entry) {
+  Widget buildPayoutCard(MyPayoutModel entry) {
     Color statusColor;
     Color bgColor;
 
     switch (entry.status.toLowerCase()) {
-      case 'pending':
-        statusColor = Colors.orangeAccent;
+      case '1':
+        statusColor = Colors.greenAccent;
         bgColor = Colors.orange.withOpacity(0.2);
         break;
-      case 'cancelled':
+      case '0':
         statusColor = Colors.redAccent;
         bgColor = Colors.red.withOpacity(0.2);
         break;
@@ -94,7 +116,9 @@ class PayoutScreen extends StatelessWidget {
         bgColor = Colors.green.withOpacity(0.2);
     }
 
-    return GlassCard(
+    return TransparentContainer(
+      margin: const EdgeInsets.only(top: 16),
+      borderWidth: 4,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -122,16 +146,11 @@ class PayoutScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Iconsax.dollar_circle,
-                      color: Colors.greenAccent, size: 18),
-                  const SizedBox(width: 6),
-                  Text(
-                    '₹${entry.amount}',
-                    style: const TextStyle(
-                      color: Colors.greenAccent,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
+                  bodyLargeText(
+                    '\$${double.tryParse(entry.amount)?.toStringAsFixed(2) ?? '0.00'}',
+                    context,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ],
               ),
@@ -157,25 +176,7 @@ class PayoutScreen extends StatelessWidget {
           const SizedBox(height: 12),
 
           // Optional details
-          if (entry.details.isNotEmpty)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(Iconsax.message_text,
-                    color: Colors.cyanAccent, size: 16),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    entry.details,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                )
-              ],
-            ),
+
         ],
       ),
     );
