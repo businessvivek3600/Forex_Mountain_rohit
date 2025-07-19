@@ -41,16 +41,21 @@ import 'database/repositories/deposit_repo.dart';
 import 'database/repositories/support_repo.dart';
 import 'my_forex_mountain/my.provider/my_auth_provider.dart';
 import 'my_forex_mountain/my.provider/my_dashboard_provider.dart';
+import 'my_forex_mountain/my.provider/my_earning_provider.dart';
+import 'my_forex_mountain/my.provider/my_wallet_provider.dart';
 import 'my_forex_mountain/repositories/my_auth_repo.dart';
 import 'my_forex_mountain/repositories/my_dash_repo.dart';
+import 'my_forex_mountain/repositories/my_earning_repo.dart';
+import 'my_forex_mountain/repositories/my_wallet_repo.dart';
 import 'providers/web_view_provider.dart';
 import 'screens/youtube_video_play_widget copy.dart';
 import 'utils/device_info.dart';
 
-final  sl = GetIt.instance;
+final sl = GetIt.instance;
 Future<void> initRepos() async {
   // Core
-  sl.registerLazySingleton<DepositRepo>(() => DepositRepo(dioClient: sl(), sharedPreferences: sl()));
+  sl.registerLazySingleton<DepositRepo>(
+      () => DepositRepo(dioClient: sl(), sharedPreferences: sl()));
   if (!sl.isRegistered<DeviceInfoConfig>()) {
     sl.registerLazySingleton(() => DeviceInfoConfig());
   }
@@ -198,21 +203,40 @@ Future<void> initRepos() async {
     sl.registerLazySingleton(() => Connectivity());
   }
 
-  ///My FOREX MOUNTAIN
-  ///My FOREX MOUNTAIN
-// Repositories
+  ///My FOREX MOUNTAIN------------------------------------------
+
+  ///---------------------------------- Repositories-------------------------------------
   if (!sl.isRegistered<NewAuthRepo>()) {
-    sl.registerLazySingleton(() => NewAuthRepo(dioClient: sl(), sharedPreferences: sl()));
+    sl.registerLazySingleton(
+        () => NewAuthRepo(dioClient: sl(), sharedPreferences: sl()));
   }
   if (!sl.isRegistered<DashRepo>()) {
-    sl.registerLazySingleton(() => DashRepo(dioClient: sl(), sharedPreferences: sl()));
+    sl.registerLazySingleton(
+        () => DashRepo(dioClient: sl(), sharedPreferences: sl()));
+  }
+  if (!sl.isRegistered<MyEarningRepo>()) {
+    sl.registerLazySingleton(
+        () => MyEarningRepo(dioClient: sl(), sharedPreferences: sl()));
+  }
+  if (!sl.isRegistered<MyWalletRepo>()) {
+    sl.registerLazySingleton(() => MyWalletRepo(
+          dioClient: sl(),
+          sharedPreferences: sl(),
+        ));
   }
 
-// Providers
+  /// --------------------------Providers------------------------
   if (!sl.isRegistered<NewAuthProvider>()) {
     sl.registerLazySingleton(() => NewAuthProvider(authRepository: sl()));
   }
   if (!sl.isRegistered<MyDashboardProvider>()) {
     sl.registerLazySingleton(() => MyDashboardProvider(dashRepo: sl()));
+  }
+
+  if (!sl.isRegistered<MyEarningProvider>()) {
+    sl.registerLazySingleton(() => MyEarningProvider(earningRepo: sl()));
+  }
+  if (!sl.isRegistered<MyWalletProvider>()) {
+    sl.registerLazySingleton(() => MyWalletProvider(walletRepo: sl()));
   }
 }

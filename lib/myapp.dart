@@ -38,6 +38,8 @@ import '/utils/theme.dart';
 import 'package:provider/provider.dart';
 import 'my_forex_mountain/my.provider/my_auth_provider.dart';
 import 'my_forex_mountain/my.provider/my_dashboard_provider.dart';
+import 'my_forex_mountain/my.provider/my_earning_provider.dart';
+import 'my_forex_mountain/my.provider/my_wallet_provider.dart';
 import 'providers/Cash_wallet_provider.dart';
 import 'providers/deposit_request_provider.dart';
 import 'screens/drawerPages/inbox/inbox_screen.dart';
@@ -171,6 +173,8 @@ class _ForexMountainsState extends State<ForexMountains> {
       ///--------------MY FOREX MOUNTAIN----------------
       ChangeNotifierProvider(create: (context) => sl.get<NewAuthProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<MyDashboardProvider>()),
+      ChangeNotifierProvider(create: (context) => sl.get<MyEarningProvider>()),
+      ChangeNotifierProvider(create: (context) => sl.get<MyWalletProvider>()),
     ];
   }
 }
