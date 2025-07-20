@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/my.model/my_fund_request.dart';
-import 'package:forex_mountain/my_forex_mountain/my.screens/wallet/widget/common_transaction_tab.dart';
 import 'package:forex_mountain/my_forex_mountain/my.screens/wallet/widget/transaction_card_shimmer.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../utils/color.dart';
 import '../../../../utils/picture_utils.dart';
 import '../../../../utils/text.dart';
 
 import '../../../my.provider/my_wallet_provider.dart';
 import '../../../widgets/transparent_container.dart';
-import '../model/fund_history_entry.dart';
+
 
 class FundHistoryScreen extends StatefulWidget {
   const FundHistoryScreen({
@@ -53,8 +51,6 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: userAppBgImageProvider(context),
@@ -123,16 +119,11 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
       default:
         statusColor = Colors.orangeAccent;
     }
-
-
-
-
     return TransparentContainer(
-
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       onTap: () {
-        if (entry.transactionFile != null && entry.transactionFile!.isNotEmpty) {
+        if (entry.transactionFile.isNotEmpty) {
           showDialog(
             context: context,
             builder: (_) => Dialog(
@@ -142,7 +133,8 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
                 children: [
                   Container(
                     margin: const EdgeInsets.only(top: 20),
-                    padding: const EdgeInsets.only(top: 40, left: 16, right: 16, bottom: 16),
+                    padding: const EdgeInsets.only(
+                        top: 40, left: 16, right: 16, bottom: 16),
                     decoration: BoxDecoration(
                       color: Colors.black87,
                       borderRadius: BorderRadius.circular(16),
@@ -150,21 +142,25 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.network(
-                        entry.transactionFile!,
+                        entry.transactionFile,
                         fit: BoxFit.cover,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         },
                         errorBuilder: (context, error, stackTrace) =>
-                        const Center(child: Icon(Icons.broken_image, color: Colors.redAccent)),
+                            const Center(
+                                child: Icon(Icons.broken_image,
+                                    color: Colors.redAccent)),
                       ),
                     ),
                   ),
                   Positioned(
                     right: 0,
                     child: IconButton(
-                      icon:  Icon(Icons.close, color: Colors.redAccent.shade100, size: 30),
+                      icon: Icon(Icons.close,
+                          color: Colors.redAccent.shade100, size: 30),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
@@ -271,7 +267,6 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
               ),
             ],
           ),
-
         ],
       ),
     );

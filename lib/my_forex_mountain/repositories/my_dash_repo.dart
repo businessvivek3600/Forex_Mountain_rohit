@@ -36,4 +36,19 @@ class DashRepo {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
     }
   }
+
+  Future<ApiResponse> getBankData() async {
+    try {
+      // Print or log request info
+      debugPrint('🔗 API URL: $url${MyAppConstants.bankDetail}');
+
+      final response = await dioClient.post(url + MyAppConstants.bankDetail,token: true);
+
+      // Log the response
+      debugPrint('✅ RESPONSE DATA: ${response.data}');
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
 }

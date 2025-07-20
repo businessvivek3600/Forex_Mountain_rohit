@@ -123,13 +123,19 @@ class _MaturityTabState extends State<MaturityTab> {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
-                          onPressed: () {
-                            Navigator.push(
+                          onPressed: () async {
+                            final result = await Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => const TransferToWallet(),
-                              ),
+                              MaterialPageRoute(builder: (_) => TransferToWallet()),
                             );
+
+                            if (result == true) {
+                              // ✅ Reload maturity data here
+                             await  Provider.of<MyWalletProvider>(context, listen: false)
+                                  .resetAndFetchWalletData(endpoint: endpoint); // or call your provider method
+                              setState(() {});
+                            }
+
                           },
                           icon: const Icon(Iconsax.import),
                           label: const Text('Transfer'),

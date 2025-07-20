@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/my.model/my_wallet_model.dart';
 import 'package:forex_mountain/my_forex_mountain/repositories/my_wallet_repo.dart';
@@ -157,4 +159,73 @@ class MyWalletProvider extends ChangeNotifier {
     _isFundPaginating = false;
     notifyListeners();
   }
+
+  Future<void> fundRequest({
+    required String transactionNumber,
+    required String paymentType,
+    required String amount,
+    required File transactionFile,
+    required VoidCallback onSuccess,
+    required Function(String) onError,
+  }) async {
+    _isFundRequestLoading = true;
+    notifyListeners();
+
+    final response = await walletRepo.submitFundRequestWithImage(
+      transactionNumber: transactionNumber,
+      paymentType: paymentType,
+      amount: amount,
+      transactionFile: transactionFile,
+    );
+
+    _isFundRequestLoading = false;
+
+    if (response.response != null && response.response!.statusCode == 200) {
+      onSuccess();
+    } else {
+      onError(response.error ?? 'Something went wrong!');
+    }
+
+    notifyListeners();
+  }
+
+  ///-----------------------Transaction to wallet
+  Future<void> transferToTransactionWallet({
+    required String amount,
+    required String walletType,
+    required VoidCallback onSuccess,
+    required Function(String) onError,
+  }) async {
+    if (double.tryParse(amount) == null || double.parse(amount) < 10) {
+      onError("Minimum transfer amount is \$10");
+      return;
+    }
+
+    final map = {
+      'amount': amount,
+      'wallet_type': walletType,
+    };
+
+    try {
+      ApiResponse response = await walletRepo.getWalletToTransaction(map);
+
+      if (response.response != null && response.response!.statusCode == 200) {
+        final res = response.response!.data;
+
+        if (res['status'] == true) {
+          onSuccess();
+        } else {
+          onError(res['message'] ?? 'Transfer failed');
+        }
+      } else {
+        onError(response.error ?? 'Something went wrong!');
+      }
+    } catch (e) {
+      onError('Unexpected error occurred');
+    }
+
+    notifyListeners();
+  }
+
+
 }

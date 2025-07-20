@@ -37,10 +37,6 @@ class MyDashboardProvider with ChangeNotifier {
       try {
         final data = resBody['data'];
         _dashboardData = DashboardModel.fromJson(data);
-        debugPrint('✅ Dashboard loaded');
-        debugPrint('👤 Customer: ${_dashboardData?.customer?.username}');
-        debugPrint('💼 Sip Income: ${_dashboardData?.memberSale?.incomeSip}');
-        debugPrint('📦 Packages Count: ${_dashboardData?.buyPackages?.length}');
       } catch (e) {
         _errorMessage = 'Parsing error: ${e.toString()}';
         debugPrint('❌ JSON Parsing error: $e');
