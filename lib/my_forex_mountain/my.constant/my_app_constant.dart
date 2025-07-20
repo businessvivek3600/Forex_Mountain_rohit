@@ -30,5 +30,9 @@ class MyAppConstants {
   ///wallet
   static const String walletTransaction = 'transaction_wallet';
   static const String walletMaturity= 'commission_wallet';
-  static const String walletFundRequest = 'fund_request_list';
+  static const String walletFundHistory = 'fund_request_list';
+  static const String walletFundRequest= 'fund_request';
+  static const String transferToWallet = 'tranfer_to_transaction';
+
+
 }

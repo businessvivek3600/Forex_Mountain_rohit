@@ -41,6 +41,21 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
     paymentTypeController.text = selectedPaymentType;
   }
 
+  final Map<String, String> paymentTypeMap = {
+    "USDT TRC20": "USDTT",
+    "USDT BEP20": "USDTB",
+    "BANK": "BANK",
+    "Google Pay": "GOOGLEPAY",
+    "Phone Pay": "PHONEPAY",
+  };
+
+  final List<String> dropdownDisplayList = [
+    "USDT TRC20",
+    "USDT BEP20",
+    "BANK",
+    "Google Pay",
+    "Phone Pay"
+  ];
   @override
   Widget build(BuildContext context) {
     String errorText = selectedPaymentType == "BANK" || selectedPaymentType == "UPI"
@@ -129,10 +144,12 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                   TransparentTextField(
                     icon: Iconsax.wallet_check,
                     controller: paymentTypeController,
-                    dropdownItems: const ["USDT TRC20", "USDT BEP20","BANK","UPI"],
+                    dropdownItems:dropdownDisplayList,
                     onChanged: (value) {
                       setState(() {
                         selectedPaymentType = value!;
+                        paymentTypeController.text = selectedPaymentType;
+
                       });
                     },
                   ),
@@ -152,7 +169,8 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                     _buildInfoRow("SWIFT Code:", "sbin0000865"),
                     _buildInfoRow("Branch:", "bhim"),
                   ]
-                  else if (selectedPaymentType == "UPI") ...[
+                  else if (selectedPaymentType == "Google Pay" || selectedPaymentType == "Phone Pay")
+                    ...[
                     const SizedBox(height: 12),
                     _buildInfoRow("Google Pay No.:", "8980497056"),
                     _buildInfoRow("Google Pay ID:", "906564346"),

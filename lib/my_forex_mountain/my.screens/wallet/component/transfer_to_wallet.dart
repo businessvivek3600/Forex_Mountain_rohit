@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../utils/picture_utils.dart';
 import '../../../../utils/text.dart';
 import '../../../../widgets/gradient_custom_button.dart';
 import '../../../../widgets/transparent_text_field.dart';
+import '../../../my.provider/my_wallet_provider.dart';
 
 class TransferToWallet extends StatefulWidget {
   const TransferToWallet({super.key});
@@ -17,19 +19,27 @@ class TransferToWallet extends StatefulWidget {
 class _TransferToWalletState extends State<TransferToWallet> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController amountController = TextEditingController();
-  final double walletBalance = 474.38;
-final TextEditingController walletTypeController = TextEditingController();
-  double get netAmount => double.tryParse(amountController.text) ?? 0;
-
+  final TextEditingController walletTypeController = TextEditingController();
+  late MyWalletProvider walletProvider;
   @override
   void initState() {
     super.initState();
-    walletTypeController.text = "Maturity";
-    amountController.text = walletBalance.toStringAsFixed(2);
-
+    walletTypeController.text = "wallet_commission";
   }
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    walletProvider = Provider.of<MyWalletProvider>(context);
+    final double initialAmount =
+        double.tryParse(walletProvider.walletBalance) ?? 0.0;
+    amountController.text = initialAmount.toStringAsFixed(2);
+  }
+
+  double get netAmount => double.tryParse(amountController.text) ?? 0.0;
+  @override
   Widget build(BuildContext context) {
+    final double walletBalance =
+        double.tryParse(walletProvider.walletBalance) ?? 0.0;
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -44,7 +54,7 @@ final TextEditingController walletTypeController = TextEditingController();
           backgroundColor: Colors.black,
           elevation: 0,
           actions: [
-            bodyLargeText('\$$walletBalance', context, fontSize: 14),
+            bodyLargeText('\$${walletBalance.toStringAsFixed(2)}', context, fontSize: 14),
             const SizedBox(width: 16),
           ],
         ),
@@ -68,20 +78,18 @@ final TextEditingController walletTypeController = TextEditingController();
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Maturity", style: TextStyle(color: Colors.white70)),
-
+                        Text("Maturity",
+                            style: TextStyle(color: Colors.white70)),
                       ],
                     ),
                   ),
-
-
                   const SizedBox(height: 16),
                   _buildLabel("Amount"),
                   TransparentTextField(
                     controller: amountController,
                     icon: Iconsax.dollar_circle,
                     hintText: "Enter transfer amount",
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                     ],
@@ -90,17 +98,19 @@ final TextEditingController walletTypeController = TextEditingController();
                         return 'Please enter an amount';
                       }
                       final parsed = double.tryParse(value);
-                      if (parsed == null || parsed <= 0) {
-                        return 'Enter a valid amount';
+                      if (parsed == null) {
+                        return 'Enter a valid number';
+                      }
+                      if (parsed < 10) {
+                        return 'Minimum transfer amount is \$10';
                       }
                       if (parsed > walletBalance) {
-                        return 'Amount exceeds available balance';
+                        return 'Amount exceeds your wallet balance';
                       }
                       return null;
                     },
                     onChanged: (_) => setState(() {}),
                   ),
-
 
                   const SizedBox(height: 16),
                   Row(
@@ -109,7 +119,8 @@ final TextEditingController walletTypeController = TextEditingController();
                       _buildLabel("Net Amount"),
                       Text(
                         "\$${amountController.text}",
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                        style: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -125,8 +136,24 @@ final TextEditingController walletTypeController = TextEditingController();
             label: "Submit",
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                // TODO: Submit transfer logic here
-                print("Transferring \$${netAmount.toStringAsFixed(2)}");
+                final amount = amountController.text.trim();
+                final walletType = walletTypeController.text.trim();
+
+                context.read<MyWalletProvider>().transferToTransactionWallet(
+                      amount: amount,
+                      walletType: walletType,
+                      onSuccess: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Transfer successful")),
+                        );
+                        Navigator.pop(context,true);
+                      },
+                      onError: (error) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(error)),
+                        );
+                      },
+                    );
               }
             },
           ),
@@ -140,9 +167,9 @@ final TextEditingController walletTypeController = TextEditingController();
       padding: const EdgeInsets.only(bottom: 6.0, left: 4.0),
       child: Text(
         text,
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+        style: const TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
       ),
     );
   }
 }
-

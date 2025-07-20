@@ -6,7 +6,7 @@ import '../utils/color.dart';
 
 class GradientSaveButton extends StatelessWidget {
   final String label;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const GradientSaveButton({
     super.key,
