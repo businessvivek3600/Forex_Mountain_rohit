@@ -12,6 +12,7 @@ class MyAppConstants {
   static const String editProfile = 'edit_profile';
   static const String bankDetail = 'bank';
   static const String bankEdit = 'edit_bank';
+  static const String changePassword = 'change_password';
 
   ///Auth----------
   static const String signup = 'signup';
@@ -26,6 +27,7 @@ class MyAppConstants {
   static const String payout = 'payout';
   static const String withdrawList = 'withdraw_list';
   static const String withdrawInvoice = 'withdraw_note';
+  static const String companyInfo = 'company_info';
 
   ///wallet
   static const String walletTransaction = 'transaction_wallet';
@@ -33,6 +35,8 @@ class MyAppConstants {
   static const String walletFundHistory = 'fund_request_list';
   static const String walletFundRequest= 'fund_request';
   static const String transferToWallet = 'tranfer_to_transaction';
+  static const String withdrawRequest = 'withdraw_req_submit';
+  static const String walletToTransaction = 'tranfer_to_transaction';
 
 
 }

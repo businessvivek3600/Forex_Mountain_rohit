@@ -166,9 +166,6 @@ class DioClient {
       rethrow;
     }
   }
-
-
-
   Future<Response> postMultipart(
       String uri, {
         required Map<String, dynamic> data,
@@ -178,26 +175,27 @@ class DioClient {
       // Create FormData instance
       FormData formData = FormData();
 
-      // Add fields from the data map
+      // Add fields and files
       data.forEach((key, value) {
-        if (value is List<int>) {
-          // Handle file data if necessary
-          formData.files.add(MapEntry(
-            key,
-            MultipartFile.fromBytes(value, filename: '$key.file'),
-          ));
+        if (value is MultipartFile) {
+          formData.files.add(MapEntry(key, value));
+        } else if (value is List<MultipartFile>) {
+          for (var file in value) {
+            formData.files.add(MapEntry(key, file));
+          }
         } else {
-          // Add other fields as strings
           formData.fields.add(MapEntry(key, value.toString()));
         }
       });
 
-      // Add a token if required
+      // Add token if required
       if (addToken) {
         formData.fields.add(MapEntry('login_token', _userToken ?? ''));
       }
 
-      infoLog('Multipart Data', uri, formData.fields.toString());
+      infoLog('Multipart Fields', uri, formData.fields.toString());
+      infoLog('Multipart Files', uri,
+          formData.files.map((f) => '${f.key}: ${f.value.filename}').join(', '));
 
       // Use Dio for sending the request
       Dio dio = Dio();
@@ -207,7 +205,6 @@ class DioClient {
         'x-api-key': AppConstants.authorizationToken,
       };
 
-      // Make the POST request
       Response response = await dio.post(uri, data: formData);
 
       return response;
@@ -219,6 +216,7 @@ class DioClient {
       rethrow;
     }
   }
+
 
 
 

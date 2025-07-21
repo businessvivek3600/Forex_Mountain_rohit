@@ -7,6 +7,7 @@ import '../../../../utils/picture_utils.dart';
 import '../../../../utils/text.dart';
 import '../../../../widgets/gradient_custom_button.dart';
 import '../../../../widgets/transparent_text_field.dart';
+import '../../../my.provider/my_dashboard_provider.dart';
 import '../../../my.provider/my_wallet_provider.dart';
 
 class TransferToWallet extends StatefulWidget {
@@ -21,25 +22,48 @@ class _TransferToWalletState extends State<TransferToWallet> {
   final TextEditingController amountController = TextEditingController();
   final TextEditingController walletTypeController = TextEditingController();
   late MyWalletProvider walletProvider;
+
   @override
   void initState() {
     super.initState();
     walletTypeController.text = "wallet_commission";
+    amountController.addListener(() => _updateFees(context));
   }
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     walletProvider = Provider.of<MyWalletProvider>(context);
-    final double initialAmount =
-        double.tryParse(walletProvider.walletBalance) ?? 0.0;
-    amountController.text = initialAmount.toStringAsFixed(2);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && amountController.text.trim().isEmpty) {
+        final double initialAmount = double.tryParse(walletProvider.walletBalance) ?? 0.0;
+        amountController.text = initialAmount.toStringAsFixed(2);
+      }
+    });
+
   }
 
-  double get netAmount => double.tryParse(amountController.text) ?? 0.0;
+  void _updateFees(BuildContext context) {
+    final walletProvider = Provider.of<MyWalletProvider>(context, listen: false);
+    final dashboardProvider = Provider.of<MyDashboardProvider>(context, listen: false);
+
+    final amount = double.tryParse(amountController.text) ?? 0.0;
+    final percent = double.tryParse(dashboardProvider.companyInfo?.transferCharge ?? "0") ?? 0.0;
+
+    final fees = (amount * percent) / 100;
+    final net = amount - fees;
+
+    walletProvider.setProcessingFees(fees);
+    walletProvider.setNetPayable(net);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final dashboardProvider = Provider.of<MyDashboardProvider>(context, listen: false);
     final double walletBalance =
         double.tryParse(walletProvider.walletBalance) ?? 0.0;
+    final minWithdraw = double.tryParse(dashboardProvider.companyInfo?.minimumTransfer ?? '10') ?? 10;
+    final balance = double.tryParse(walletProvider.walletBalance ?? '0') ?? 0;
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -50,7 +74,7 @@ class _TransferToWalletState extends State<TransferToWallet> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: bodyLargeText('Transfer Wallet', context, fontSize: 20),
+          title: bodyLargeText('Transfer to  Transaction', context, fontSize: 20),
           backgroundColor: Colors.black,
           elevation: 0,
           actions: [
@@ -88,41 +112,33 @@ class _TransferToWalletState extends State<TransferToWallet> {
                   TransparentTextField(
                     controller: amountController,
                     icon: Iconsax.dollar_circle,
-                    hintText: "Enter transfer amount",
+                    hintText: "Enter withdrawal amount",
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
-                    ],
+                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))],
                     validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter an amount';
-                      }
-                      final parsed = double.tryParse(value);
-                      if (parsed == null) {
-                        return 'Enter a valid number';
-                      }
-                      if (parsed < 10) {
-                        return 'Minimum transfer amount is \$10';
-                      }
-                      if (parsed > walletBalance) {
-                        return 'Amount exceeds your wallet balance';
-                      }
+                      final parsed = double.tryParse(value ?? '');
+                      if (value == null || value.trim().isEmpty) return 'Please enter an amount';
+                      if (parsed == null) return 'Invalid amount';
+                      if (parsed < minWithdraw) return 'Minimum withdrawal is \$${minWithdraw.toInt()}';
+                      if (parsed > balance) return 'Amount exceeds available balance';
                       return null;
                     },
-                    onChanged: (_) => setState(() {}),
+                    onChanged: (_) => _updateFees(context),
                   ),
 
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildLabel("Net Amount"),
-                      Text(
-                        "\$${amountController.text}",
-                        style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w500),
-                      ),
-                    ],
+                  Consumer<MyWalletProvider>(
+                    builder: (_, walletProvider, __) {
+                      final percent = double.tryParse(dashboardProvider.companyInfo?.transferCharge?? "0") ?? 0.0;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSummaryRow("Processing Fee (${percent.toStringAsFixed(1)}%)", walletProvider.processingFees),
+                          const SizedBox(height: 6),
+                          _buildSummaryRow("Net Payable", walletProvider.netPayable),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 30),
                 ],
@@ -139,18 +155,18 @@ class _TransferToWalletState extends State<TransferToWallet> {
                 final amount = amountController.text.trim();
                 final walletType = walletTypeController.text.trim();
 
-                context.read<MyWalletProvider>().transferToTransactionWallet(
+                context.read<MyWalletProvider>().transferToTransaction(
                       amount: amount,
-                      walletType: walletType,
+                      walletType: "wallet_commission",
                       onSuccess: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Transfer successful")),
+                          const SnackBar(content: Text("Transfer successful"),backgroundColor: Colors.green,),
                         );
-                        Navigator.pop(context,true);
+                        Navigator.pop(context);
                       },
                       onError: (error) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(error)),
+                          SnackBar(content: Text(error),backgroundColor: Colors.red,),
                         );
                       },
                     );
@@ -161,7 +177,15 @@ class _TransferToWalletState extends State<TransferToWallet> {
       ),
     );
   }
-
+  Widget _buildSummaryRow(String label, double value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 13.5)),
+        Text("\$${value.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+      ],
+    );
+  }
   Widget _buildLabel(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6.0, left: 4.0),

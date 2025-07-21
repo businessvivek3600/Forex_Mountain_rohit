@@ -37,6 +37,31 @@ class MyWalletProvider extends ChangeNotifier {
     await fetchWalletData(endpoint: endpoint);
   }
 
+
+  double _processingFees = 0.0;
+  double get processingFees => _processingFees;
+
+  double _netPayable = 0.0;
+  double get netPayable => _netPayable;
+
+  void setProcessingFees(double value) {
+    _processingFees = value;
+    notifyListeners();
+  }
+
+  void setNetPayable(double value) {
+    _netPayable = value;
+    notifyListeners();
+  }
+  String _selectedPaymentType = "BANK";
+  String get selectedPaymentType => _selectedPaymentType;
+
+  void setSelectedPaymentType(String value) {
+    _selectedPaymentType = value;
+    notifyListeners();
+  }
+
+
   Future<void> fetchWalletData({
     required String endpoint,
     bool loadMore = false,
@@ -171,7 +196,7 @@ class MyWalletProvider extends ChangeNotifier {
     _isFundRequestLoading = true;
     notifyListeners();
 
-    final response = await walletRepo.submitFundRequestWithImage(
+    final response = await walletRepo.submitFundRequest(
       transactionNumber: transactionNumber,
       paymentType: paymentType,
       amount: amount,
@@ -189,17 +214,61 @@ class MyWalletProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
+
+  ///-------------------------Withdraw
+
+  Future<void> withdrawRequest({
+    required String walletType,
+    required String amount,
+    required String paymentType,
+    required VoidCallback onSuccess,
+    required Function(String) onError,
+  }) async {
+    // Basic amount validation
+
+
+    final paymentTypeMap = {
+      "USDT TRC20": "USDTT",
+      "USDT BEP20": "USDTB",
+      "BANK": "BANK",
+      "Google Pay": "GOOGLEPAY",
+      "Phone Pay": "PHONEPAY",
+    };
+    final mappedPaymentType = paymentTypeMap[paymentType] ?? "BANK";
+    final map = {
+      'wallet_type': walletType,
+      'amount': amount,
+      'payment_type': mappedPaymentType,
+    };
+
+    try {
+      ApiResponse response = await walletRepo.withdrawFunds(map);
+
+      if (response.response != null && response.response!.statusCode == 200) {
+        final res = response.response!.data;
+        if (res['status'] == true) {
+          onSuccess();
+        } else {
+          onError(res['message'] ?? 'Withdrawal failed');
+        }
+      } else {
+        onError(response.error ?? 'Something went wrong');
+      }
+    } catch (e) {
+      onError('Unexpected error occurred');
+    }
+
+    notifyListeners();
+  }
+
   ///-----------------------Transaction to wallet
-  Future<void> transferToTransactionWallet({
+  Future<void> transferToTransaction({
     required String amount,
     required String walletType,
     required VoidCallback onSuccess,
     required Function(String) onError,
   }) async {
-    if (double.tryParse(amount) == null || double.parse(amount) < 10) {
-      onError("Minimum transfer amount is \$10");
-      return;
-    }
 
     final map = {
       'amount': amount,
@@ -207,7 +276,7 @@ class MyWalletProvider extends ChangeNotifier {
     };
 
     try {
-      ApiResponse response = await walletRepo.getWalletToTransaction(map);
+      ApiResponse response = await walletRepo.transferToTransaction(map);
 
       if (response.response != null && response.response!.statusCode == 200) {
         final res = response.response!.data;
@@ -226,6 +295,7 @@ class MyWalletProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
 
 
 }

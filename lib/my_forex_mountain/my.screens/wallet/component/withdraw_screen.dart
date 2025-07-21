@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:forex_mountain/my_forex_mountain/my.provider/my_wallet_provider.dart';
+import 'package:forex_mountain/my_forex_mountain/my.screens/support/support_screen.dart';
+import 'package:forex_mountain/my_forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../utils/color.dart';
 import '../../../../utils/picture_utils.dart';
 import '../../../../utils/text.dart';
 import '../../../../widgets/gradient_custom_button.dart';
 import '../../../../widgets/transparent_text_field.dart';
+import '../../../my.model/my_bank_model.dart';
+import '../../../my.provider/my_dashboard_provider.dart';
+
+// Imports remain the same
 
 class WithdrawScreen extends StatefulWidget {
   const WithdrawScreen({super.key});
@@ -16,98 +24,99 @@ class WithdrawScreen extends StatefulWidget {
 }
 
 class _WithdrawScreenState extends State<WithdrawScreen> {
-  final TextEditingController walletTypeController = TextEditingController();
-  final TextEditingController amountController = TextEditingController();
-  final TextEditingController paymentTypeController = TextEditingController();
-
-  final double walletBalance = 474.38;
-  final double processingFeePercent = 15;
-
-  String selectedPaymentType = "USDT TRC20";
+  final walletTypeController = TextEditingController();
+  final amountController = TextEditingController();
+  final paymentTypeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  double get fee => double.tryParse(amountController.text) != null
-      ? double.parse(amountController.text) * (processingFeePercent / 100)
-      : 0;
 
-  double get netPayable => double.tryParse(amountController.text) != null
-      ? double.parse(amountController.text) - fee
-      : 0;
-
-  @override
-  void initState() {
-    super.initState();
-    walletTypeController.text = "Maturity";
-    paymentTypeController.text = selectedPaymentType;
-  }
-
-  final Map<String, String> paymentTypeMap = {
-    "USDT TRC20": "USDTT",
-    "USDT BEP20": "USDTB",
-    "BANK": "BANK",
-    "Google Pay": "GOOGLEPAY",
-    "Phone Pay": "PHONEPAY",
-  };
-
-  final List<String> dropdownDisplayList = [
+  final dropdownDisplayList = [
     "USDT TRC20",
     "USDT BEP20",
     "BANK",
     "Google Pay",
     "Phone Pay"
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    walletTypeController.text = "Maturity";
+
+    final walletProvider = Provider.of<MyWalletProvider>(context, listen: false);
+    final defaultPaymentType = walletProvider.selectedPaymentType.isNotEmpty
+        ? walletProvider.selectedPaymentType
+        : "BANK";
+
+    paymentTypeController.text = defaultPaymentType;
+    amountController.text = double.tryParse(walletProvider.walletBalance)?.toStringAsFixed(2) ?? '';
+
+    amountController.addListener(() => _updateFees(context));
+  }
+
+  void _updateFees(BuildContext context) {
+    final walletProvider = Provider.of<MyWalletProvider>(context, listen: false);
+    final dashboardProvider = Provider.of<MyDashboardProvider>(context, listen: false);
+
+    final amount = double.tryParse(amountController.text) ?? 0.0;
+    final percent = double.tryParse(dashboardProvider.companyInfo?.adminCharge ?? "0") ?? 0.0;
+
+    final fees = (amount * percent) / 100;
+    final net = amount - fees;
+
+    walletProvider.setProcessingFees(fees);
+    walletProvider.setNetPayable(net);
+  }
+
   @override
   Widget build(BuildContext context) {
-    String errorText = selectedPaymentType == "BANK" || selectedPaymentType == "UPI"
-        ? "Please review your payment information !!"
-        : "Please review your payment information !!\nPlease update your $selectedPaymentType Address";
+    final dashboardProvider = Provider.of<MyDashboardProvider>(context);
+    final walletProvider = Provider.of<MyWalletProvider>(context);
+    final bank = dashboardProvider.bankDetails;
+
+    final selectedPaymentType = walletProvider.selectedPaymentType.isNotEmpty
+        ? walletProvider.selectedPaymentType
+        : "BANK";
+
+    final errorText = "Please review your payment information !!\n"
+        "Please update your $selectedPaymentType Address";
+
+    final minWithdraw = double.tryParse(dashboardProvider.companyInfo?.minimumWithdraw ?? '10') ?? 10;
+    final balance = double.tryParse(walletProvider.walletBalance ?? '0') ?? 0;
 
     return Container(
-      width: double.infinity,
-      height: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: userAppBgImageProvider(context),
           fit: BoxFit.cover,
         ),
       ),
-      child:Scaffold(
-      backgroundColor:Colors.transparent,
-      appBar: AppBar(
-        title: bodyLargeText('Withdraw Fund', context, fontSize: 20),
-        backgroundColor: Colors.black,
-        elevation: 0,
-        actions: [
-          bodyLargeText('\$$walletBalance', context, fontSize: 14),
-          const SizedBox(width: 16),
-        ],
-      ),
-      body:  SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: bodyLargeText('Withdraw Fund', context, fontSize: 20),
+          backgroundColor: Colors.black,
+          elevation: 0,
+          actions: [
+            bodyLargeText(
+              '\$${balance.toStringAsFixed(2)}',
+              context,
+              fontSize: 14,
+            ),
+            const SizedBox(width: 16),
+          ],
+        ),
+        body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
-                      _buildLabel("Select Wallet"),
-
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: Colors.white24),
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Maturity", style: TextStyle(color: Colors.white70)),
-
-                      ],
-                    ),
-                  ),
+                  _buildLabel("Select Wallet"),
+                  _buildReadOnlyField("Maturity"),
 
                   const SizedBox(height: 16),
                   _buildLabel("Amount"),
@@ -115,87 +124,53 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                     controller: amountController,
                     icon: Iconsax.dollar_circle,
                     hintText: "Enter withdrawal amount",
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
-                    ],
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))],
                     validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter an amount';
-                      }
-                      final parsed = double.tryParse(value);
-                      if (parsed == null) {
-                        return 'Invalid amount';
-                      }
-                      if (parsed < 10) {
-                        return 'Minimum withdrawal is \$10';
-                      }
-                      if (parsed > walletBalance) {
-                        return 'Amount exceeds available balance';
-                      }
+                      final parsed = double.tryParse(value ?? '');
+                      if (value == null || value.trim().isEmpty) return 'Please enter an amount';
+                      if (parsed == null) return 'Invalid amount';
+                      if (parsed < minWithdraw) return 'Minimum withdrawal is \$${minWithdraw.toInt()}';
+                      if (parsed > balance) return 'Amount exceeds available balance';
                       return null;
                     },
-                    onChanged: (value) {
-                      setState(() {});
-                    },
+                    onChanged: (_) => _updateFees(context),
                   ),
+
                   const SizedBox(height: 16),
                   _buildLabel("Payment Type"),
-                  TransparentTextField(
-                    icon: Iconsax.wallet_check,
-                    controller: paymentTypeController,
-                    dropdownItems:dropdownDisplayList,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedPaymentType = value!;
-                        paymentTypeController.text = selectedPaymentType;
+                  Consumer<MyWalletProvider>(
+                    builder: (_, walletProvider, __) => TransparentTextField(
+                      icon: Iconsax.wallet_check,
+                      controller: paymentTypeController,
+                      dropdownItems: dropdownDisplayList,
+                      onChanged: (value) {
+                        walletProvider.setSelectedPaymentType(value!);
+                        paymentTypeController.text = value;
+                      },
+                    ),
+                  ),
 
-                      });
+                  const SizedBox(height: 12),
+                  Text(errorText, style: const TextStyle(color: Colors.redAccent, fontSize: 13)),
+
+                  const SizedBox(height: 12),
+                  _buildPaymentDetails(selectedPaymentType, bank),
+
+                  const SizedBox(height: 16),
+                  Consumer<MyWalletProvider>(
+                    builder: (_, walletProvider, __) {
+                      final percent = double.tryParse(dashboardProvider.companyInfo?.adminCharge ?? "0") ?? 0.0;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSummaryRow("Processing Fee (${percent.toStringAsFixed(1)}%)", walletProvider.processingFees),
+                          const SizedBox(height: 6),
+                          _buildSummaryRow("Net Payable", walletProvider.netPayable),
+                        ],
+                      );
                     },
                   ),
-
-                  const SizedBox(height: 12),
-                  Text(
-                    errorText,
-                    style: const TextStyle(color: Colors.redAccent, fontSize: 13),
-                  ),
-                  if (selectedPaymentType == "BANK") ...[
-                    const SizedBox(height: 12),
-                    _buildInfoRow("Bank Name:", "865"),
-                    _buildInfoRow("Account Holder Name:", "12345678"),
-                    _buildInfoRow("Account Number:", "555"),
-                    _buildInfoRow("IFSC Code:", "Fgqt"),
-                    _buildInfoRow("IBN Code:", "6789"),
-                    _buildInfoRow("SWIFT Code:", "sbin0000865"),
-                    _buildInfoRow("Branch:", "bhim"),
-                  ]
-                  else if (selectedPaymentType == "Google Pay" || selectedPaymentType == "Phone Pay")
-                    ...[
-                    const SizedBox(height: 12),
-                    _buildInfoRow("Google Pay No.:", "8980497056"),
-                    _buildInfoRow("Google Pay ID:", "906564346"),
-                    const SizedBox(height: 8),
-                    const Text("Google Pay QR:", style: TextStyle(color: Colors.white70)),
-                    const SizedBox(height: 6),
-                    SizedBox(
-                      height: 150,
-                      width: 150,
-                      child: Image.network(
-                        "https://example.com/qr.png", // Replace with your QR code URL
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => const Icon(Icons.error, color: Colors.white70),
-                      ),
-                    ),
-                  ],
-
-
-                  const SizedBox(height: 12),
-                   Text(selectedPaymentType, style: TextStyle(color: Colors.white70)),
-
-                  const SizedBox(height: 12),
-                  _buildSummaryRow("Processing Fee $processingFeePercent %", fee),
-                  const SizedBox(height: 6),
-                  _buildSummaryRow("Net Payable", netPayable),
 
                   const SizedBox(height: 30),
                 ],
@@ -203,26 +178,48 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
             ),
           ),
         ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        child: GradientSaveButton(
-          label: "Submit",
-          onPressed: () {
-            // submit withdraw logic
-          },
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          child: GradientSaveButton(
+            label: "Submit",
+            onPressed: () {
+              if (_formKey.currentState?.validate() ?? false) {
+                walletProvider.withdrawRequest(
+                  walletType: "wallet_commission",
+                  amount: amountController.text.trim(),
+                  paymentType: walletProvider.selectedPaymentType,
+                  onSuccess: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Withdrawal request submitted successfully"),backgroundColor: Colors.green,),
+                    );
+                    Navigator.pop(context,true);
+                  },
+                  onError: (error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(error),backgroundColor: Colors.red,),
+                    );
+                  },
+                );
+
+              }
+            },
+          ),
         ),
-      ),
       ),
     );
   }
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
+
+  Widget _buildReadOnlyField(String text) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.white24),
+      ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: Colors.white70)),
-          Text(value, style: const TextStyle(color: Colors.white)),
+          Text(text, style: const TextStyle(color: Colors.white70)),
         ],
       ),
     );
@@ -230,10 +227,21 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
 
   Widget _buildLabel(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6.0, left: 4.0),
-      child: Text(
-        text,
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+      padding: const EdgeInsets.only(bottom: 6, left: 4),
+      child: Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(flex: 3, child: Text(label, style: const TextStyle(color: Colors.white70))),
+          const SizedBox(width: 8),
+          Expanded(flex: 5, child: Text(value, style: const TextStyle(color: Colors.white), textAlign: TextAlign.right)),
+        ],
       ),
     );
   }
@@ -243,9 +251,89 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: const TextStyle(color: Colors.white70, fontSize: 13.5)),
-        Text("\$${value.toStringAsFixed(2)}",
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+        Text("\$${value.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
       ],
     );
   }
+
+  Widget _buildPaymentDetails(String type, BankDetailsModel? bank) {
+    switch (type) {
+      case "BANK":
+        return TransparentContainer(
+          borderWidth: 4,
+          child: Column(children: [
+            _buildInfoRow("Bank Name:", bank?.bank?.bank ?? ""),
+            _buildInfoRow("Account Holder Name:", bank?.bank?.accountHolderName ?? ""),
+            _buildInfoRow("Account Number:", bank?.bank?.accountNumber ?? ""),
+            _buildInfoRow("IFSC Code:", bank?.bank?.ifscCode ?? ""),
+            _buildInfoRow("IBN Code:", bank?.bank?.ibnCode ?? ""),
+            _buildInfoRow("SWIFT Code:", bank?.bank?.swiftCode ?? ""),
+            _buildInfoRow("Branch:", bank?.bank?.branch ?? ""),
+          ]),
+        );
+      case "Google Pay":
+        return _buildUPIContainer(
+          label1: "Google Pay No.:",
+          value1: bank?.googlePay?.googlePayNo ?? "",
+          label2: "Google Pay ID:",
+          value2: bank?.googlePay?.googlePayId ?? "",
+          qrUrl: bank?.googlePay?.googlePayQr,
+        );
+      case "Phone Pay":
+        return _buildUPIContainer(
+          label1: "Phone Pay No.:",
+          value1: bank?.phonePay?.phonePayNo ?? "",
+          label2: "Phone Pay ID:",
+          value2: bank?.phonePay?.phonePayId ?? "",
+          qrUrl: bank?.phonePay?.phonePayQr,
+        );
+      case "USDT TRC20":
+        return TransparentContainer(
+          borderWidth: 4,
+          child: _buildInfoRow("USDT TRC Address:", bank?.usdtTrc?.usdtAddress ?? ""),
+        );
+      case "USDT BEP20":
+        return TransparentContainer(
+          borderWidth: 4,
+          child: _buildInfoRow("USDT BEP Address:", bank?.usdtBep?.obdAddress ?? ""),
+        );
+      default:
+        return const SizedBox();
+    }
+  }
+
+  Widget _buildUPIContainer({
+    required String label1,
+    required String value1,
+    required String label2,
+    required String value2,
+    String? qrUrl,
+  }) {
+    return TransparentContainer(
+      borderWidth: 4,
+      child: Column(
+        children: [
+          _buildInfoRow(label1, value1),
+          _buildInfoRow(label2, value2),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("QR Code:", style: TextStyle(color: Colors.white70)),
+              SizedBox(
+                height: 100,
+                width: 100,
+                child: Image.network(
+                  qrUrl ?? "",
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => const Icon(Icons.error, color: Colors.white70),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
 }
+
