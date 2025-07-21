@@ -55,7 +55,7 @@ class MyWalletRepo {
     }
   }
 
-  Future<ApiResponse> submitFundRequestWithImage({
+  Future<ApiResponse> submitFundRequest({
     required String transactionNumber,
     required String paymentType,
     required String amount,
@@ -99,6 +99,45 @@ class MyWalletRepo {
 
       Response response = await dioClient.post(
         url + MyAppConstants.transferToWallet,
+        token: true,
+        data: map,
+      );
+
+      print('✅ API Response [${response.statusCode}]: ${response.data}\n');
+
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      print('❌ API Error: ${ApiErrorHandler.getMessage(e)}\n');
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+///------------------------
+  Future<ApiResponse> withdrawFunds(Map<String, String> map) async {
+    try {
+
+      Response response = await dioClient.post(
+        url + MyAppConstants.withdrawRequest,
+        token: true,
+        data: map,
+      );
+
+      print('✅ API Response [${response.statusCode}]: ${response.data}\n');
+
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      print('❌ API Error: ${ApiErrorHandler.getMessage(e)}\n');
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+  ///------------------------
+  Future<ApiResponse> transferToTransaction (Map<String, String> map) async {
+    try {
+      print('\n📤 [POST] Transfer To Transaction Wallet');
+      print('➡️ URL: ${url + MyAppConstants.walletToTransaction}');
+      print('📝 Body: $map\n');
+
+      Response response = await dioClient.post(
+        url +  MyAppConstants.walletToTransaction,
         token: true,
         data: map,
       );

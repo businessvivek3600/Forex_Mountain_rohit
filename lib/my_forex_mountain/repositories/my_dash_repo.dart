@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/my.model/login_request_model.dart';
 import 'package:http/http.dart' as http;
@@ -24,13 +23,8 @@ class DashRepo {
 
   Future<ApiResponse> getDashboardData() async {
     try {
-      // Print or log request info
-      debugPrint('🔗 API URL: $url${MyAppConstants.dashboard}');
-
-      final response = await dioClient.post(url + MyAppConstants.dashboard,token: true);
-
-      // Log the response
-      debugPrint('✅ RESPONSE DATA: ${response.data}');
+      final response =
+          await dioClient.post(url + MyAppConstants.dashboard, token: true);
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
@@ -42,7 +36,24 @@ class DashRepo {
       // Print or log request info
       debugPrint('🔗 API URL: $url${MyAppConstants.bankDetail}');
 
-      final response = await dioClient.post(url + MyAppConstants.bankDetail,token: true);
+      final response =
+          await dioClient.post(url + MyAppConstants.bankDetail, token: true);
+
+      // Log the response
+      debugPrint('✅ RESPONSE DATA: ${response.data}');
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
+  Future<ApiResponse> getCompanyInfo() async {
+    try {
+      // Print or log request info
+      debugPrint('🔗 API URL: $url${MyAppConstants.companyInfo}');
+
+      final response =
+          await dioClient.post(url + MyAppConstants.companyInfo, token: true);
 
       // Log the response
       debugPrint('✅ RESPONSE DATA: ${response.data}');

@@ -29,16 +29,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final List<_CardData> cardItems = [
-    _CardData("Maturity Wallet", Icons.account_balance, "\$0.00"),
-    _CardData("Transaction Wallet", Icons.wallet, "\$1,600.00"),
-    _CardData("Rank Income", Icons.military_tech, "\$0.00"),
-    _CardData("FCT Income", Icons.generating_tokens, "\$0.00"),
-    _CardData("MTP Income", Icons.trending_up, "\$0.00"),
-    _CardData("SIP Income", Icons.stacked_line_chart, "\$0.00"),
-    _CardData("Self Business", Icons.business_center, "\$0.00"),
-    _CardData("Team Business", Icons.groups, "\$0.00"),
-  ];
   @override
   void initState() {
     super.initState();
@@ -48,6 +38,8 @@ class _HomePageState extends State<HomePage> {
       final dashboardProvider =
           Provider.of<MyDashboardProvider>(context, listen: false);
       dashboardProvider.getDashboardData();
+      dashboardProvider.getBankDetails(context);
+      dashboardProvider.getCompanyInfo(context);
     });
   }
 
