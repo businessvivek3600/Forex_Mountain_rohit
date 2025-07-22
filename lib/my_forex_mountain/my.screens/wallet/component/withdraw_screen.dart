@@ -96,6 +96,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
         appBar: AppBar(
           title: bodyLargeText('Withdraw Fund', context, fontSize: 20),
           backgroundColor: Colors.black,
+          iconTheme: const IconThemeData(color: Colors.amber),
           elevation: 0,
           actions: [
             bodyLargeText(

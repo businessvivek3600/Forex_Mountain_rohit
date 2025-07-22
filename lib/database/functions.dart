@@ -593,3 +593,5 @@ Future<String> getDeviceName() async {
   var deviceInfo = await getDeviceInfo();
   return '${(deviceInfo['device'] ?? '').toString().capitalize!} (${(deviceInfo['device_name'] ?? '')})';
 }
+
+

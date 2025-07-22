@@ -13,6 +13,8 @@ class MyAppConstants {
   static const String bankDetail = 'bank';
   static const String bankEdit = 'edit_bank';
   static const String changePassword = 'change_password';
+  static const String addKyc = 'kyc_edit';
+  static const String getKyc = 'kyc';
 
   ///Auth----------
   static const String signup = 'signup';

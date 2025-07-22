@@ -1,8 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:forex_mountain/my_forex_mountain/widgets/transparent_container.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:forex_mountain/my_forex_mountain/widgets/glass_card.dart';
-import 'package:forex_mountain/utils/picture_utils.dart'; // For userAppBgImageProvider()
+import '../../../screens/dashboard/main_page.dart';
+import '../../../utils/picture_utils.dart';
+import '../../../utils/text.dart';
+import '../../my.provider/my_user_provider.dart';
 
 class VerifyKyc extends StatefulWidget {
   const VerifyKyc({super.key});
@@ -12,216 +17,252 @@ class VerifyKyc extends StatefulWidget {
 }
 
 class _VerifyKycState extends State<VerifyKyc> {
-  final List<String> _countries = ['India', 'USA', 'UK', 'Canada', 'Germany'];
-  final List<String> _documentTypes = ['Select', 'Passport', 'Government ID'];
-
-  String _selectedCountry = 'India';
-  String _selectedDocumentType = 'Select';
-  final TextEditingController _documentNumberController =
-      TextEditingController();
-
   @override
-  void dispose() {
-    _documentNumberController.dispose();
-    super.dispose();
+  void initState() {
+    Future.microtask(() {
+      Provider.of<NewUserProvider>(context, listen: false).getKycData();
+    });
+    super.initState();
   }
 
-  void _uploadDocument() {
-    // TODO: Implement file picker for document
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Upload Document tapped")),
-    );
-  }
-
-  void _uploadSelfie() {
-    // TODO: Implement file picker for selfie
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Upload Selfie tapped")),
-    );
-  }
-
-  void _submitKyc() {
-    if (_selectedCountry.isEmpty ||
-        _selectedDocumentType == 'Select' ||
-        _documentNumberController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please complete all fields")),
-      );
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("KYC Submitted")),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
-        title: const Text("Verify KYC", style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.amber),
-      ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image(
-            image: userAppBgImageProvider(context),
-            fit: BoxFit.cover,
+    return Consumer<NewUserProvider>(
+      builder: (context, provider, _) {
+        if (provider.isLoadingKyc) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: userAppBgImageProvider(context),
+              fit: BoxFit.cover,
+            ),
           ),
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: TransparentContainer(
-                padding: const EdgeInsets.all(20),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              surfaceTintColor: Colors.transparent,
+              title: bodyLargeText("VERIFY KYC", context, fontSize: 16),
+              backgroundColor: Colors.black,
+              elevation: 0,
+              iconTheme: const IconThemeData(color: Colors.amber),
+            ),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Complete Your KYC",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    UiCategoryTitleContainer(
+                      child: Row(
+                        children: [
+                          Text(
+                            provider.isKycApproved
+                                ? 'Your KYC Verification is Approved'
+                                : provider.isKycRejected
+                                ? 'Your KYC Verification is Rejected'
+                                : 'Your KYC Verification is Pending',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: provider.isKycApproved
+                                  ? Colors.green
+                                  : provider.isKycRejected
+                                  ? Colors.red
+                                  : Colors.amber, // yellow for pending
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Icon(
+                            provider.isKycApproved
+                                ? Iconsax.tick_circle
+                                : provider.isKycRejected
+                                ? Iconsax.close_circle
+                                : Iconsax.info_circle,
+                            color: provider.isKycApproved
+                                ? Colors.green
+                                : provider.isKycRejected
+                                ? Colors.red
+                                : Colors.amber,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+
+                    ),
+                    const SizedBox(height: 20),
+                    _buildLabel("Country of Residence"),
+                    GestureDetector(
+                      onTap: () {
+                        provider.isKycApproved
+                            ? null
+                            : showCountryPicker(
+                          context: context,
+                          showPhoneCode: false,
+                          onSelect: provider.selectCountry,
+                        );
+                      },
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          readOnly: true,
+                          controller:
+                              TextEditingController(text: provider.countryText),
+                          style: const TextStyle(color: Colors.white),
+                          decoration:
+                              _inputDecoration("Select Country", Icons.public),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    // Country Dropdown
+                    _buildLabel("Document Type"),
                     DropdownButtonFormField<String>(
-                      value: _selectedCountry,
+                      value: provider.selectedDocumentType,
                       dropdownColor: Colors.black,
                       iconEnabledColor: Colors.white,
-                      decoration: InputDecoration(
-                        labelText: 'Country',
-                        labelStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon:
-                            const Icon(Icons.public, color: Colors.white),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
+                      decoration: _inputDecoration(
+                          "Select Document Type", Icons.description),
                       style: const TextStyle(color: Colors.white),
-                      items: _countries.map((String country) {
-                        return DropdownMenuItem<String>(
-                          value: country,
-                          child: Text(country),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedCountry = newValue!;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Document Type Dropdown
-                    DropdownButtonFormField<String>(
-                      value: _selectedDocumentType,
-                      dropdownColor: Colors.black,
-                      iconEnabledColor: Colors.white,
-                      decoration: InputDecoration(
-                        labelText: 'Document Type',
-                        labelStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon:
-                            const Icon(Icons.description, color: Colors.white),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                      items: _documentTypes.map((String type) {
+                      items: provider.documentTypes.map((String type) {
                         return DropdownMenuItem<String>(
                           value: type,
-                          child: Text(type),
+                          child: Text(type,style: TextStyle(color: Colors.white),),
                         );
                       }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedDocumentType = newValue!;
-                        });
-                      },
+                      onChanged:provider.isKycApproved ? null :  provider.setDocumentType,
                     ),
                     const SizedBox(height: 16),
-
-                    // Document Number Field
+                    _buildLabel("Document Number"),
                     TextField(
-                      controller: _documentNumberController,
+                      controller: provider.documentNumberController,
+                      onChanged: provider.isKycApproved ? null : provider.setDocumentNumber,
+                      readOnly: provider.isKycApproved,
                       style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Document Number',
-                        labelStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon:
-                            const Icon(Icons.badge, color: Colors.white),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                      ),
+                      decoration: _inputDecoration(
+                          "Enter Document Number", Icons.badge),
                     ),
-                    const SizedBox(height: 16),
-
-                    // Upload Document
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: _uploadDocument,
-                        icon:
-                            const Icon(Icons.file_upload, color: Colors.white),
-                        label: const Text("Upload Document",
-                            style: TextStyle(color: Colors.white)),
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.white70),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                      ),
+                    const SizedBox(height: 20),
+                    _buildLabel("Government/Passport Id"),
+                    _uploadButton(
+                      "Upload Document",
+                      Icons.file_upload,
+                      () => provider.isKycApproved ? null :showImagePickerBottomSheet(context, false),
                     ),
-                    const SizedBox(height: 12),
-
-                    // Upload Selfie
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: _uploadSelfie,
-                        icon: const Icon(Icons.camera_alt, color: Colors.white),
-                        label: const Text("Upload Selfie",
-                            style: TextStyle(color: Colors.white)),
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.white70),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                      ),
+                    if (provider.documentImage != null)
+                      _imagePreview(
+                          provider.documentImage!, provider.removeDocumentImage)
+                    else if (provider.documentImageUrl != null)
+                      _imagePreviewNetwork(provider.documentImageUrl!,
+                          provider.removeDocumentImage),
+                    const SizedBox(height: 20),
+                    _buildLabel("Selfie With Upload Document"),
+                    _uploadButton(
+                      "Upload Selfie",
+                      Icons.camera_alt,
+                      () => provider.isKycApproved ? null : showImagePickerBottomSheet(context, true),
                     ),
-                    const SizedBox(height: 24),
-
-                    // Submit Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: _submitKyc,
-                        icon: const Icon(
-                          Iconsax.verify,
-                          color: Colors.amber,
-                        ),
-                        label: const Text("Submit"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white.withOpacity(0.2),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            side: const BorderSide(color: Colors.amber),
-                          ),
-                        ),
-                      ),
-                    )
+                    if (provider.selfieImage != null)
+                      _imagePreview(
+                          provider.selfieImage!, provider.removeSelfieImage)
+                    else if (provider.selfieImageUrl != null)
+                      _imagePreviewNetwork(
+                          provider.selfieImageUrl!, provider.removeSelfieImage),
                   ],
+                ),
+              ),
+            ),
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => provider.submitKyc(
+                    onSuccess: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("KYC submitted successfully!"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      Navigator.pop(context); // or navigate elsewhere
+                    },
+                    onError: (errorMessage) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(errorMessage),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    },
+                  ),
+                  icon: const Icon(Iconsax.verify, color: Colors.amber),
+                  label: const Text("Submit"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white.withOpacity(0.09),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: const BorderSide(color: Colors.amber),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  InputDecoration _inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      hintText: label,
+      hintStyle: const TextStyle(color: Colors.white70),
+      prefixIcon: Icon(icon, color: Colors.white),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+    );
+  }
+
+  Widget _uploadButton(String text, IconData icon, VoidCallback onTap) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: onTap,
+        icon: Icon(icon, color: Colors.white),
+        label: Text(text, style: const TextStyle(color: Colors.white)),
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: Colors.white70),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      ),
+    );
+  }
+
+  Widget _imagePreviewNetwork(String imageUrl, VoidCallback onRemove) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(imageUrl,
+                height: 120, width: 120, fit: BoxFit.cover),
+          ),
+          Positioned(
+            top: 4,
+            right: 4,
+            child: InkWell(
+              onTap: onRemove,
+              child: const Card(
+                shape: CircleBorder(),
+                color: Colors.black87,
+                child: Padding(
+                  padding: EdgeInsets.all(4.0),
+                  child: Icon(Icons.close, color: Colors.red, size: 18),
                 ),
               ),
             ),
@@ -229,5 +270,92 @@ class _VerifyKycState extends State<VerifyKyc> {
         ],
       ),
     );
+  }
+
+  Widget _imagePreview(File image, VoidCallback onRemove) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child:
+                Image.file(image, height: 120, width: 120, fit: BoxFit.cover),
+          ),
+          Positioned(
+            top: 4,
+            right: 4,
+            child: InkWell(
+              onTap: onRemove,
+              child: const Card(
+                shape: CircleBorder(),
+                color: Colors.black87,
+                child: Padding(
+                  padding: EdgeInsets.all(4.0),
+                  child: Icon(Icons.close, color: Colors.red, size: 18),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6, left: 4),
+      child: Text(text,
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+    );
+  }
+
+  void showImagePickerBottomSheet(BuildContext context, bool isSelfie) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Camera'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await _handleImagePick(context, isSelfie, ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Gallery'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await _handleImagePick(
+                      context, isSelfie, ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _handleImagePick(
+      BuildContext context, bool isSelfie, ImageSource source) async {
+    try {
+      await Provider.of<NewUserProvider>(context, listen: false)
+          .pickImage(isSelfie: isSelfie, source: source);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
   }
 }

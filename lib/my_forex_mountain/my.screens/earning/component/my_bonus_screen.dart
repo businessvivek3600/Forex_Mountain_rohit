@@ -87,6 +87,7 @@ class _BonusScreenState extends State<BonusScreen> {
           title: bodyLargeText(widget.title, context, fontSize: 20),
           backgroundColor: Colors.black,
           elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.amber),
         ),
         body: Container(
           decoration: BoxDecoration(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:forex_mountain/database/model/response/deposit_model.dart';
+import 'package:forex_mountain/my_forex_mountain/my.provider/my_user_provider.dart';
 import 'package:forex_mountain/screens/drawerPages/deposit_request/deposite_request.dart';
 import 'package:get/get.dart';
 import 'package:forex_mountain/screens/youtube_video_play_widget%20copy.dart';
@@ -175,6 +176,7 @@ class _ForexMountainsState extends State<ForexMountains> {
       ChangeNotifierProvider(create: (context) => sl.get<MyDashboardProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<MyEarningProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<MyWalletProvider>()),
+      ChangeNotifierProvider(create: (context) => sl.get<NewUserProvider>()),
     ];
   }
 }

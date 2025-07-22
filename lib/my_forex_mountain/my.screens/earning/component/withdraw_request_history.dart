@@ -85,6 +85,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
           title: bodyLargeText('Withdraw Requests', context, fontSize: 20),
           backgroundColor: Colors.black,
           elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.amber),
         ),
         body: SafeArea(
           child: Padding(
@@ -128,79 +129,101 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
   Widget buildWithdrawCard(BuildContext context, MyWithdrawRequestModel entry) {
     final String statusText = getStatusText(entry.status);
     final Color statusColor = getStatusColor(entry.status);
-print("-----------------${entry.id}-----------------");
-    // Format the date
+
     String formattedDate = '';
     try {
       final DateTime parsedDate = DateTime.parse(entry.createdAt);
-      formattedDate = DateFormat('dd MMM, yyyy – hh:mm a').format(parsedDate);
+      formattedDate = DateFormat('dd MMM, yyyy • hh:mm a').format(parsedDate);
     } catch (_) {
       formattedDate = entry.createdAt;
     }
 
-    return TransparentContainer(
-      margin: const EdgeInsets.only(top: 16),
-      borderWidth: 4,
-      onTap: () async{
-        final prov = Provider.of<MyEarningProvider>(context, listen: false);
-        await prov.fetchInvoice(entry.id); // uses ID
-        showDialog(
-          context: context,
-          builder: (_) => Consumer<MyEarningProvider>(
-            builder: (_, p, __) {
-              if (p.isLoadingInvoice) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (p.invoiceError != null) {
-                return AlertDialog(content: Text(p.invoiceError!));
-              } else if (p.invoiceDetail != null) {
-                return buildInvoiceDialog(p.invoiceDetail!); // pass model
-              } else {
-                return const AlertDialog(content: Text("No data"));
-              }
-            },
-          ),
-        );
+    return GestureDetector(
+      onTap: () async {
+        // final prov = Provider.of<MyEarningProvider>(context, listen: false);
+        // await prov.fetchInvoice(entry.id);
+        // showDialog(
+        //   context: context,
+        //   builder: (_) => Consumer<MyEarningProvider>(
+        //     builder: (_, p, __) {
+        //       if (p.isLoadingInvoice) {
+        //         return const Center(child: CircularProgressIndicator());
+        //       } else if (p.invoiceError != null) {
+        //         return AlertDialog(content: Text(p.invoiceError!));
+        //       } else if (p.invoiceDetail != null) {
+        //         return buildInvoiceDialog(p.invoiceDetail!);
+        //       } else {
+        //         return const AlertDialog(content: Text("No data"));
+        //       }
+        //     },
+        //   ),
+        // );
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 6),
+      child: Container(
+        margin: const EdgeInsets.only(top: 16),
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(1),
+          borderRadius: BorderRadius.circular(18),
+          gradient: LinearGradient(
+            colors: [
+              Colors.white.withOpacity(0.02),
+              Colors.white.withOpacity(0.06),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          border: Border.all(color: Colors.white.withOpacity(0.1),width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Date and Status
+            /// Top Row: Date & Status
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    const Icon(Iconsax.calendar, color: Colors.blueGrey, size: 18),
+                    const Icon(Iconsax.calendar, size: 16, color: Colors.white54),
                     const SizedBox(width: 6),
                     Text(
                       formattedDate,
                       style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
+                        color: Colors.white60,
+                        fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.15),
+                    color: statusColor.withOpacity(0.1),
                     border: Border.all(color: statusColor.withOpacity(0.4)),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(18),
                   ),
                   child: Row(
                     children: [
-                      Icon(Iconsax.tick_circle, size: 14, color: statusColor),
-                      const SizedBox(width: 4),
+                      Icon( entry.status == '0'
+                          ? Iconsax.timer
+                          : entry.status == '1'
+                          ? Iconsax.tick_circle
+                          : Iconsax.close_circle, size: 16, color: statusColor),
+                      const SizedBox(width: 6),
                       Text(
                         statusText,
                         style: TextStyle(
                           color: statusColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12.5,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
@@ -209,44 +232,45 @@ print("-----------------${entry.id}-----------------");
               ],
             ),
 
-            const SizedBox(height: 14),
+            const SizedBox(height: 16),
 
-            // User ID & Name
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _infoItem(
-                  icon: Iconsax.profile_circle,
-                  label: 'User ID',
-                  value: entry.username,
-                ),
-
-                _infoItem(
-                  label: 'Name',
-                  value: entry.name,
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            // Payment & Amount
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _infoItem(
-                  icon: Iconsax.card,
-                  label: 'Method',
-                  value: entry.paymentType,
-                  iconColor: Colors.amberAccent,
-                ),
-                _infoItem(
-
-                  label: 'Amount',
-                  value:
-                  '\$${double.tryParse(entry.netPayable)?.toStringAsFixed(2) ?? '0.00'}',
-                ),
-              ],
+            /// Info Tiles
+            _infoRow(Iconsax.profile_circle, "User ID", entry.username),
+            const SizedBox(height: 10),
+            _infoRow(Iconsax.user, "Name", entry.name),
+            const SizedBox(height: 10),
+            _infoRow(Iconsax.card, "Method", entry.paymentType),
+            const SizedBox(height: 10),
+            /// 🔹 Amount Section
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Iconsax.money, color: Colors.greenAccent, size: 20),
+                  const SizedBox(width: 6),
+                  Text(
+                    "\$${double.tryParse(entry.netPayable)?.toStringAsFixed(2) ?? '0.00'}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      shadows: [
+                        Shadow(
+                          color: Colors.greenAccent,
+                          blurRadius: 8,
+                          offset: Offset(0, 0),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -254,43 +278,32 @@ print("-----------------${entry.id}-----------------");
     );
   }
 
-  Widget _infoItem({
- IconData? icon,
-    required String label,
-    required String value,
-    Color iconColor = Colors.white70,
-  }) {
-    return Expanded(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Icon(icon, size: 16, color: iconColor),
-          const SizedBox(width: 6),
-          Flexible(
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: "$label:  ",
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  TextSpan(
-                    text: value,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ))
+
+  Widget _infoRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: Colors.white60),
+        const SizedBox(width: 8),
+        Text(
+          "$label: ",
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 12.5,
+            fontWeight: FontWeight.w500,
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13.5,
+              fontWeight: FontWeight.w600,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 
@@ -423,19 +436,5 @@ print("-----------------${entry.id}-----------------");
     );
   }
 
-  Widget _buildAmountRow(String label, String amount, {bool bold = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label,
-            style: TextStyle(
-                color: Colors.white70,
-                fontWeight: bold ? FontWeight.bold : null)),
-        Text(amount,
-            style: TextStyle(
-                color: Colors.white,
-                fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
-      ],
-    );
-  }
+
 }
