@@ -63,6 +63,7 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
           title: bodyLargeText('Fund Request', context, fontSize: 20),
           backgroundColor: Colors.black,
           elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.amber),
         ),
         body: SafeArea(
           child: Padding(

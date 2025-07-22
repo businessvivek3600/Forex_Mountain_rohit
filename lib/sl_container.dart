@@ -1,5 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:forex_mountain/my_forex_mountain/my.provider/my_user_provider.dart';
+import 'package:forex_mountain/my_forex_mountain/repositories/my_user_repo.dart';
 import 'package:forex_mountain/providers/deposit_request_provider.dart';
 import 'package:get_it/get_it.dart';
 import '/screens/youtube_video_play_widget.dart';
@@ -224,6 +226,9 @@ Future<void> initRepos() async {
           sharedPreferences: sl(),
         ));
   }
+  if(!sl.isRegistered<NewUserRepo>()) {
+    sl.registerLazySingleton(() => NewUserRepo(dioClient: sl(), sharedPreferences: sl()));
+  }
 
   /// --------------------------Providers------------------------
   if (!sl.isRegistered<NewAuthProvider>()) {
@@ -238,5 +243,8 @@ Future<void> initRepos() async {
   }
   if (!sl.isRegistered<MyWalletProvider>()) {
     sl.registerLazySingleton(() => MyWalletProvider(walletRepo: sl()));
+  }
+  if (!sl.isRegistered<NewUserProvider>()) {
+    sl.registerLazySingleton(() => NewUserProvider(newUserRepo: sl()));
   }
 }

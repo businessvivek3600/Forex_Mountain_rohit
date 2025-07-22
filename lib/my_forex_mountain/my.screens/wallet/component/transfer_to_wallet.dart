@@ -74,9 +74,10 @@ class _TransferToWalletState extends State<TransferToWallet> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: bodyLargeText('Transfer to  Transaction', context, fontSize: 20),
+          title: bodyLargeText('Transfer', context, fontSize: 20),
           backgroundColor: Colors.black,
           elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.amber),
           actions: [
             bodyLargeText('\$${walletBalance.toStringAsFixed(2)}', context, fontSize: 14),
             const SizedBox(width: 16),

@@ -84,37 +84,37 @@ class _EarningScreenState extends State<EarningScreen> {
                                 fit: BoxFit.contain,
                               ),
                             ),
-                            const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                      side: const BorderSide(color: Colors.amber),
-                                      foregroundColor: Colors.white,
-                                      padding:
-                                          const EdgeInsets.symmetric(vertical: 12),
-                                    ),
-                                    onPressed: () {
-                                    },
-                                    child: const Text('Fund/Request'),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                      side: const BorderSide(color: Colors.amber),
-                                      foregroundColor: Colors.white,
-                                      padding:
-                                          const EdgeInsets.symmetric(vertical: 12),
-                                    ),
-                                    onPressed: () {},
-                                    child: const Text('Withdraw'),
-                                  ),
-                                ),
-                              ],
-                            )
+                            // const SizedBox(height: 16),
+                            // Row(
+                            //   children: [
+                            //     Expanded(
+                            //       child: OutlinedButton(
+                            //         style: OutlinedButton.styleFrom(
+                            //           side: const BorderSide(color: Colors.amber),
+                            //           foregroundColor: Colors.white,
+                            //           padding:
+                            //               const EdgeInsets.symmetric(vertical: 12),
+                            //         ),
+                            //         onPressed: () {
+                            //         },
+                            //         child: const Text('Fund/Request'),
+                            //       ),
+                            //     ),
+                            //     const SizedBox(width: 12),
+                            //     Expanded(
+                            //       child: OutlinedButton(
+                            //         style: OutlinedButton.styleFrom(
+                            //           side: const BorderSide(color: Colors.amber),
+                            //           foregroundColor: Colors.white,
+                            //           padding:
+                            //               const EdgeInsets.symmetric(vertical: 12),
+                            //         ),
+                            //         onPressed: () {},
+                            //         child: const Text('Withdraw'),
+                            //       ),
+                            //     ),
+                            //   ],
+                            // )
                           ],
                         ),
                       ),

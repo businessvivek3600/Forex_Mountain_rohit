@@ -93,17 +93,11 @@ class MyWalletRepo {
 
   Future<ApiResponse> getWalletToTransaction(Map<String, String> map) async {
     try {
-      print('\n📤 [POST] Transfer To Wallet');
-      print('➡️ URL: ${url + MyAppConstants.transferToWallet}');
-      print('📝 Body: $map\n');
-
       Response response = await dioClient.post(
         url + MyAppConstants.transferToWallet,
         token: true,
         data: map,
       );
-
-      print('✅ API Response [${response.statusCode}]: ${response.data}\n');
 
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -121,8 +115,6 @@ class MyWalletRepo {
         data: map,
       );
 
-      print('✅ API Response [${response.statusCode}]: ${response.data}\n');
-
       return ApiResponse.withSuccess(response);
     } catch (e) {
       print('❌ API Error: ${ApiErrorHandler.getMessage(e)}\n');
@@ -132,18 +124,11 @@ class MyWalletRepo {
   ///------------------------
   Future<ApiResponse> transferToTransaction (Map<String, String> map) async {
     try {
-      print('\n📤 [POST] Transfer To Transaction Wallet');
-      print('➡️ URL: ${url + MyAppConstants.walletToTransaction}');
-      print('📝 Body: $map\n');
-
       Response response = await dioClient.post(
         url +  MyAppConstants.walletToTransaction,
         token: true,
         data: map,
       );
-
-      print('✅ API Response [${response.statusCode}]: ${response.data}\n');
-
       return ApiResponse.withSuccess(response);
     } catch (e) {
       print('❌ API Error: ${ApiErrorHandler.getMessage(e)}\n');

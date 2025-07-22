@@ -66,8 +66,7 @@ class _AddFundScreenState extends State<AddFundScreen> {
     final isLoading = context.watch<MyWalletProvider>().isFundRequestLoading;
 
     return Container(
-      width: double.infinity,
-      height: double.infinity,
+
       decoration: BoxDecoration(
         image: DecorationImage(
           image: userAppBgImageProvider(context),
@@ -80,6 +79,7 @@ class _AddFundScreenState extends State<AddFundScreen> {
           title: bodyLargeText('Add Fund', context, fontSize: 20),
           backgroundColor: Colors.black,
           elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.amber),
         ),
         body: SafeArea(
           child: SingleChildScrollView(

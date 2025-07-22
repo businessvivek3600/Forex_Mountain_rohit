@@ -23,11 +23,14 @@ class _PayoutScreenState extends State<PayoutScreen> {
   @override
   void initState() {
     super.initState();
-    final provider = Provider.of<MyEarningProvider>(context, listen: false);
-    provider.resetPayouts();
-    provider.fetchPayoutData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = Provider.of<MyEarningProvider>(context, listen: false);
+      provider.resetPayouts();
+      provider.fetchPayoutData();
+    });
 
     _scrollController.addListener(() {
+      final provider = Provider.of<MyEarningProvider>(context, listen: false);
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 100) {
         provider.fetchPayoutData(loadMore: true);
@@ -38,8 +41,6 @@ class _PayoutScreenState extends State<PayoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: userAppBgImageProvider(context),
@@ -52,6 +53,7 @@ class _PayoutScreenState extends State<PayoutScreen> {
           title: bodyLargeText('Payout', context, fontSize: 20),
           backgroundColor: Colors.black,
           elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.amber),
         ),
         body:
           SafeArea(
@@ -74,7 +76,6 @@ class _PayoutScreenState extends State<PayoutScreen> {
                     },
                     child: ListView.builder(
                       controller: _scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       itemCount: provider.payouts.length +
                           (provider.hasMorePayout ? 1 : 0), // +1 for loader
                       itemBuilder: (context, index) {
@@ -99,30 +100,34 @@ class _PayoutScreenState extends State<PayoutScreen> {
   }
 
   Widget buildPayoutCard(MyPayoutModel entry) {
-    Color statusColor;
-    Color bgColor;
+    final bool isPaid = entry.status == '1';
 
-    switch (entry.status.toLowerCase()) {
-      case '1':
-        statusColor = Colors.greenAccent;
-        bgColor = Colors.orange.withOpacity(0.2);
-        break;
-      case '0':
-        statusColor = Colors.redAccent;
-        bgColor = Colors.red.withOpacity(0.2);
-        break;
-      default:
-        statusColor = Colors.greenAccent;
-        bgColor = Colors.green.withOpacity(0.2);
-    }
-
-    return TransparentContainer(
+    return Container(
       margin: const EdgeInsets.only(top: 16),
-      borderWidth: 4,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: LinearGradient(
+          colors: [Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.3)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.4),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(
+          color: isPaid ? Colors.greenAccent : Colors.redAccent,
+          width: 1.5,
+        ),
+      ),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Date row
+          /// Date Row
           Row(
             children: [
               const Icon(Iconsax.calendar, color: Colors.white70, size: 16),
@@ -138,61 +143,45 @@ class _PayoutScreenState extends State<PayoutScreen> {
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
 
-          // Amount & Status
+          /// Amount + Status Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  bodyLargeText(
+                  Text(
                     '\$${double.tryParse(entry.amount)?.toStringAsFixed(2) ?? '0.00'}',
-                    context,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
               Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
-                  color: bgColor,
-                  borderRadius: BorderRadius.circular(12),
+                  color: isPaid ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(30),
                 ),
                 child: Text(
-                  entry.status,
+                  isPaid ? 'Paid' : 'Unpaid',
                   style: TextStyle(
-                    color: statusColor,
+                    color: isPaid ? Colors.green : Colors.red,
                     fontWeight: FontWeight.w600,
-                    fontSize: 12,
+                    fontSize: 14,
                   ),
                 ),
               ),
             ],
           ),
-
-          const SizedBox(height: 12),
-
-          // Optional details
-
         ],
       ),
     );
   }
+
 }
 
-class PayoutEntry {
-  final String date;
-  final String amount;
-  final String status;
-  final String details;
-
-  PayoutEntry({
-    required this.date,
-    required this.amount,
-    required this.status,
-    required this.details,
-  });
-}
