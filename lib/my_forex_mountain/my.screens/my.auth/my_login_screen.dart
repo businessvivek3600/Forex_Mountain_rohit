@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:forex_mountain/utils/color.dart';
 import 'package:forex_mountain/utils/picture_utils.dart';
 
 import '../../my.model/login_view_model.dart';
@@ -10,7 +9,9 @@ import '../drawer/packages/signup_screen.dart';
 import '../main_screen.dart';
 
 class MyLoginScreen extends StatefulWidget {
-  const MyLoginScreen({super.key});
+  final String? successMessage;
+
+  const MyLoginScreen({super.key, this.successMessage});
 
   @override
   State<MyLoginScreen> createState() => _MyLoginScreenState();
@@ -20,6 +21,23 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final message = widget.successMessage;
+      if (message != null && message.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +76,6 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                             ),
                             const SizedBox(height: 40),
 
-                            // Username label and field
                             const Text("Username", style: TextStyle(color: Colors.white70)),
                             const SizedBox(height: 6),
                             _textField(
@@ -69,7 +86,6 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                             ),
                             const SizedBox(height: 20),
 
-                            // Password label and field
                             const Text("Password", style: TextStyle(color: Colors.white70)),
                             const SizedBox(height: 6),
                             _textField(
@@ -87,7 +103,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                               alignment: Alignment.centerRight,
                               child: GestureDetector(
                                 onTap: () {
-                                  // Forgot password logic
+                                  // TODO: Forgot password
                                 },
                                 child: const Text(
                                   'Forgot password?',
@@ -100,15 +116,17 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                             ),
                             const SizedBox(height: 24),
 
-                            // Login Button
                             SizedBox(
                               width: double.infinity,
                               height: 48,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.amber,
+                                  backgroundColor: Colors.black54,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
+                                    side: const BorderSide(color: Colors.amber),
                                   ),
                                 ),
                                 onPressed: authProvider.isLoading
@@ -123,14 +141,32 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                                     if (authProvider.customer != null) {
                                       Navigator.pushReplacement(
                                         context,
-                                        MaterialPageRoute(builder: (_) => MainPage()),
+                                        MaterialPageRoute(
+                                          builder: (_) => MainPage(),
+                                        ),
+                                      );
+                                    } else if (authProvider.errorMessage ==
+                                        'Please verify your email before logging in.') {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          title: const Text('Email Verification Required'),
+                                          content: const Text(
+                                              'Your email is not verified. Please check your inbox.'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              child: const Text('OK'),
+                                            ),
+                                          ],
+                                        ),
                                       );
                                     } else {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
-                                          content: Text(
-                                            authProvider.errorMessage ?? 'Login failed',
-                                          ),
+                                          content: Text(authProvider.errorMessage ??
+                                              'Login failed'),
                                           backgroundColor: Colors.red,
                                         ),
                                       );
@@ -141,13 +177,13 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                                     ? const CircularProgressIndicator(color: Colors.white)
                                     : const Text(
                                   'Sign in',
-                                  style: TextStyle(color: Colors.white, fontSize: 16),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
                                 ),
                               ),
                             ),
                             const SizedBox(height: 24),
 
-                            // Register link
                             Center(
                               child: RichText(
                                 text: TextSpan(
@@ -165,7 +201,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => const MySignupScreen(),
+                                              builder: (context) =>
+                                              const MySignupScreen(),
                                             ),
                                           );
                                         },
