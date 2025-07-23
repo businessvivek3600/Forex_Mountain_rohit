@@ -38,7 +38,9 @@ class _HomePageState extends State<HomePage> {
       final dashboardProvider =
           Provider.of<MyDashboardProvider>(context, listen: false);
       dashboardProvider.getDashboardData();
-      dashboardProvider.getBankDetails(context);
+      dashboardProvider.getBankDetails(
+
+      );
       dashboardProvider.getCompanyInfo(context);
     });
   }

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
 import 'change_password.dart';
-import 'receiving_details.dart';
+import 'payment_details.dart';
+import 'profile_page.dart';
 import 'verify_KYC.dart';
 import 'package:forex_mountain/utils/color.dart';
 import 'package:forex_mountain/utils/picture_utils.dart';
@@ -100,8 +101,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   buildGlassTile(Iconsax.password_check, "Change Password", () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()));
                   }),
-                  buildGlassTile(Iconsax.message, "Receiving Details", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const ReceivingDetails()));
+                  buildGlassTile(Iconsax.message, "Payment Details", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentDetailsPage()));
                   }),
                   buildGlassTile(Iconsax.verify, "Verify KYC", () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const VerifyKyc()));

@@ -66,7 +66,7 @@ class MyDashboardProvider with ChangeNotifier {
   }
 
 ///___________________GET BANK DETAILS___________________
-  Future<void> getBankDetails(t) async {
+  Future<void> getBankDetails() async {
     _isLoadingBank = true;
     notifyListeners();
 
