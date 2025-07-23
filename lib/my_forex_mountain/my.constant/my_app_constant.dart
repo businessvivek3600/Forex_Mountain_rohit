@@ -15,6 +15,7 @@ class MyAppConstants {
   static const String changePassword = 'change_password';
   static const String addKyc = 'kyc_edit';
   static const String getKyc = 'kyc';
+  static const String editBank = 'edit_bank';
 
   ///Auth----------
   static const String signup = 'signup';

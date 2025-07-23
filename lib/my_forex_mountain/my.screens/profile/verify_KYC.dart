@@ -44,7 +44,7 @@ class _VerifyKycState extends State<VerifyKyc> {
             backgroundColor: Colors.transparent,
             appBar: AppBar(
               surfaceTintColor: Colors.transparent,
-              title: bodyLargeText("VERIFY KYC", context, fontSize: 16),
+              title: bodyLargeText("VERIFY KYC", context),
               backgroundColor: Colors.black,
               elevation: 0,
               iconTheme: const IconThemeData(color: Colors.amber),
@@ -144,7 +144,7 @@ class _VerifyKycState extends State<VerifyKyc> {
                     ),
                     const SizedBox(height: 20),
                     _buildLabel("Government/Passport Id"),
-                    _uploadButton(
+                    if (!provider.isKycApproved)  _uploadButton(
                       "Upload Document",
                       Icons.file_upload,
                       () => provider.isKycApproved ? null :showImagePickerBottomSheet(context, false),
@@ -157,7 +157,7 @@ class _VerifyKycState extends State<VerifyKyc> {
                           provider.removeDocumentImage),
                     const SizedBox(height: 20),
                     _buildLabel("Selfie With Upload Document"),
-                    _uploadButton(
+                    if (!provider.isKycApproved)    _uploadButton(
                       "Upload Selfie",
                       Icons.camera_alt,
                       () => provider.isKycApproved ? null : showImagePickerBottomSheet(context, true),
@@ -172,7 +172,9 @@ class _VerifyKycState extends State<VerifyKyc> {
                 ),
               ),
             ),
-            bottomNavigationBar: Padding(
+            bottomNavigationBar: provider.isKycApproved
+                ? null
+                : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               child: SizedBox(
                 width: double.infinity,
