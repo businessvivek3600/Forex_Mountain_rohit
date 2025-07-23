@@ -173,9 +173,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                                     }
                                   }
                                 },
-                                child: authProvider.isLoading
-                                    ? const CircularProgressIndicator(color: Colors.white)
-                                    : const Text(
+                                child: const Text(
                                   'Sign in',
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16),

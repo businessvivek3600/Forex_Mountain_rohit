@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import '/utils/default_logger.dart';
 
 class CompanyInfoModel {
@@ -61,6 +60,19 @@ class CompanyInfoModel {
   String? test_ios;
   String? popup_url;
 
+  // ✅ Newly added fields from updated JSON
+  String? minimumWithdraw;
+  String? minimumTransfer;
+  String? transferCharge;
+  String? adminCharge;
+  String? coin1InUsd;
+  String? upiId;
+  String? bank;
+  String? accountNo;
+  String? bankCode;
+  String? usdt;
+  String? usdtImage;
+
   CompanyInfoModel({
     this.companyId,
     this.companyName,
@@ -119,6 +131,17 @@ class CompanyInfoModel {
     this.test_android,
     this.test_ios,
     this.popup_url,
+    this.minimumWithdraw,
+    this.minimumTransfer,
+    this.transferCharge,
+    this.adminCharge,
+    this.coin1InUsd,
+    this.upiId,
+    this.bank,
+    this.accountNo,
+    this.bankCode,
+    this.usdt,
+    this.usdtImage,
   });
 
   CompanyInfoModel.fromJson(Map<String, dynamic> json) {
@@ -152,28 +175,26 @@ class CompanyInfoModel {
     euroToUsdt = json['euro_to_usdt'];
     usdToEuro = json['usd_to_euro'];
     popupImg = json['popup_img'];
+
     try {
       if (json['popup_image'] != null) {
         var data = json['popup_image'];
-
         if (data is String) {
           popupImage = [
-            {
-              "file_name": data,
-            }
+            {"file_name": data}
           ];
         } else {
           List<Map<String, dynamic>> popup = [];
           jsonDecode(json['popup_image']).forEach((e) {
-            // infoLog('CompanyInfoModel.fromJson  popup-img $e');
             popup.add(e);
           });
           popupImage = popup;
         }
       }
     } catch (e) {
-      errorLog('CompanyInfoModel.fromJson $e');
+      errorLog('CompanyInfoModel.fromJson popup_image parse error: $e');
     }
+
     runCronVal = json['run_cron_val'];
     runCronDeactiveClient = json['run_cron_deactive_client'];
     autoDeductAmgn = json['auto_deduct_amgn'];
@@ -200,6 +221,19 @@ class CompanyInfoModel {
     test_android = json['test_android'];
     test_ios = json['test_ios'];
     popup_url = json['popup_url'];
+
+    // ✅ Newly added field parsing
+    minimumWithdraw = json['minimum_withdraw'];
+    minimumTransfer = json['minimum_transfer'];
+    transferCharge = json['transfer_charge'];
+    adminCharge = json['admin_charge'];
+    coin1InUsd = json['coin_1_in_usd'];
+    upiId = json['upi_id'];
+    bank = json['bank'];
+    accountNo = json['account_no'];
+    bankCode = json['bank_code'];
+    usdt = json['usdt'];
+    usdtImage = json['usdt_image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -261,6 +295,20 @@ class CompanyInfoModel {
     data['test_android'] = test_android;
     data['test_ios'] = test_ios;
     data['popup_url'] = popup_url;
+
+    // ✅ Newly added fields to JSON
+    data['minimum_withdraw'] = minimumWithdraw;
+    data['minimum_transfer'] = minimumTransfer;
+    data['transfer_charge'] = transferCharge;
+    data['admin_charge'] = adminCharge;
+    data['coin_1_in_usd'] = coin1InUsd;
+    data['upi_id'] = upiId;
+    data['bank'] = bank;
+    data['account_no'] = accountNo;
+    data['bank_code'] = bankCode;
+    data['usdt'] = usdt;
+    data['usdt_image'] = usdtImage;
+
     return data;
   }
 }

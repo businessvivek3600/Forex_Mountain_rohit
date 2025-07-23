@@ -23,9 +23,11 @@ class NewAuthProvider with ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     try {
-      final loginRequest = LoginRequestModel(username: username, password: password);
+      final loginRequest =
+          LoginRequestModel(username: username, password: password);
       final response = await authRepository.login(loginRequest);
       final data = response.response?.data;
+      print(data);
       if (data['customer'] != null) {
         _customer = MyCustomerModel.fromJson(data['customer']);
         _token = _customer?.loginToken;
@@ -66,9 +68,16 @@ class NewAuthProvider with ChangeNotifier {
       );
 
       final response = await authRepository.signUp(signUpRequest);
-      return true;
+      final data = response.response?.data;
+
+      if (data['status'] == true) {
+        return true;
+      } else {
+        _errorMessage = data['message'] ?? 'Signup failed';
+        return false;
+      }
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = e.toString(); // ✅ Now this works
       return false;
     } finally {
       _isLoading = false;
@@ -76,8 +85,11 @@ class NewAuthProvider with ChangeNotifier {
     }
   }
 
+
   void logout() {
     _token = null;
     notifyListeners();
   }
 }
+
+
