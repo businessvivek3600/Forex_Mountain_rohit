@@ -38,10 +38,10 @@ class _HomePageState extends State<HomePage> {
       final dashboardProvider =
           Provider.of<MyDashboardProvider>(context, listen: false);
       dashboardProvider.getDashboardData();
-      dashboardProvider.getBankDetails(
+     // dashboardProvider.getBankDetails(
 
-      );
-      dashboardProvider.getCompanyInfo(context);
+   //   );
+    //  dashboardProvider.getCompanyInfo(context);
     });
   }
 
@@ -90,8 +90,8 @@ class HomeDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MyDashboardProvider>(
         builder: (context, dashboardProvider, _) {
-          final dashboardData = dashboardProvider.dashboardData;
-
+          final dashboardData = dashboardProvider.dashboardData;print("-----------------");
+print(dashboardData);
           // Show shimmer while loading
           if (dashboardData == null) {
             return _buildShimmerPlaceholder();
