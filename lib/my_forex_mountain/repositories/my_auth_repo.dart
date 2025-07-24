@@ -1,9 +1,5 @@
-
-
 import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:forex_mountain/my_forex_mountain/my.model/login_request_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,19 +9,26 @@ import '../../database/dio/exception/api_error_handler.dart';
 import '../../database/functions.dart';
 import '../../database/model/response/base/api_response.dart';
 import '../../utils/default_logger.dart';
-import '../my.constant/my_app_constant.dart';
-import '../my.model/sign_request_model.dart';
 
+import '../../utils/my_logger.dart';
+import '../my.constant/my_app_constant.dart';
+import '../my.model/MYforgot_password_response.dart';
+import '../my.model/login_request_model.dart';
+import '../my.model/sign_request_model.dart';
 
 class NewAuthRepo {
   final DioClient dioClient;
-final SharedPreferences sharedPreferences;
-  NewAuthRepo({required this.dioClient, required this.sharedPreferences});
+  final SharedPreferences sharedPreferences;
 
-static const String tag = 'AuthRepo';
+  NewAuthRepo({
+    required this.dioClient,
+    required this.sharedPreferences,
+  });
 
-final String url = MyAppConstants.baseUrl;
+  static const String tag = 'AuthRepo';
+  final String baseUrl = MyAppConstants.baseUrl;
 
+  // Save token to shared preferences
   Future<void> saveUserToken(String token) async {
     dioClient.updateUserToken(token);
     try {
@@ -35,7 +38,7 @@ final String url = MyAppConstants.baseUrl;
     }
   }
 
-  ///:Login
+  /// Login
   Future<ApiResponse> login(LoginRequestModel loginBody) async {
     try {
       final fcmToken = await getDeviceToken(username: loginBody.username);
@@ -43,7 +46,7 @@ final String url = MyAppConstants.baseUrl;
       loginBody.device_name = await getDeviceName();
 
       final response = await dioClient.post(
-        url + MyAppConstants.login,
+        '$baseUrl${MyAppConstants.login}',
         data: loginBody.toJson(),
       );
       return ApiResponse.withSuccess(response);
@@ -55,11 +58,11 @@ final String url = MyAppConstants.baseUrl;
   /// Signup
   Future<ApiResponse> signUp(SignupModel signupBody) async {
     try {
-      debugPrint('🔗 API URL: $url${MyAppConstants.signup}');
+      debugPrint('🔗 API URL: $baseUrl${MyAppConstants.signup}');
       debugPrint('📦 POST BODY: ${signupBody.toJson()}');
 
       final response = await dioClient.post(
-        url + MyAppConstants.signup,
+        '$baseUrl${MyAppConstants.signup}',
         data: signupBody.toJson(),
       );
 
@@ -70,5 +73,24 @@ final String url = MyAppConstants.baseUrl;
     }
   }
 
-}
+  /// Forgot Password
+  Future<ApiResponse>forgotPassword(String email ) async {
+    try {
+      debugPrint('🔗 API URL: $baseUrl${MyAppConstants.forgetPassword}');
+      debugPrint('📦 POST BODY: ${email}');
 
+      final response = await dioClient.post(
+        '$baseUrl${MyAppConstants.forgetPassword}',
+        data: {
+          'email' : email
+        },
+      );
+
+      debugPrint('✅ ForgotPassword RESPONSE: ${response.data}');
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
+}
