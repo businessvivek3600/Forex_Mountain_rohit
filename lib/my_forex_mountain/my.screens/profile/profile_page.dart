@@ -21,7 +21,94 @@ class UserProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dashboardProvider = Provider.of<MyDashboardProvider>(context);
-    final customer = dashboardProvider.dashboardData?.customer!;
+    final customer = dashboardProvider.dashboardData?.customer;
+
+    if (dashboardProvider.isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: [
+              const SizedBox(height: 20),
+              Center(
+                child: Shimmer.fromColors(
+                  baseColor: Colors.white30,
+                  highlightColor: Colors.white54,
+                  child: const CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildShimmerCard(),
+              const SizedBox(height: 20),
+              _buildShimmerCard(),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (customer == null) {
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: [
+              const SizedBox(height: 20),
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.amber.withOpacity(0.3),
+                        Colors.deepOrange.withOpacity(0.1)
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.amber.withOpacity(0.4),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: SizedBox(
+                      height: 75,
+                      width: 75,
+                      child: Image.asset(
+                        "assets/images/appLogo_s.png",
+                        width: 50,
+                        height: 50,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const GlassCard(
+                padding: EdgeInsets.all(24),
+                borderRadius: 20,
+                blurSigma: 15,
+                child: Center(
+                  child: Text(
+                    "No data found.",
+                    style: TextStyle(color: Colors.white70, fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
 
     return Container(
       decoration: BoxDecoration(
@@ -162,9 +249,10 @@ class UserProfilePage extends StatelessWidget {
                       _infoRow(Iconsax.home, "House No.",customer.customerShortAddress ?? ""),
                       _infoRow(
                           Iconsax.building, "Address 1", customer.customerAddress1),
-                      _infoRow(Iconsax.location_tick, "Address 2",
+                      _infoRow(Iconsax.building, "Address 2",
                           customer.customerAddress2),
                       _infoRow(Iconsax.location_tick, "State", customer.customerAddress2),
+                      _infoRow(Iconsax.global, "State", customer.countryText),
                       _infoRow(Iconsax.code, "Zip Code", customer.zip ?? ""),
                     ],
                   ),
