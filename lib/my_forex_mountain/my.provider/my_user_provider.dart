@@ -161,7 +161,10 @@ class NewUserProvider with ChangeNotifier {
         _kycData = MyKycData.fromJson(response.response!.data['data']);
         documentNumber = _kycData!.docNumber ?? '';
         documentNumberController.text = documentNumber;
-        documentTypes = _kycData!.docTypeSel ?? [];
+        if (!documentTypes.contains('Select')) {
+          documentTypes.insert(0, 'Select');
+        }
+
         documentImageUrl = _kycData!.uploadFirstProof;
 
         selfieImageUrl = _kycData!.uploadSecondProof;

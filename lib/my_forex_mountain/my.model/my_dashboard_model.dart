@@ -18,9 +18,14 @@ class DashboardModel {
       title: json['title'],
       customer: json['customer'] != null ? MyCustomerModel.fromJson(json['customer']) : null,
       memberSale: json['member_sale'] != null ? MemberSaleModel.fromJson(json['member_sale']) : null,
-      buyPackages: (json['buy_packages'] as List?)?.map((e) => BuyPackageModel.fromJson(e)).toList(),
+      buyPackages: json['buy_packages'] is List
+          ? (json['buy_packages'] as List)
+          .map((e) => BuyPackageModel.fromJson(e))
+          .toList()
+          : [],
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {

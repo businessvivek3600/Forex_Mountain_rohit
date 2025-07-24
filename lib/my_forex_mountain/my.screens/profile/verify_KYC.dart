@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../screens/dashboard/main_page.dart';
 import '../../../utils/picture_utils.dart';
 import '../../../utils/text.dart';
@@ -25,14 +26,37 @@ class _VerifyKycState extends State<VerifyKyc> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Consumer<NewUserProvider>(
       builder: (context, provider, _) {
         if (provider.isLoadingKyc) {
-          return const Center(child: CircularProgressIndicator());
+          return Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: userAppBgImageProvider(context),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                surfaceTintColor: Colors.transparent,
+                title: bodyLargeText("VERIFY KYC", context),
+                backgroundColor: Colors.black,
+                elevation: 0,
+                iconTheme: const IconThemeData(color: Colors.amber),
+              ),
+              body: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: buildShimmerCard(), // Your shimmer widget here
+                ),
+              ),
+            ),
+          );
         }
+
         return Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -62,16 +86,16 @@ class _VerifyKycState extends State<VerifyKyc> {
                             provider.isKycApproved
                                 ? 'Your KYC Verification is Approved'
                                 : provider.isKycRejected
-                                ? 'Your KYC Verification is Rejected'
-                                : 'Your KYC Verification is Pending',
+                                    ? 'Your KYC Verification is Rejected'
+                                    : 'Your KYC Verification is Pending',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: provider.isKycApproved
                                   ? Colors.green
                                   : provider.isKycRejected
-                                  ? Colors.red
-                                  : Colors.amber, // yellow for pending
+                                      ? Colors.red
+                                      : Colors.amber, // yellow for pending
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -79,18 +103,17 @@ class _VerifyKycState extends State<VerifyKyc> {
                             provider.isKycApproved
                                 ? Iconsax.tick_circle
                                 : provider.isKycRejected
-                                ? Iconsax.close_circle
-                                : Iconsax.info_circle,
+                                    ? Iconsax.close_circle
+                                    : Iconsax.info_circle,
                             color: provider.isKycApproved
                                 ? Colors.green
                                 : provider.isKycRejected
-                                ? Colors.red
-                                : Colors.amber,
+                                    ? Colors.red
+                                    : Colors.amber,
                             size: 20,
                           ),
                         ],
                       ),
-
                     ),
                     const SizedBox(height: 20),
                     _buildLabel("Country of Residence"),
@@ -99,10 +122,10 @@ class _VerifyKycState extends State<VerifyKyc> {
                         provider.isKycApproved
                             ? null
                             : showCountryPicker(
-                          context: context,
-                          showPhoneCode: false,
-                          onSelect: provider.selectCountry,
-                        );
+                                context: context,
+                                showPhoneCode: false,
+                                onSelect: provider.selectCountry,
+                              );
                       },
                       child: AbsorbPointer(
                         child: TextFormField(
@@ -118,7 +141,10 @@ class _VerifyKycState extends State<VerifyKyc> {
                     const SizedBox(height: 20),
                     _buildLabel("Document Type"),
                     DropdownButtonFormField<String>(
-                      value: provider.selectedDocumentType,
+                      value: provider.documentTypes
+                              .contains(provider.selectedDocumentType)
+                          ? provider.selectedDocumentType
+                          : null,
                       dropdownColor: Colors.black,
                       iconEnabledColor: Colors.white,
                       decoration: _inputDecoration(
@@ -127,16 +153,23 @@ class _VerifyKycState extends State<VerifyKyc> {
                       items: provider.documentTypes.map((String type) {
                         return DropdownMenuItem<String>(
                           value: type,
-                          child: Text(type,style: TextStyle(color: Colors.white),),
+                          child: Text(
+                            type,
+                            style: TextStyle(color: Colors.white),
+                          ),
                         );
                       }).toList(),
-                      onChanged:provider.isKycApproved ? null :  provider.setDocumentType,
+                      onChanged: provider.isKycApproved
+                          ? null
+                          : provider.setDocumentType,
                     ),
                     const SizedBox(height: 16),
                     _buildLabel("Document Number"),
                     TextField(
                       controller: provider.documentNumberController,
-                      onChanged: provider.isKycApproved ? null : provider.setDocumentNumber,
+                      onChanged: provider.isKycApproved
+                          ? null
+                          : provider.setDocumentNumber,
                       readOnly: provider.isKycApproved,
                       style: const TextStyle(color: Colors.white),
                       decoration: _inputDecoration(
@@ -144,11 +177,14 @@ class _VerifyKycState extends State<VerifyKyc> {
                     ),
                     const SizedBox(height: 20),
                     _buildLabel("Government/Passport Id"),
-                    if (!provider.isKycApproved)  _uploadButton(
-                      "Upload Document",
-                      Icons.file_upload,
-                      () => provider.isKycApproved ? null :showImagePickerBottomSheet(context, false),
-                    ),
+                    if (!provider.isKycApproved)
+                      _uploadButton(
+                        "Upload Document",
+                        Icons.file_upload,
+                        () => provider.isKycApproved
+                            ? null
+                            : showImagePickerBottomSheet(context, false),
+                      ),
                     if (provider.documentImage != null)
                       _imagePreview(
                           provider.documentImage!, provider.removeDocumentImage)
@@ -157,11 +193,14 @@ class _VerifyKycState extends State<VerifyKyc> {
                           provider.removeDocumentImage),
                     const SizedBox(height: 20),
                     _buildLabel("Selfie With Upload Document"),
-                    if (!provider.isKycApproved)    _uploadButton(
-                      "Upload Selfie",
-                      Icons.camera_alt,
-                      () => provider.isKycApproved ? null : showImagePickerBottomSheet(context, true),
-                    ),
+                    if (!provider.isKycApproved)
+                      _uploadButton(
+                        "Upload Selfie",
+                        Icons.camera_alt,
+                        () => provider.isKycApproved
+                            ? null
+                            : showImagePickerBottomSheet(context, true),
+                      ),
                     if (provider.selfieImage != null)
                       _imagePreview(
                           provider.selfieImage!, provider.removeSelfieImage)
@@ -175,43 +214,44 @@ class _VerifyKycState extends State<VerifyKyc> {
             bottomNavigationBar: provider.isKycApproved
                 ? null
                 : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () => provider.submitKyc(
-                    onSuccess: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("KYC submitted successfully!"),
-                          backgroundColor: Colors.green,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () => provider.submitKyc(
+                          onSuccess: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("KYC submitted successfully!"),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                            Navigator.pop(context); // or navigate elsewhere
+                          },
+                          onError: (errorMessage) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(errorMessage),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          },
                         ),
-                      );
-                      Navigator.pop(context); // or navigate elsewhere
-                    },
-                    onError: (errorMessage) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(errorMessage),
-                          backgroundColor: Colors.red,
+                        icon: const Icon(Iconsax.verify, color: Colors.amber),
+                        label: const Text("Submit"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white.withOpacity(0.09),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: const BorderSide(color: Colors.amber),
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                  icon: const Icon(Iconsax.verify, color: Colors.amber),
-                  label: const Text("Submit"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white.withOpacity(0.09),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: const BorderSide(color: Colors.amber),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
           ),
         );
       },
@@ -270,6 +310,28 @@ class _VerifyKycState extends State<VerifyKyc> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buildShimmerCard() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[800]!,
+      highlightColor: Colors.grey[700]!,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List.generate(3, (index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Container(
+              height: 60,
+              decoration: BoxDecoration(
+                color: Colors.grey[900],
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

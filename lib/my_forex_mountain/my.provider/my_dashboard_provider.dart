@@ -17,7 +17,7 @@ class MyDashboardProvider with ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
-  DashboardModel?  get dashboardData => _dashboardData;
+  DashboardModel? get dashboardData => _dashboardData;
 
   BankDetailsModel? _bankDetails;
   BankDetailsModel? get bankDetails => _bankDetails;
@@ -27,7 +27,6 @@ class MyDashboardProvider with ChangeNotifier {
 
   MyCompanyInfo? _companyInfo;
   MyCompanyInfo? get companyInfo => _companyInfo;
-
 
   void setLoading(bool loading) {
     _isLoading = loading;
@@ -48,10 +47,17 @@ class MyDashboardProvider with ChangeNotifier {
 
     if (response.response != null && response.response?.statusCode == 200) {
       final resBody = response.response?.data;
-print(resBody);
+      print(resBody);
+
       try {
         final data = resBody['data'];
-        _dashboardData = DashboardModel.fromJson(data);
+        if (data == null) {
+          _dashboardData = null;
+          _errorMessage = "No data available.";
+          debugPrint("⚠️ Dashboard data is null.");
+        } else {
+          _dashboardData = DashboardModel.fromJson(data);
+        }
       } catch (e) {
         _errorMessage = 'Parsing error: ${e.toString()}';
         debugPrint('❌ JSON Parsing error: $e');
@@ -65,7 +71,7 @@ print(resBody);
     notifyListeners();
   }
 
-///___________________GET BANK DETAILS___________________
+  ///___________________GET BANK DETAILS___________________
   Future<void> getBankDetails() async {
     _isLoadingBank = true;
     notifyListeners();
@@ -74,7 +80,8 @@ print(resBody);
 
     if (response.response != null && response.response?.statusCode == 200) {
       try {
-        _bankDetails = BankDetailsModel.fromJson(response.response!.data['data']);
+        _bankDetails =
+            BankDetailsModel.fromJson(response.response!.data['data']);
       } catch (e) {
         debugPrint('⚠️ Error parsing bank data: $e');
       }
@@ -106,6 +113,4 @@ print(resBody);
     _isLoadingBank = false;
     notifyListeners();
   }
-
 }
-
