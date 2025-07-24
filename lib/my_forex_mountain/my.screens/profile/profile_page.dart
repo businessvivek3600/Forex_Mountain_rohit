@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/constants/assets_constants.dart';
+import 'package:forex_mountain/my_forex_mountain/my.screens/drawer/custom_drawer.dart';
 import 'package:forex_mountain/my_forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ class UserProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final dashboardProvider = Provider.of<MyDashboardProvider>(context);
     final customer = dashboardProvider.dashboardData?.customer;
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     if (dashboardProvider.isLoading) {
       return Scaffold(
@@ -118,12 +120,16 @@ class UserProfilePage extends StatelessWidget {
         ),
       ),
       child: Scaffold(
+        key: _scaffoldKey, // Add the key
         backgroundColor: Colors.transparent,
+        drawer: const CustomAppDrawer(),
         appBar: AppBar(
           surfaceTintColor: Colors.transparent,
           leading: IconButton(
             icon: const Icon(Iconsax.element_4, color: Colors.amber),
-            onPressed: () {},
+            onPressed: () {
+              _scaffoldKey.currentState?.openDrawer();
+            },
           ),
           title: bodyLargeText('PROFILE', context, fontSize: 20),
           backgroundColor: Colors.black,
