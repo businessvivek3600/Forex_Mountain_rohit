@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:forex_mountain/constants/assets_constants.dart';
 import 'package:forex_mountain/my_forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
+import '../../my.provider/my_dashboard_provider.dart';
 import 'change_password.dart';
+import 'edit _profile_page.dart';
 import 'payment_details.dart';
 import 'profile_page.dart';
 import 'verify_KYC.dart';
@@ -10,152 +15,236 @@ import 'package:forex_mountain/utils/picture_utils.dart';
 import 'package:forex_mountain/utils/text.dart';
 import 'package:forex_mountain/my_forex_mountain/widgets/glass_card.dart';
 
-class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
-
-  @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
-}
-
-class _EditProfilePageState extends State<EditProfilePage> {
-  final TextEditingController firstNameController = TextEditingController(text: "YALLAPPA Y");
-  final TextEditingController lastNameController = TextEditingController(text: "NAREYAVAR");
-  final TextEditingController emailController = TextEditingController(text: "manjuyn5318@gmail.com");
-  final TextEditingController mobileController = TextEditingController(text: "9972212183");
-  final TextEditingController dobController = TextEditingController(text: "01-01-1417");
-  final TextEditingController zipController = TextEditingController(text: "581325");
-  final TextEditingController cityController = TextEditingController(text: "DANDELI");
-  final TextEditingController houseNoController = TextEditingController(text: "# 158 GANDHI NAGAR DANDELI");
-  final TextEditingController address1Controller = TextEditingController(text: "NEAR KANNADA SCHOOL DANDELI");
-  final TextEditingController address2Controller = TextEditingController(text: "DANDELI");
-
-  String selectedState = '';
-  final List<String> stateList = ['Karnataka', 'Maharashtra', 'Goa', 'Tamil Nadu'];
+class UserProfilePage extends StatelessWidget {
+  const UserProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: mainColor,
-      appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(Iconsax.element_4, color: Colors.amber),
-          onPressed: () {},
+    final dashboardProvider = Provider.of<MyDashboardProvider>(context);
+    final customer = dashboardProvider.dashboardData?.customer!;
+
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: userAppBgImageProvider(context),
+          fit: BoxFit.cover,
         ),
-        title: bodyLargeText('EDIT PROFILE', context, fontSize: 20),
-        backgroundColor: Colors.black,
-        elevation: 0,
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: userAppBgImageProvider(context),
-            fit: BoxFit.cover,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          surfaceTintColor: Colors.transparent,
+          leading: IconButton(
+            icon: const Icon(Iconsax.element_4, color: Colors.amber),
+            onPressed: () {},
           ),
+          title: bodyLargeText('PROFILE', context, fontSize: 20),
+          backgroundColor: Colors.black,
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 16),
-                  TransparentContainer(
-                    child: Column(
-                      children: [
-                        buildTextField("Firstname*", firstNameController),
-                        buildTextField("Lastname*", lastNameController),
-                        buildTextField("Email* Verified Email Address", emailController, readOnly: true),
-                        buildPhoneRow(),
-                        buildTextField("Date of Birth*", dobController),
-                        buildTextField("Zip", zipController),
-                        buildTextField("Country", TextEditingController(text: "India"), readOnly: true),
-                        buildDropdownField("State", stateList),
-                        buildTextField("City", cityController),
-                        buildTextField("House/Flat No", houseNoController),
-                        buildTextField("Address1", address1Controller),
-                        buildTextField("Address 2 (optional)", address2Controller),
-                        const SizedBox(height: 20),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: Colors.amber),
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                            ),
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Profile Updated")),
-                              );
-                            },
-                            child: const Text('Update Profile'),
-                          ),
-                        ),
-                      ],
+        body: dashboardProvider.isLoading
+            ? Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: ListView(
+            children: [
+              const SizedBox(height: 20),
+              Center(
+                child: Shimmer.fromColors(
+                  baseColor: Colors.white30,
+                  highlightColor: Colors.white54,
+                  child: const CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildShimmerCard(),
+              const SizedBox(height: 20),
+              _buildShimmerCard(),
+            ],
+          ),
+        )
+            : ListView(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          children: [
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.amber.withOpacity(0.3),
+                      Colors.deepOrange.withOpacity(0.1)
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.amber.withOpacity(0.4),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ClipOval(
+                  child: SizedBox(
+                    height: 75,
+                    width: 75,
+                    child: Image.asset(
+                      "assets/images/appLogo_s.png",
+                      width: 50,
+                      height: 50,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  buildGlassTile(Iconsax.password_check, "Change Password", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()));
-                  }),
-                  buildGlassTile(Iconsax.message, "Payment Details", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentDetailsPage()));
-                  }),
-                  buildGlassTile(Iconsax.verify, "Verify KYC", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const VerifyKyc()));
-                  }),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(
+                      "${customer!.firstName} ${customer.lastName}",
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => EditProfilePage(customer: customer)),
+                      ).then((result) {
+                        if (result == true) {
+                          // ⬇️ Refresh dashboard data after profile update
+                          Provider.of<MyDashboardProvider>(context, listen: false).getDashboardData();
+                        }
+                      });
+                    },
+                    child: const Icon(Iconsax.edit, color: Colors.amber, size: 18),
+                  ),
                 ],
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget buildGlassTile(IconData icon, String label, VoidCallback onTap) {
-    return GlassCard(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.amber),
-            const SizedBox(width: 12),
-            Expanded(
+            Center(
               child: Text(
-                label,
-                style: const TextStyle(color: Colors.white, fontSize: 16),
+               customer.customerEmail ?? "",
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                ),
               ),
             ),
-            const Icon(Iconsax.arrow_right_3, color: Colors.white),
+            const SizedBox(height: 8),
+
+            /// Profile Details Card with stacked Edit Icon
+            Stack(
+              children: [
+                GlassCard(
+                  padding: const EdgeInsets.all(20),
+                  borderRadius: 20,
+                  blurSigma: 15,
+                  child: Column(
+                    children: [
+                      _infoRow(Iconsax.call, "Mobile", customer.customerMobile),
+                      _infoRow(Iconsax.calendar, "Date of Birth", customer.dateOfBirth),
+                      _infoRow(Iconsax.location, "City", customer.city),
+                      _infoRow(Iconsax.home, "House No.",customer.customerShortAddress ?? ""),
+                      _infoRow(
+                          Iconsax.building, "Address 1", customer.customerAddress1),
+                      _infoRow(Iconsax.location_tick, "Address 2",
+                          customer.customerAddress2),
+                      _infoRow(Iconsax.location_tick, "State", customer.customerAddress2),
+                      _infoRow(Iconsax.code, "Zip Code", customer.zip ?? ""),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: GestureDetector(
+                    onTap: () {
+    Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => EditProfilePage(customer: customer)),
+    ).then((result) {
+    if (result == true) {
+    // ⬇️ Refresh dashboard data after profile update
+    Provider.of<MyDashboardProvider>(context, listen: false).getDashboardData();
+    }
+    });
+    },
+                    child: const CircleAvatar(
+                      radius: 16,
+                      backgroundColor: Colors.amber,
+                      child: Icon(Iconsax.edit, size: 16, color: Colors.black),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            _buildGlassTile(context, Iconsax.password_check, "Change Password",
+                () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ChangePassword()));
+            }),
+            _buildGlassTile(context, Iconsax.message, "Payment Details", () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PaymentDetailsPage()));
+            }),
+            _buildGlassTile(context, Iconsax.verify, "Verify KYC", () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const VerifyKyc()));
+            }),
           ],
         ),
       ),
     );
   }
 
-  Widget buildTextField(String label, TextEditingController controller, {bool readOnly = false}) {
+  Widget _infoRow(IconData icon, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Column(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 6),
-          TextFormField(
-            controller: controller,
-            readOnly: readOnly,
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white.withOpacity(0.1),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          Icon(icon, color: Colors.amber, size: 20),
+          const SizedBox(width: 16),
+          Expanded(
+            flex: 2,
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            flex: 3,
+            child: Text(
+              value,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14.5,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -163,81 +252,81 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget buildPhoneRow() {
+  Widget _buildGlassTile(
+      BuildContext context, IconData icon, String label, VoidCallback onTap) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("Mobile *", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 6),
-          Row(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: GlassCard(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        borderRadius: 18,
+        blurSigma: 12,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Row(
             children: [
+              Icon(icon, color: Colors.amber),
+              const SizedBox(width: 12),
               Expanded(
-                flex: 2,
-                child: TextFormField(
-                  initialValue: "India (+91)",
-                  readOnly: true,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.1),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                ),
+                child: Text(label,
+                    style: const TextStyle(color: Colors.white, fontSize: 16)),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                flex: 3,
-                child: TextFormField(
-                  controller: mobileController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.1),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                ),
-              ),
+              const Icon(Iconsax.arrow_right_3, color: Colors.white),
             ],
           ),
-        ],
+        ),
+      ),
+    );
+  }
+  Widget _buildShimmerCard() {
+    return GlassCard(
+      padding: const EdgeInsets.all(20),
+      borderRadius: 20,
+      blurSigma: 15,
+      child: Column(
+        children: List.generate(6, (index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              children: [
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  flex: 2,
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.white30,
+                    highlightColor: Colors.white54,
+                    child: Container(
+                      height: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  flex: 3,
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.white30,
+                    highlightColor: Colors.white54,
+                    child: Container(
+                      height: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
 
-  Widget buildDropdownField(String label, List<String> options) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 6),
-          DropdownButtonFormField<String>(
-            value: selectedState.isEmpty ? null : selectedState,
-            dropdownColor: Colors.black87,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white.withOpacity(0.1),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-            style: const TextStyle(color: Colors.white),
-            hint: const Text("Select", style: TextStyle(color: Colors.white70)),
-            items: options.map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedState = newValue!;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
 }

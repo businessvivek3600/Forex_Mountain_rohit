@@ -195,6 +195,55 @@ class NewUserRepo {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
     }
   }
+  /// Update Profile
+  Future<ApiResponse> updateProfile({
+    required String firstName,
+    required String lastName,
+    required String dateOfBirth,
+    required String state,
+    required String city,
+    required String customerShortAddress,
+    required String customerAddress1,
+    required String customerAddress2,
+    required String zip,
+    required String country,
+    required String customerMobile,
+  }) async {
+    final postData = {
+      "first_name": firstName,
+      "last_name": lastName,
+      "date_of_birth": dateOfBirth,
+      "state": state,
+      "city": city,
+      "customer_short_address": customerShortAddress,
+      "customer_address_1": customerAddress1,
+      "customer_address_2": customerAddress2,
+      "zip": zip,
+      "country": country,
+      "customer_mobile": customerMobile,
+    };
+
+    try {
+      print("📤 Sending POST request to: ${url + MyAppConstants.editProfile}");
+      print("📝 POST Body: $postData");
+
+      final response = await dioClient.post(
+        url + MyAppConstants.editProfile,
+        data: postData,
+        token: true,
+      );
+
+      print("✅ API Response Status: ${response.statusCode}");
+      print("📦 API Response Data: ${response.data}");
+
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      print("❌ Error in updateProfile: ${e.toString()}");
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
+
 }
 
 

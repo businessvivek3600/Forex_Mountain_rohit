@@ -20,7 +20,7 @@ class _MainPageState extends State<MainPage> {
     const HomePage(),
     const EarningScreen(),
     const WalletScreen(),
-    const EditProfilePage(),
+    const UserProfilePage(),
   ];
 
   @override
