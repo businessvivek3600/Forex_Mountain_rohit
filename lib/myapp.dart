@@ -79,6 +79,7 @@ class _ForexMountainsState extends State<ForexMountains> {
     sl.get<CommissionWalletProvider>(),
     sl.get<GalleryProvider>(),
     sl.get<CardPaymentProvider>(),
+
   ];
 
   @override
@@ -177,6 +178,9 @@ class _ForexMountainsState extends State<ForexMountains> {
       ChangeNotifierProvider(create: (context) => sl.get<MyEarningProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<MyWalletProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<NewUserProvider>()),
+
+
     ];
   }
 }
+

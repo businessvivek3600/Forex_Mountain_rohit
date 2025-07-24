@@ -1,37 +1,42 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import '../../database/model/response/base/api_response.dart';
 import '../my.model/login_request_model.dart';
 import '../my.model/my_customer_model.dart';
 import '../my.model/sign_request_model.dart';
+import '../my.model/MYforgot_password_response.dart';
 import '../repositories/my_auth_repo.dart';
 
 class NewAuthProvider with ChangeNotifier {
   final NewAuthRepo authRepository;
+
+  NewAuthProvider({required this.authRepository});
+
   bool _isLoading = false;
   String? _token;
   String? _errorMessage;
   MyCustomerModel? _customer;
+  ForgotPasswordResponse? _forgotResponse;
 
-  MyCustomerModel? get customer => _customer;
   bool get isLoading => _isLoading;
   String? get token => _token;
   String? get errorMessage => _errorMessage;
-
-  NewAuthProvider({required this.authRepository});
+  MyCustomerModel? get customer => _customer;
+  ForgotPasswordResponse? get forgotResponse => _forgotResponse;
 
   Future<void> login(String username, String password) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
     try {
-      final loginRequest =
-          LoginRequestModel(username: username, password: password);
+      final loginRequest = LoginRequestModel(username: username, password: password);
       final response = await authRepository.login(loginRequest);
       final data = response.response?.data;
-      print(data);
       if (data['customer'] != null) {
         _customer = MyCustomerModel.fromJson(data['customer']);
         _token = _customer?.loginToken;
-        authRepository.saveUserToken(_token!);
+        if (_token != null) {
+          authRepository.saveUserToken(_token!);
+        }
       }
     } catch (e) {
       _errorMessage = e.toString();
@@ -41,12 +46,14 @@ class NewAuthProvider with ChangeNotifier {
     }
   }
 
+
+
   Future<bool> signUp(
       String customerMobile,
       String confirmPassword,
       String customerEmail,
       String firstName,
-      String lastname,
+      String lastName,
       String password,
       String sponsor,
       String userName,
@@ -61,7 +68,7 @@ class NewAuthProvider with ChangeNotifier {
         confirmPassword: confirmPassword,
         customerEmail: customerEmail,
         firstName: firstName,
-        lastName: lastname,
+        lastName: lastName,
         password: password,
         sponsorUsername: sponsor,
         username: userName,
@@ -77,7 +84,7 @@ class NewAuthProvider with ChangeNotifier {
         return false;
       }
     } catch (e) {
-      _errorMessage = e.toString(); // ✅ Now this works
+      _errorMessage = e.toString();
       return false;
     } finally {
       _isLoading = false;
@@ -86,10 +93,34 @@ class NewAuthProvider with ChangeNotifier {
   }
 
 
-  void logout() {
-    _token = null;
+
+  Future<bool> forgotPassword(String email) async {
+    _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
+
+    try {
+      // Call API through repository
+   final response = await authRepository.forgotPassword(email);
+
+      // Handle API success
+      if (response.response != null && response.response?.data['status'] == true) {
+        // Optionally map to model
+        _forgotResponse = ForgotPasswordResponse.fromJson(response.response!.data);
+        return true;
+      } else {
+        // Error from server
+        _errorMessage = response.response?.data['error'] ?? response.error ?? 'Something went wrong';
+        return false;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      _forgotResponse = null;
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
+
 }
-
-

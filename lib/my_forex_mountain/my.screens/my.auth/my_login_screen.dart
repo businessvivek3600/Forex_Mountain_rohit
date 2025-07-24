@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:forex_mountain/my_forex_mountain/my.screens/my.auth/my_forgot_password_screen.dart';
+import 'package:forex_mountain/screens/auth/forgot_password.dart';
 import 'package:provider/provider.dart';
 import 'package:forex_mountain/utils/picture_utils.dart';
 
@@ -101,9 +103,12 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
 
                             Align(
                               alignment: Alignment.centerRight,
-                              child: GestureDetector(
+                              child:GestureDetector(
                                 onTap: () {
-                                  // TODO: Forgot password
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const MyForgotPasswordScreen ()),
+                                  );
                                 },
                                 child: const Text(
                                   'Forgot password?',
