@@ -19,7 +19,6 @@ class MyAppConstants {
 
   ///Auth----------
   static const String signup = 'signup';
-  static const String updateProfile = 'update_profile';
   static const String login = 'login';
   static const String logout = 'logout';
   static const String forgetPassword = 'forget-password';

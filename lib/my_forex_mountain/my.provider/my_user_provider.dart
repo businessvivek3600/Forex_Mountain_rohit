@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../database/dio/exception/api_error_handler.dart';
 import '../../database/model/response/base/api_response.dart';
 import '../my.model/my_bank_model.dart';
+import '../my.model/my_customer_model.dart';
 import '../my.model/my_kyc_model.dart';
 
 class NewUserProvider with ChangeNotifier {
@@ -16,7 +17,7 @@ class NewUserProvider with ChangeNotifier {
   NewUserProvider({required this.newUserRepo});
   final ImagePicker _picker = ImagePicker();
   TextEditingController documentNumberController = TextEditingController();
-
+  MyCustomerModel? _customer;
   Country? selectedCountry;
   String selectedDocumentType = 'Select';
   String countryText = '';
@@ -258,6 +259,75 @@ class NewUserProvider with ChangeNotifier {
       );
     }
   }
+///--------------Update Profile-------------------
+  Future<bool> updateUserProfile({
+    required String firstName,
+    required String lastName,
+    required String dateOfBirth,
+    required String state,
+    required String city,
+    required String customerShortAddress,
+    required String customerAddress1,
+    required String customerAddress2,
+    required String zip,
+    required String country,
+    required String customerMobile,
+    required BuildContext context,
+  }) async {
+    try {
+      final response = await newUserRepo.updateProfile(
+        firstName: firstName,
+        lastName: lastName,
+        dateOfBirth: dateOfBirth,
+        state: state,
+        city: city,
+        customerShortAddress: customerShortAddress,
+        customerAddress1: customerAddress1,
+        customerAddress2: customerAddress2,
+        zip: zip,
+        country: country,
+        customerMobile: customerMobile,
+      );
+
+      if (response.response?.statusCode == 200 && response.response?.data['status'] == true) {
+        final data = response.response?.data;
+        if (data['customer'] != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.response?.data['message'] ?? "Profile updated successfully"),
+              backgroundColor: Colors.green,
+            ),
+          );
+          return true;
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Profile update failed, customer data not found"),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return false;
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.response?.data['message'] ?? "Failed to update profile"),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return false; // ✅ Add return here too
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("❌ Error: ${e.toString()}"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false; // ✅ Ensure all paths return a boolean
+    }
+  }
+
 
 
 }
