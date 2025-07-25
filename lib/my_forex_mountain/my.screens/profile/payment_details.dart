@@ -25,7 +25,8 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<MyDashboardProvider>(context, listen: false).getBankDetails();
+      Provider.of<MyDashboardProvider>(context, listen: false)
+          .getBankDetails(context);
     });
   }
 
@@ -75,7 +76,9 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
           _buildSection(
               title: "WALLET ADDRESS",
               condition: _hasWalletData(details),
-              buildContent: () => _buildWalletSection(details,),
+              buildContent: () => _buildWalletSection(
+                    details,
+                  ),
               icon: Iconsax.wallet,
               fallbackText: "Add Wallet Details",
               onTap: () async {
@@ -89,114 +92,106 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                 );
                 if (updated == true) {
                   Provider.of<MyDashboardProvider>(context, listen: false)
-                      .getBankDetails();
+                      .getBankDetails(context);
                 }
               }),
           const SizedBox(height: 20),
           _buildSection(
-            title: "PHONE PAY",
-            condition: _hasPhonePeData(details),
-            buildContent: () => _buildUpiSection(
-              "PHONE PAY",
-              details.phonePay?.phonePayNo,
-              details.phonePay?.phonePayId,
-              details.phonePay?.phonePayQr,
-                () async {
-                  final updated = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddPaymentDetails(
-                          initialData: details,
-                          section: PaymentSection.phonePe,
-                        )),
-                  );
-                  if (updated == true) {
-                    Provider.of<MyDashboardProvider>(context, listen: false)
-                        .getBankDetails();
-                  }
-                }
-            ),
-            icon: Iconsax.wallet_check,
-            fallbackText: "Add PhonePe Details",
+              title: "PHONE PAY",
+              condition: _hasPhonePeData(details),
+              buildContent: () => _buildUpiSection(
+                      "PHONE PAY",
+                      details.phonePay?.phonePayNo,
+                      details.phonePay?.phonePayId,
+                      details.phonePay?.phonePayQr, () async {
+                    final updated = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddPaymentDetails(
+                                initialData: details,
+                                section: PaymentSection.phonePe,
+                              )),
+                    );
+                    if (updated == true) {
+                      Provider.of<MyDashboardProvider>(context, listen: false)
+                          .getBankDetails(context);
+                    }
+                  }),
+              icon: Iconsax.wallet_check,
+              fallbackText: "Add PhonePe Details",
               onTap: () async {
                 final updated = await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => AddPaymentDetails(
-                        initialData: details,
-                        section: PaymentSection.phonePe,
-                      )),
+                            initialData: details,
+                            section: PaymentSection.phonePe,
+                          )),
                 );
                 if (updated == true) {
                   Provider.of<MyDashboardProvider>(context, listen: false)
-                      .getBankDetails();
+                      .getBankDetails(context);
                 }
-              }
-            ),
-
+              }),
           const SizedBox(height: 20),
           _buildSection(
-            title: "GOOGLE PAY",
-            condition: _hasGooglePayData(details),
-            buildContent: () => _buildUpiSection(
-              "GOOGLE PAY",
-              details.googlePay?.googlePayNo,
-              details.googlePay?.googlePayId,
-              details.googlePay?.googlePayQr,
-                 () async {
-                  final updated = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddPaymentDetails(
-                          initialData: details,
-                          section: PaymentSection.googlePay,
-                        )),
-                  );
-                  if (updated == true) {
-                    Provider.of<MyDashboardProvider>(context, listen: false)
-                        .getBankDetails();
-                  }
-                }
-            ),
-            icon: Iconsax.wallet_3,
-            fallbackText: "Add Google Pay Details",
+              title: "GOOGLE PAY",
+              condition: _hasGooglePayData(details),
+              buildContent: () => _buildUpiSection(
+                      "GOOGLE PAY",
+                      details.googlePay?.googlePayNo,
+                      details.googlePay?.googlePayId,
+                      details.googlePay?.googlePayQr, () async {
+                    final updated = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddPaymentDetails(
+                                initialData: details,
+                                section: PaymentSection.googlePay,
+                              )),
+                    );
+                    if (updated == true) {
+                      Provider.of<MyDashboardProvider>(context, listen: false)
+                          .getBankDetails(context);
+                    }
+                  }),
+              icon: Iconsax.wallet_3,
+              fallbackText: "Add Google Pay Details",
               onTap: () async {
                 final updated = await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => AddPaymentDetails(
-                        initialData: details,
-                        section: PaymentSection.googlePay,
-                      )),
+                            initialData: details,
+                            section: PaymentSection.googlePay,
+                          )),
                 );
                 if (updated == true) {
                   Provider.of<MyDashboardProvider>(context, listen: false)
-                      .getBankDetails();
+                      .getBankDetails(context);
                 }
-              }
-          ),
+              }),
           const SizedBox(height: 20),
           _buildSection(
-            title: "BANK DETAILS",
-            condition: _hasBankData(details.bank),
-            buildContent: () => _buildBankSection(details.bank!),
-            icon: Iconsax.bank,
-            fallbackText: "Add Bank Details",
+              title: "BANK DETAILS",
+              condition: _hasBankData(details.bank),
+              buildContent: () => _buildBankSection(details.bank!),
+              icon: Iconsax.bank,
+              fallbackText: "Add Bank Details",
               onTap: () async {
                 final updated = await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => AddPaymentDetails(
-                        initialData: details,
-                        section: PaymentSection.bank,
-                      )),
+                            initialData: details,
+                            section: PaymentSection.bank,
+                          )),
                 );
                 if (updated == true) {
                   Provider.of<MyDashboardProvider>(context, listen: false)
-                      .getBankDetails();
+                      .getBankDetails(context);
                 }
-              }
-          ),
+              }),
         ],
       ),
     );

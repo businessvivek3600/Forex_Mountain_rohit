@@ -147,7 +147,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (_) => MainPage(),
+                                          builder: (_) => MyMainPage(),
                                         ),
                                       );
                                     } else if (authProvider.errorMessage ==

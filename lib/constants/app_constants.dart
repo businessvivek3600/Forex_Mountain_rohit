@@ -187,6 +187,7 @@ class SPConstants {
   static const String customerDashboard = 'customer_dashboard';
   static const String user = 'user';
   static const String userFrom = 'user_from';
+  static const String isLogin = 'is_login';
 
   static const String pdfLink = 'pdfLink';
   static const String pptLink = 'pptLink';

@@ -29,7 +29,7 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
     _scrollController = ScrollController()..addListener(_onScroll);
     Future.microtask(() {
       Provider.of<MyWalletProvider>(context, listen: false)
-          .resetAndFetchFundRequests();
+          .resetAndFetchFundRequests(context);
     });
   }
 
@@ -38,7 +38,7 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
     if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent - 300 &&
         provider.hasMoreFundData) {
-      provider.fetchFundRequests(loadMore: true);
+      provider.fetchFundRequests(context,loadMore: true);
     }
   }
 

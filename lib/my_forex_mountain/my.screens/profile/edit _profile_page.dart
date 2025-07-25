@@ -210,7 +210,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   if (success == true) {
                     // ✅ Call dashboard API to refresh data
                     Provider.of<MyDashboardProvider>(context, listen: false)
-                        .getDashboardData();
+                        .getDashboardData(context);
 
                     // ✅ Navigate back to Profile Page
                     Navigator.pop(context, true);
