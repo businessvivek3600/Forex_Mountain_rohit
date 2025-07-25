@@ -28,12 +28,37 @@ class NewAuthRepo {
   static const String tag = 'AuthRepo';
   final String baseUrl = MyAppConstants.baseUrl;
 
-  // Save token to shared preferences
+  /// Save token to shared preferences
   Future<void> saveUserToken(String token) async {
     dioClient.updateUserToken(token);
     try {
       await sharedPreferences.setString(SPConstants.userToken, token);
+      await setIsLogin(true); // ✅ Set login true when token is saved
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Save isLogin status to shared preferences
+  Future<void> setIsLogin(bool value) async {
+    await sharedPreferences.setBool(SPConstants.isLogin, value);
+  }
+
+  String getUserToken() {
+    return sharedPreferences.getString(SPConstants.userToken) ?? '';
+  }
+
+  /// Get login status
+  bool isLoggedIn() {
+    return sharedPreferences.getBool(SPConstants.isLogin) ?? false;
+  }
+  Future<void> clearAuthData() async {
+    try {
+      await sharedPreferences.remove(SPConstants.userToken);
+      await sharedPreferences.setBool(SPConstants.isLogin, false);
+      dioClient.updateUserToken('');
+    } catch (e) {
+      debugPrint('❌ Error clearing auth data: $e');
       rethrow;
     }
   }
@@ -49,8 +74,14 @@ class NewAuthRepo {
         '$baseUrl${MyAppConstants.login}',
         data: loginBody.toJson(),
       );
+      // ✅ If success, set isLogin = true
+      if (response.data['is_login'] == 1) {
+        await setIsLogin(true);
+      }
+
       return ApiResponse.withSuccess(response);
     } catch (e) {
+      await setIsLogin(false);
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
     }
   }

@@ -48,8 +48,6 @@ class MyDashboardProvider with ChangeNotifier {
 
     if (response.response != null && response.response?.statusCode == 200) {
       final resBody = response.response?.data;
-      print(resBody);
-
       try {
         final data = resBody['data'];
         if (data == null) {
