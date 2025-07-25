@@ -1,7 +1,6 @@
 // screens/wallet/widget/transaction_tab.dart
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/my.model/my_wallet_model.dart';
-
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +57,7 @@ class _TransactionTabState extends State<TransactionTab> {
         if (walletProvider.isFirstLoad) {
           return ListView.builder(
             padding: const EdgeInsets.only(top: 16),
-            itemCount: 6, // Show 6 shimmer cards
+            itemCount: 6,
             itemBuilder: (_, __) => Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: buildShimmerTransactionCard(),
@@ -67,6 +66,9 @@ class _TransactionTabState extends State<TransactionTab> {
         } else if (walletProvider.error != null) {
           return Center(child: Text(walletProvider.error!));
         }
+
+        final transactionList = walletProvider.walletTransactionList;
+        final walletBalance = double.tryParse(walletProvider.walletBalance) ?? 0.0;
 
         return ListView(
           controller: _scrollController,
@@ -83,7 +85,7 @@ class _TransactionTabState extends State<TransactionTab> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    '\$${double.tryParse(walletProvider.walletBalance)?.toStringAsFixed(2) ?? '0.00'}',
+                    '\$${walletBalance.toStringAsFixed(2)}',
                     style: const TextStyle(
                       color: Colors.amberAccent,
                       fontSize: 28,
@@ -126,10 +128,11 @@ class _TransactionTabState extends State<TransactionTab> {
                           ),
                           onPressed: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FundHistoryScreen(),
-                                ));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => FundHistoryScreen(),
+                              ),
+                            );
                           },
                           icon: const Icon(Iconsax.activity),
                           label: const Text('Fund History'),
@@ -142,12 +145,19 @@ class _TransactionTabState extends State<TransactionTab> {
             ),
             const SizedBox(height: 20),
 
-            if (walletProvider.walletTransactionList.isEmpty)
-              const Center(child: Text('No data available.'))
+            // Show "No data" if no fund and empty list
+            if (walletBalance == 0.0 && transactionList.isEmpty)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 40),
+                  child: Text(
+                    'No data available.',
+                    style: TextStyle(fontSize: 16, color: Colors.white70),
+                  ),
+                ),
+              )
             else
-              ...walletProvider.walletTransactionList
-                  .map((item) => buildTransactionCard(item))
-                  .toList(),
+              ...transactionList.map((item) => buildTransactionCard(item)).toList(),
 
             if (walletProvider.hasMoreData)
               const Padding(

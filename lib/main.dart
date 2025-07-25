@@ -56,7 +56,7 @@ Future<void> main() async {
   MyNotification().initialize();
   FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
   final NotificationAppLaunchDetails? notificationAppLaunchDetails =
-      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+  await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
   errorLog(
       "notificationAppLaunchDetails : ${notificationAppLaunchDetails?.didNotificationLaunchApp} ${notificationAppLaunchDetails?.notificationResponse} ${notificationAppLaunchDetails?.notificationResponse?.payload}");
   String initialRoute = SplashScreen.routeName;

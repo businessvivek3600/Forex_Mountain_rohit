@@ -25,6 +25,7 @@ class _WalletScreenState extends State<WalletScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+
     return DefaultTabController(
       length: 2,
       child: Container(
