@@ -68,7 +68,22 @@ class _PayoutScreenState extends State<PayoutScreen> {
                   if (provider.payoutErrorMessage != null) {
                     return Center(child: Text(provider.payoutErrorMessage!));
                   }
-
+                  if (provider.payouts.isEmpty) {
+                    return const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "No data found",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                   return RefreshIndicator(
                     onRefresh: () async {
                       provider.resetPayouts();

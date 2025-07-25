@@ -6,15 +6,11 @@ import 'package:provider/provider.dart';
 
 import '../../../../utils/picture_utils.dart';
 import '../../../../utils/text.dart';
-
 import '../../../my.provider/my_wallet_provider.dart';
 import '../../../widgets/transparent_container.dart';
 
-
 class FundHistoryScreen extends StatefulWidget {
-  const FundHistoryScreen({
-    super.key,
-  });
+  const FundHistoryScreen({super.key});
 
   @override
   State<FundHistoryScreen> createState() => _FundHistoryScreenState();
@@ -36,9 +32,9 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
   void _onScroll() {
     final provider = Provider.of<MyWalletProvider>(context, listen: false);
     if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 300 &&
+        _scrollController.position.maxScrollExtent - 300 &&
         provider.hasMoreFundData) {
-      provider.fetchFundRequests(context,loadMore: true);
+      provider.fetchFundRequests(context, loadMore: true);
     }
   }
 
@@ -75,13 +71,33 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
                   return ListView.builder(
                     itemCount: 6,
                     padding: const EdgeInsets.all(16),
-                    itemBuilder: (_, __) =>
-                        buildShimmerTransactionCard(), // Use shimmer widget here
+                    itemBuilder: (_, __) => buildShimmerTransactionCard(),
                   );
                 }
 
                 if (provider.error != null) {
                   return Center(child: Text(provider.error!));
+                }
+
+                if (!provider.isFundRequestLoading &&
+                    provider.fundRequestList.isEmpty) {
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.info_outline,
+                            color: Colors.white70, size: 40),
+                        SizedBox(height: 10),
+                        Text(
+                          "No fund requests available.",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 }
 
                 return ListView.builder(
@@ -120,6 +136,7 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
       default:
         statusColor = Colors.orangeAccent;
     }
+
     return TransparentContainer(
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
@@ -151,9 +168,9 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
                               child: CircularProgressIndicator());
                         },
                         errorBuilder: (context, error, stackTrace) =>
-                            const Center(
-                                child: Icon(Icons.broken_image,
-                                    color: Colors.redAccent)),
+                        const Center(
+                            child: Icon(Icons.broken_image,
+                                color: Colors.redAccent)),
                       ),
                     ),
                   ),
@@ -180,7 +197,8 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
             children: [
               Row(
                 children: [
-                  const Icon(Iconsax.calendar, color: Colors.white70, size: 16),
+                  const Icon(Iconsax.calendar,
+                      color: Colors.white70, size: 16),
                   const SizedBox(width: 6),
                   Text(
                     entry.createdAt,
@@ -194,7 +212,7 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
               ),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: statusColor.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
@@ -239,7 +257,8 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
             children: [
               Row(
                 children: [
-                  const Icon(Iconsax.card, color: Colors.amberAccent, size: 16),
+                  const Icon(Iconsax.card,
+                      color: Colors.amberAccent, size: 16),
                   const SizedBox(width: 6),
                   Text(
                     entry.paymentType,

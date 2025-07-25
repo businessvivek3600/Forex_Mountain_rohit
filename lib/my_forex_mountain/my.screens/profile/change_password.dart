@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/widgets/glass_card.dart';
-import 'package:forex_mountain/my_forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:forex_mountain/utils/picture_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
-import '../../my.provider/my_user_provider.dart'; // For userAppBgImageProvider
+import '../../../utils/text.dart';
+import '../../my.provider/my_user_provider.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
@@ -17,155 +18,229 @@ class ChangePassword extends StatefulWidget {
 class _ChangePasswordState extends State<ChangePassword> {
   final TextEditingController oldPasswordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   bool isObscuredOld = true;
   bool isObscuredNew = true;
   bool isObscuredConfirm = true;
 
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Simulate loading state
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
-        title: const Text("Change Password",
-            style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.amber),
-      ),
-      body: Stack(fit: StackFit.expand, children: [
-        Image(
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
           image: userAppBgImageProvider(context),
           fit: BoxFit.cover,
         ),
-        SafeArea(
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: bodyLargeText("Change Password", context),
+          backgroundColor: Colors.black,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.amber),
+        ),
+        body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
-            child: TransparentContainer(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  buildPasswordField(
-                    label: "Old Password",
-                    controller: oldPasswordController,
-                    obscureText: isObscuredOld,
-                    toggle: () =>
-                        setState(() => isObscuredOld = !isObscuredOld),
-                  ),
-                  buildPasswordField(
-                    label: "New Password",
-                    controller: newPasswordController,
-                    obscureText: isObscuredNew,
-                    toggle: () =>
-                        setState(() => isObscuredNew = !isObscuredNew),
-                  ),
-                  buildPasswordField(
-                    label: "Confirm Password",
-                    controller: confirmPasswordController,
-                    obscureText: isObscuredConfirm,
-                    toggle: () =>
-                        setState(() => isObscuredConfirm = !isObscuredConfirm),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.amber),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      onPressed: () {
-                        final oldPassword = oldPasswordController.text.trim();
-                        final newPassword = newPasswordController.text.trim();
-                        final confirmPassword =
-                            confirmPasswordController.text.trim();
-
-                        if (oldPassword.isEmpty ||
-                            newPassword.isEmpty ||
-                            confirmPassword.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Please fill all fields"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          return;
-                        }
-
-                        if (newPassword != confirmPassword) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                  "New and confirm passwords do not match"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          return;
-                        }
-
-                        final provider = Provider.of<NewUserProvider>(context,
-                            listen: false);
-                        provider.changeUserPassword(
-                          oldPassword: oldPassword,
-                          newPassword: newPassword,
-                          confirmPassword: confirmPassword,
-                          context: context,
-                        );
-                      },
-                      child: const Text('Update Password'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: isLoading ? _buildShimmerUI() : _buildPasswordForm(),
           ),
         ),
-      ]),
+      ),
     );
   }
 
-  /// ✅ Password Field Builder
-  Widget buildPasswordField({
-    required String label,
-    required TextEditingController controller,
-    required bool obscureText,
-    required VoidCallback toggle,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
+  Widget _buildPasswordForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GlassCard(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            children: const [
+              Icon(Iconsax.lock, color: Colors.amber, size: 20),
+              SizedBox(width: 8),
+              Text(
+                'Update your password securely',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        _buildLabel("Old Password"),
+        _buildPasswordField(
+          controller: oldPasswordController,
+          obscureText: isObscuredOld,
+          toggle: () => setState(() => isObscuredOld = !isObscuredOld),
+          hint: "Enter your old password",
+        ),
+        const SizedBox(height: 16),
+        _buildLabel("New Password"),
+        _buildPasswordField(
+          controller: newPasswordController,
+          obscureText: isObscuredNew,
+          toggle: () => setState(() => isObscuredNew = !isObscuredNew),
+          hint: "Enter your new password",
+        ),
+        const SizedBox(height: 16),
+        _buildLabel("Confirm New Password"),
+        _buildPasswordField(
+          controller: confirmPasswordController,
+          obscureText: isObscuredConfirm,
+          toggle: () => setState(() => isObscuredConfirm = !isObscuredConfirm),
+          hint: "Re-enter your new password",
+        ),
+        const SizedBox(height: 24),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: Colors.amber),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+            onPressed: _handleChangePassword,
+            child: const Text('Update Password'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShimmerUI() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade800,
+      highlightColor: Colors.grey.shade600,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 6),
-          TextFormField(
-            controller: controller,
-            obscureText: obscureText,
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              hintText: 'Enter $label',
-              hintStyle: const TextStyle(color: Colors.white54),
-              filled: true,
-              fillColor: Colors.white.withOpacity(0.1),
-              suffixIcon: IconButton(
-                icon: Icon(obscureText ? Iconsax.eye_slash : Iconsax.eye,
-                    color: Colors.white),
-                onPressed: toggle,
-              ),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-            ),
-          ),
+          Container(height: 40, width: double.infinity, color: Colors.white.withOpacity(0.6)),
+          const SizedBox(height: 24),
+          _shimmerLabel(),
+          _shimmerInput(),
+          const SizedBox(height: 16),
+          _shimmerLabel(),
+          _shimmerInput(),
+          const SizedBox(height: 16),
+          _shimmerLabel(),
+          _shimmerInput(),
+          const SizedBox(height: 24),
+          Container(height: 48, width: double.infinity, color: Colors.white.withOpacity(0.6)),
         ],
+      ),
+    );
+  }
+
+  Widget _shimmerLabel() {
+    return Container(
+      height: 12,
+      width: 120,
+      margin: const EdgeInsets.only(bottom: 8),
+      color: Colors.white,
+    );
+  }
+
+  Widget _shimmerInput() {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
+  }
+
+  void _handleChangePassword() {
+    final oldPassword = oldPasswordController.text.trim();
+    final newPassword = newPasswordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
+
+    if (oldPassword.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all fields"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (newPassword != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("New and confirm passwords do not match"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    final provider = Provider.of<NewUserProvider>(context, listen: false);
+    provider.changeUserPassword(
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+      confirmPassword: confirmPassword,
+      context: context,
+    );
+  }
+
+  Widget _buildLabel(String label) {
+    return Text(
+      label,
+      style: const TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontSize: 13.5,
+      ),
+    );
+  }
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required bool obscureText,
+    required VoidCallback toggle,
+    required String hint,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: const TextStyle(color: Colors.white54),
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.1),
+        suffixIcon: IconButton(
+          icon: Icon(
+            obscureText ? Iconsax.eye_slash : Iconsax.eye,
+            color: Colors.white,
+          ),
+          onPressed: toggle,
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
       ),
     );
   }
