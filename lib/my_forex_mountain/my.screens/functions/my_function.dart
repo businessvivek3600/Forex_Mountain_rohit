@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../constants/app_constants.dart';
 import '../../widgets/glass_card.dart';
 import '../my.auth/my_login_screen.dart';
 import 'package:iconsax/iconsax.dart';
@@ -67,8 +68,7 @@ Future<bool> handleSessionExpired(BuildContext context, dynamic responseData) as
       Navigator.of(context, rootNavigator: true).pop(); // Close dialog
 
       final prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
-
+      await prefs.remove(SPConstants.isLogin);
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const MyLoginScreen()),

@@ -4,10 +4,16 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:forex_mountain/my_forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants/app_constants.dart';
 import '../../../constants/assets_constants.dart';
+import '../../../sl_container.dart';
 import '../../../utils/picture_utils.dart';
+import '../../my.provider/my_auth_provider.dart';
+import '../../my.provider/my_dashboard_provider.dart';
+import '../../widgets/glass_card.dart';
+import '../my.auth/my_login_screen.dart';
 import '../support/support_screen.dart';
 import 'my.downline/direct_member_screen.dart';
 import 'my.downline/my_generation_team-view.dart';
@@ -17,17 +23,13 @@ import 'packages/packages.dart';
 class CustomAppDrawer extends StatelessWidget {
   final Function()? onSupportChat;
   final Function()? onContactUs;
-  final String? userName;
-  final String? userEmail;
-  final String? userImage;
+
 
   const CustomAppDrawer({
     super.key,
     this.onSupportChat,
     this.onContactUs,
-    this.userName,
-    this.userEmail,
-    this.userImage,
+
   });
 
   @override
@@ -168,7 +170,7 @@ class CustomAppDrawer extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (_) => SupportScreen()),
+                                        builder: (_) => const SupportScreen()),
                                   );
                                 },
                               ),
@@ -184,47 +186,130 @@ class CustomAppDrawer extends StatelessWidget {
                         height: 40,
                         child: Row(
                           children: [
-                            CircleAvatar(
+                            const CircleAvatar(
                               radius: 22,
-                              backgroundImage: NetworkImage(
-                                (userImage?.isNotEmpty ?? false)
-                                    ? userImage!
-                                    : 'https://icon-library.com/images/user-image-icon/user-image-icon-9.jpg',
+                              backgroundImage: NetworkImage('https://icon-library.com/images/user-image-icon/user-image-icon-9.jpg',
                               ),
                             ),
                             const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    userName ?? 'User Name',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
+                            Consumer<MyDashboardProvider>(
+                                builder: (context, provider, child) {
+                                final customer =   provider.dashboardData?.customer;
+                                return Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                       '${customer!.firstName} ${customer.lastName}',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        customer.customerEmail ?? "",
+                                        style: const TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 12,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    userEmail ?? 'email@example.com',
-                                    style: const TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 12,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
+                                );
+                              }
                             ),
                             GestureDetector(
-                              onTap: () {
-                                // TODO: handle logout
+                              onTap: () async {
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (ctx) {
+                                    return Dialog(
+                                      backgroundColor: Colors.transparent,
+                                      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+                                      child: GlassCard(
+                                        borderRadius: 20,
+                                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Text(
+                                              "Confirm Logout",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                                letterSpacing: 0.5,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 12),
+                                            const Text(
+                                              "Are you sure you want to logout?",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 24),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: TextButton(
+                                                    onPressed: () => Navigator.pop(ctx, false),
+                                                    style: TextButton.styleFrom(
+                                                      backgroundColor: Colors.white12,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(12),
+                                                      ),
+                                                    ),
+                                                    child: const Text(
+                                                      "Cancel",
+                                                      style: TextStyle(color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 16),
+                                                Expanded(
+                                                  child: TextButton(
+                                                    onPressed: () => Navigator.pop(ctx, true),
+                                                    style: TextButton.styleFrom(
+                                                      backgroundColor: Colors.redAccent.withOpacity(0.8),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(12),
+                                                      ),
+                                                    ),
+                                                    child: const Text(
+                                                      "Logout",
+                                                      style: TextStyle(color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+
+                                if (confirm == true) {
+                                  await sl.get<NewAuthProvider>().logout();
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(builder: (_) => MyLoginScreen()),
+                                        (Route<dynamic> route) => false,
+                                  );
+                                }
                               },
-                              child: const Icon(Icons.logout,
-                                  color: Colors.white70),
+                              child: const Icon(Icons.logout, color: Colors.white70),
                             ),
+
                           ],
                         ),
                       ),

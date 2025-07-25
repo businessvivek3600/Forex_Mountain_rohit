@@ -4,7 +4,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:forex_mountain/constants/assets_constants.dart';
+import 'package:forex_mountain/my_forex_mountain/my.provider/my_auth_provider.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../platform_selection.dart';
 import '../../utils/my_logger.dart';
@@ -20,7 +23,9 @@ import '/utils/default_logger.dart';
 import '/utils/network_info.dart';
 import 'package:video_player/video_player.dart';
 import '../../database/functions.dart';
+import 'constants/app_constants.dart';
 import 'database/my_notification_setup.dart';
+import 'my_forex_mountain/my.screens/main_screen.dart';
 import 'my_forex_mountain/my.screens/my.auth/my_login_screen.dart';
 import 'utils/picture_utils.dart';
 import 'utils/sizedbox_utils.dart';
@@ -48,6 +53,9 @@ class _PlatformSelectionScreenState extends State<PlatformSelectionScreen> {
     sl.get<NetworkInfo>().checkConnectivity(context);
     sl.get<AuthProvider>().getSignUpInitialData();
     _listenDynamicLinks();
+    final authProvider = Provider.of<NewAuthProvider>(context, listen: false);
+    authProvider.initAuth();
+
   }
 
   Future<void> _listenDynamicLinks() async {
@@ -130,9 +138,24 @@ class _PlatformSelectionScreenState extends State<PlatformSelectionScreen> {
                 context,
                 title: "Economic",
                 icon: Icons.attach_money,
-                onPressed: () {
-                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginScreen(),));
-                },
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    final isLoggedIn = prefs.getBool(SPConstants.isLogin) ?? false;
+
+                    if (isLoggedIn) {
+                      // User is already logged in, navigate to MainPage
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => const MyMainPage()),
+                      );
+                    } else {
+                      // Not logged in, go to login screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const MyLoginScreen()),
+                      );
+                    }
+                  }
               ),
             ],
           ),

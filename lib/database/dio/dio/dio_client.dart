@@ -51,6 +51,7 @@ class DioClient {
 
   void updateUserToken(String? userToken) {
     _userToken = userToken ?? _userToken;
+    print("dioClient updateUserToken $_userToken");
   }
 
   Future<Response> get(

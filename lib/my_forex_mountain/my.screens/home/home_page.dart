@@ -90,9 +90,7 @@ class HomeDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MyDashboardProvider>(
         builder: (context, dashboardProvider, _) {
-          final dashboardData = dashboardProvider.dashboardData;print("-----------------");
-print(dashboardData);
-          // Show shimmer while loading
+          final dashboardData = dashboardProvider.dashboardData;
           if (dashboardData == null) {
             return _buildShimmerPlaceholder();
           }

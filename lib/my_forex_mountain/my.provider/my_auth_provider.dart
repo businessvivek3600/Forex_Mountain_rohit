@@ -23,6 +23,27 @@ class NewAuthProvider with ChangeNotifier {
   MyCustomerModel? get customer => _customer;
   ForgotPasswordResponse? get forgotResponse => _forgotResponse;
 
+
+  void initAuth() {
+    final token = authRepository.getUserToken();
+    if (token.isNotEmpty) {
+      _token = token;
+      authRepository.saveUserToken(token);
+      notifyListeners();
+    }
+  }
+
+
+  Future<void> logout() async {
+    _token = null;
+    _customer = null;
+    await authRepository.clearAuthData();
+    notifyListeners();
+  }
+
+
+
+
   Future<void> login(String username, String password) async {
     _isLoading = true;
     _errorMessage = null;
@@ -32,11 +53,10 @@ class NewAuthProvider with ChangeNotifier {
       final response = await authRepository.login(loginRequest);
       final data = response.response?.data;
       if (data['customer'] != null) {
+        authRepository.saveUserToken(_token = data['token'] ?? '');
         _customer = MyCustomerModel.fromJson(data['customer']);
         _token = _customer?.loginToken;
-        if (_token != null) {
-          authRepository.saveUserToken(_token!);
-        }
+          authRepository.saveUserToken(token!);
       }
     } catch (e) {
       _errorMessage = e.toString();
