@@ -97,9 +97,22 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                 }
 
                 if (provider.withdrawRequests.isEmpty) {
-                  return const Center(
-                      child: Text("No withdraw requests found"));
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "No data found",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 }
+
 
                 return ListView.builder(
                   controller: _scrollController,

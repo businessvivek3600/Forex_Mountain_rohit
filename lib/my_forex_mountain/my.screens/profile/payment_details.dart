@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/my.screens/profile/add_payment_details.dart';
-import 'package:forex_mountain/my_forex_mountain/my.screens/support/support_screen.dart';
-import 'package:forex_mountain/my_forex_mountain/widgets/transparent_container.dart';
+
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 
