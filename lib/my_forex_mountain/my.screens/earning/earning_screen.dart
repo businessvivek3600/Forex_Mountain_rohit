@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:forex_mountain/my_forex_mountain/my.screens/drawer/custom_drawer.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import '../../../utils/color.dart';
 import '../../../utils/picture_utils.dart';
 import '../../../utils/text.dart';
+
 import '../../my.provider/my_dashboard_provider.dart';
 import '../../widgets/glass_card.dart';
 
@@ -20,6 +22,8 @@ class EarningScreen extends StatefulWidget {
 }
 
 class _EarningScreenState extends State<EarningScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<MyDashboardProvider>(
@@ -27,16 +31,18 @@ class _EarningScreenState extends State<EarningScreen> {
           final memberSale = dashboardProvider.dashboardData?.memberSale;
           final lifeTimeEarnings = double.tryParse(memberSale?.incomeTotal ?? '0') ?? 0;
         return Scaffold(
+          key: _scaffoldKey, // Add the key
           backgroundColor: mainColor,
+          drawer: const CustomAppDrawer(),
           appBar: AppBar(
             surfaceTintColor: Colors.transparent,
             leading: IconButton(
               icon: const Icon(Iconsax.element_4, color: Colors.amber),
               onPressed: () {
-                // Handle menu button press
+                _scaffoldKey.currentState?.openDrawer();
               },
             ),
-            title: bodyLargeText('EARNING', context, fontSize: 20),
+            title: bodyLargeText('EARNINGS', context, fontSize: 20),
             backgroundColor: Colors.black,
             elevation: 0,
           ),

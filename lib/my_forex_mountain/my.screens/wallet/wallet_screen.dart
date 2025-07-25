@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forex_mountain/my_forex_mountain/my.screens/drawer/custom_drawer.dart';
 import 'package:forex_mountain/my_forex_mountain/widgets/glass_card.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -21,8 +22,10 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+
     return DefaultTabController(
       length: 2,
       child: Container(
@@ -35,12 +38,14 @@ class _WalletScreenState extends State<WalletScreen> {
           ),
         ),
         child:  Scaffold(
+          key: _scaffoldKey, // Add the key
           backgroundColor: Colors.transparent,
+          drawer: const CustomAppDrawer(),
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Iconsax.element_4, color: Colors.amber),
               onPressed: () {
-                // Handle menu button press
+                _scaffoldKey.currentState?.openDrawer();
               },
             ),
             title: bodyLargeText('WALLET', context, fontSize: 20),

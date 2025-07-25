@@ -1,4 +1,3 @@
-// screens/wallet/widget/maturity_tab.dart
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/my.model/my_wallet_model.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +56,7 @@ class _MaturityTabState extends State<MaturityTab> {
         if (walletProvider.isFirstLoad) {
           return ListView.builder(
             padding: const EdgeInsets.only(top: 16),
-            itemCount: 6, // Show 6 shimmer cards
+            itemCount: 6,
             itemBuilder: (_, __) => Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: buildShimmerTransactionCard(),
@@ -67,10 +66,13 @@ class _MaturityTabState extends State<MaturityTab> {
           return Center(child: Text(walletProvider.error!));
         }
 
+        final balance = double.tryParse(walletProvider.walletBalance ?? '0') ?? 0.0;
+        final hasTransactionData = walletProvider.walletTransactionList.isNotEmpty;
+
         return ListView(
           controller: _scrollController,
+          padding: const EdgeInsets.only(top: 16),
           children: [
-            // Maturity Balance Container
             TransparentContainer(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -82,7 +84,7 @@ class _MaturityTabState extends State<MaturityTab> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    '\$${double.tryParse(walletProvider.walletBalance)?.toStringAsFixed(2) ?? '0.00'}',
+                    '\$${balance.toStringAsFixed(2)}',
                     style: const TextStyle(
                       color: Colors.amberAccent,
                       fontSize: 28,
@@ -123,7 +125,7 @@ class _MaturityTabState extends State<MaturityTab> {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
-                          onPressed: () async {
+                           onPressed: () async {
                             final result = await Navigator.push(
                               context,
                               MaterialPageRoute(builder: (_) => TransferToWallet()),
@@ -146,21 +148,36 @@ class _MaturityTabState extends State<MaturityTab> {
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
 
-            if (walletProvider.walletTransactionList.isEmpty)
-              const Center(child: Text('No data available.'))
-            else
-              ...walletProvider.walletTransactionList
-                  .map((item) => buildTransactionCard(item))
-                  .toList(),
+            // Show no data if both balance and transactions are empty
+            if (balance == 0.0 && !hasTransactionData)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 40),
+                  child: Text('No data available.', style: TextStyle(fontSize: 16,color: Colors.white70),),
+                ),
+              )
+            else ...[
+              if (hasTransactionData)
+                ...walletProvider.walletTransactionList
+                    .map((item) => buildTransactionCard(item))
+                    .toList()
+              else
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: Text('No transactions found.',
+                        style: TextStyle(fontSize: 16)),
+                  ),
+                ),
 
-            if (walletProvider.hasMoreData)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Center(child: CircularProgressIndicator()),
-              ),
+              if (walletProvider.hasMoreData)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+            ],
           ],
         );
       },

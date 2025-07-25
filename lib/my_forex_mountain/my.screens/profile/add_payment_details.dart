@@ -180,27 +180,38 @@ class _AddPaymentDetailsState extends State<AddPaymentDetails> {
                   // Bank Details Section
                   if (widget.section == PaymentSection.bank) ...[
                     UiCategoryTitleContainer(
-                        child: _buildLabel(
-                      'BANK DETAILS',
-                    )),
+                      child: _buildLabel('BANK DETAILS'),
+                    ),
                     const SizedBox(height: 10),
                     buildBankInput("Bank Name", bankNameController),
                     const SizedBox(height: 16),
                     buildBankInput("Branch Name", branchNameController),
                     const SizedBox(height: 16),
-                    buildBankInput("IFSC Code", ifscCodeController),
-                    const SizedBox(height: 16),
-                    buildBankInput("IBN Code", ibnCodeController),
-                    const SizedBox(height: 16),
-                    buildBankInput("SWIFT Code", swiftCodeController),
-                    const SizedBox(height: 16),
-                    buildBankInput(
-                        "Account Holder Name", accountHolderNameController),
+                    buildBankInput("Account Holder Name", accountHolderNameController),
                     const SizedBox(height: 16),
                     buildBankInput("Bank Account No.", accountNumberController,
                         keyboardType: TextInputType.number),
+                    const SizedBox(height: 16),
+                    buildBankInput("SWIFT Code", swiftCodeController),
+                    const SizedBox(height: 16),
+                    buildBankInput("IFSC Code", ifscCodeController),
+                    const SizedBox(height: 8),
+
+                    /// 👇 Hint for optional field
+                    const Text(
+                      "IBN Code is optional",
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    buildBankInput("IBN Code", ibnCodeController),
                     const SizedBox(height: 32),
                   ],
+
                 ],
               ),
             ),
