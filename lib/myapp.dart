@@ -40,6 +40,7 @@ import 'package:provider/provider.dart';
 import 'my_forex_mountain/my.provider/my_auth_provider.dart';
 import 'my_forex_mountain/my.provider/my_dashboard_provider.dart';
 import 'my_forex_mountain/my.provider/my_earning_provider.dart';
+import 'my_forex_mountain/my.provider/my_mlm_provider.dart';
 import 'my_forex_mountain/my.provider/my_wallet_provider.dart';
 import 'providers/Cash_wallet_provider.dart';
 import 'providers/deposit_request_provider.dart';
@@ -79,7 +80,6 @@ class _ForexMountainsState extends State<ForexMountains> {
     sl.get<CommissionWalletProvider>(),
     sl.get<GalleryProvider>(),
     sl.get<CardPaymentProvider>(),
-
   ];
 
   @override
@@ -121,7 +121,8 @@ class _ForexMountainsState extends State<ForexMountains> {
             },
             routes: <String, WidgetBuilder>{
               SplashScreen.routeName: (_) => const SplashScreen(),
-              DepositRequestScreen.routeName: (_) => const DepositRequestScreen(),
+              DepositRequestScreen.routeName: (_) =>
+                  const DepositRequestScreen(),
               MainPage.routeName: (_) => MainPage(),
               LoginScreen.routeName: (_) => const LoginScreen(),
               InboxScreen.routeName: (_) => const InboxScreen(),
@@ -156,7 +157,8 @@ class _ForexMountainsState extends State<ForexMountains> {
       ChangeNotifierProvider(create: (context) => sl.get<TeamViewProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<VoucherProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<InboxProvider>()),
-      ChangeNotifierProvider(create: (context) => sl.get<DepositRequestProvider>()),
+      ChangeNotifierProvider(
+          create: (context) => sl.get<DepositRequestProvider>()),
       ChangeNotifierProvider(
           create: (context) => sl.get<EventTicketsProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<SupportProvider>()),
@@ -174,13 +176,12 @@ class _ForexMountainsState extends State<ForexMountains> {
 
       ///--------------MY FOREX MOUNTAIN----------------
       ChangeNotifierProvider(create: (context) => sl.get<NewAuthProvider>()),
-      ChangeNotifierProvider(create: (context) => sl.get<MyDashboardProvider>()),
+      ChangeNotifierProvider(
+          create: (context) => sl.get<MyDashboardProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<MyEarningProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<MyWalletProvider>()),
       ChangeNotifierProvider(create: (context) => sl.get<NewUserProvider>()),
-
-
+      ChangeNotifierProvider(create: (context) => sl.get<MyMlmProvider>()),
     ];
   }
 }
-

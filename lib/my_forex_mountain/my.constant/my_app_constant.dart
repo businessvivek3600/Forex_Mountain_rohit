@@ -40,5 +40,11 @@ class MyAppConstants {
   static const String withdrawRequest = 'withdraw_req_submit';
   static const String walletToTransaction = 'tranfer_to_transaction';
 
-
+  ///MLM
+static const String packages = 'package';
+static const String purchasePackage = 'package_purchase';
+static const String myTeam = 'team';
+  static const String directTeam = 'direct_team';
+  static const String generationTree = 'generation_tree';
+  static const String packageWithdraw = 'package_withdraw';
 }
