@@ -36,44 +36,18 @@ class _SplashScreenState extends State<SplashScreen> {
   int position = 0;
   late VideoPlayerController _controller;
 
-  bool authorizedRoutes(String path) {
-    List<String> authorizedRoutes = [
-      '/dashboard',
-      '/subscription',
-      '/eventTickets',
-      '/notification',
-      '/inbox',
-      '/support',
-      '/teamView',
-      '/commissionWallet',
-      '/voucher',
-      '/cardPayment',
-      '/gallery',
-      '/cashWallet',
-      '/companyTradeIdeas',
-      '/forgotPassword',
-      '/updateApp',
-      '/ytLive'
-    ];
-    return authorizedRoutes.contains(path);
-  }
 
   @override
   void initState() {
     super.initState();
-    // Delay navigation to CustomSelectionScreen
-    Timer(const Duration(seconds: 2), () {
+    initController(); // <-- This initializes _controller
+
+    Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const PlatformSelectionScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const PlatformSelectionScreen()),
       );
     });
-    // sl.get<NetworkInfo>().checkConnectivity(context);
-    // sl.get<AuthProvider>().getSignUpInitialData();
-    super.initState();
-    initController();
   }
 
   void initController() {
@@ -93,47 +67,10 @@ class _SplashScreenState extends State<SplashScreen> {
     }
     if (_controller.value.isInitialized) {
       duration = _controller.value.duration.inMilliseconds;
-      if (_controller.value.position.inMilliseconds >= 2960) {
-        checkLogin2();
-      }
     }
   }
 
-  checkLogin2() async {
-    var authProvider = sl.get<AuthProvider>();
-    bool isLogin = authProvider.isLoggedIn();
-    if (!isLogin) {
-      Get.offAll(const LoginScreen());
-    } else {
-      var user = await authProvider.getUser();
-      if (user != null) {
-        authProvider.userData = user;
-        authProvider.authRepo
-            .saveUserToken(authProvider.authRepo.getUserToken());
-        bool isBiometric = sl.get<SettingsRepo>().getBiometric();
-        if (isBiometric) {
-          AppLockAuthentication.authenticate().then((value) {
-            infoLog('authenticate: authStatus: $value', tag, 'checkLogin');
-            if (value[0] == AuthStatus.available) {
-              if (value[1] == AuthStatus.success) {
-                Get.offAll(MainPage());
-              } else {
-                exitTheApp();
-              }
-            } else {
-              Get.offAll(MainPage());
-            }
-          });
-        } else {
-          Get.offAll(MainPage());
-        }
-      } else {
-        logOut(tag);
-        Get.offAll(const LoginScreen());
-      }
-    }
-    listenDynamicLinks();
-  }
+
 
   @override
   void dispose() {
@@ -166,51 +103,4 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  Future<void> listenDynamicLinks() async {
-    await FlutterBranchSdk.init(); 
-    streamSubscription = FlutterBranchSdk.initSession().listen((data) async {
-      var authProvider = sl.get<AuthProvider>();
-      bool isLogin = authProvider.isLoggedIn();
-      var user = await authProvider.getUser();
-      try {
-        // logger.d('listenDynamicLinks - DeepLink Data: $data');
-        // logger.f(
-        //     'referring link is --> ${(data['~referring_link'] ?? '')}  \n  non_branch_link is --> ${(data['+non_branch_link'] ?? "")}');
-        if (data['~referring_link'] != null ||
-            data['+non_branch_link'] != null) {
-          Uri uri =
-              Uri.parse(data['~referring_link'] ?? data['+non_branch_link']);
-          logger.w('uri: $uri',
-              tag: '$tag listenDynamicLinks',
-              error:
-                  'path:${uri.path}\n queryParameters:${uri.queryParameters}\n query:${uri.query}\n fragment:${uri.fragment} \n host:${uri.host} \n origin:${uri.origin} \n port:${uri.port} \n scheme:${uri.scheme} \n userInfo:${uri.userInfo} ');
-          var queryParams = uri.queryParameters;
-
-          // if (uri.path == '/refCode'|| '/signup) => signUpScreen
-          if ((uri.path == SignUpScreen.routeName || uri.path == '/refCode') &&
-              !isLogin) {
-            String? sponsor;
-            String? placement;
-            if (queryParams.entries.isNotEmpty) {
-              sponsor = queryParams['sponsor'];
-              placement = queryParams['placement'];
-            }
-            Get.to(SignUpScreen(sponsor: sponsor, placement: placement));
-          }
-          //athorizedRoutes => mainPage
-          else if (authorizedRoutes(uri.path) && isLogin) {
-            logger.t('authorizedRoutes => splashScreen',
-                tag: '$tag listenDynamicLinks', error: queryParams);
-            selectNotificationStream.add(jsonEncode(queryParams));
-          }
-        }
-      } catch (e) {
-        logger.e('listenDynamicLinks - error: ',
-            error: e, tag: '$tag listenDynamicLinks');
-      }
-    }, onError: (error) {
-      logger.e('listenDynamicLinks - error: ',
-          error: error, tag: '$tag listenDynamicLinks');
-    });
-  }
 }

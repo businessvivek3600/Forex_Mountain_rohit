@@ -11,6 +11,7 @@ import '../../database/model/response/base/api_response.dart';
 import '../my.model/my_bank_model.dart';
 import '../my.model/my_customer_model.dart';
 import '../my.model/my_kyc_model.dart';
+import '../my.screens/functions/my_function.dart';
 
 class NewUserProvider with ChangeNotifier {
   NewUserRepo newUserRepo;
@@ -148,12 +149,12 @@ class NewUserProvider with ChangeNotifier {
   bool get isKycPending =>
       _kycData?.kycStatus == 0 || _kycData?.kycStatus == null;
 
-  Future<void> getKycData() async {
+  Future<void> getKycData(BuildContext context) async {
     _isLoadingKyc = true;
     notifyListeners();
 
     final response = await newUserRepo.getKycData();
-
+    await handleSessionExpired(context, response.response?.data);
     _isLoadingKyc = false;
 
     if (response.response != null && response.response!.statusCode == 200) {
@@ -198,7 +199,7 @@ class NewUserProvider with ChangeNotifier {
         phonePayQrImage: phonePayQrImage,
         googlePayQrImage: googlePayQrImage,
       );
-
+      await handleSessionExpired(context, response.response?.data);
       if (response.response?.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -236,7 +237,7 @@ class NewUserProvider with ChangeNotifier {
         newPassword: newPassword,
         confirmPassword: confirmPassword,
       );
-
+      await handleSessionExpired(context, response.response?.data);
       if (response.response?.statusCode == 200 && response.response?.data['status'] == true) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -291,7 +292,7 @@ class NewUserProvider with ChangeNotifier {
         country: country,
         customerMobile: customerMobile,
       );
-
+      await handleSessionExpired(context, response.response?.data);
       if (response.response?.statusCode == 200 && response.response?.data['status'] == true) {
         final data = response.response?.data;
         if (data['customer'] != null) {

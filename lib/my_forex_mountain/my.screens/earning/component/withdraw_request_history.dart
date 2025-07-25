@@ -33,7 +33,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
       final provider =  sl<MyEarningProvider>();
 
       provider.resetWithdrawRequests();
-      provider.fetchWithdrawRequests();
+      provider.fetchWithdrawRequests(context);
     });
   }
 
@@ -41,7 +41,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       Provider.of<MyEarningProvider>(context, listen: false)
-          .fetchWithdrawRequests(loadMore: true);
+          .fetchWithdrawRequests(context,loadMore: true);
     }
   }
   String getStatusText(String statusCode) {

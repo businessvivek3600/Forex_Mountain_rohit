@@ -32,7 +32,7 @@ class _TransactionTabState extends State<TransactionTab> {
     _scrollController = ScrollController()..addListener(_onScroll);
     Future.microtask(() {
       Provider.of<MyWalletProvider>(context, listen: false)
-          .resetAndFetchWalletData(endpoint: endpoint);
+          .resetAndFetchWalletData(context,endpoint: endpoint);
     });
   }
 
@@ -40,7 +40,7 @@ class _TransactionTabState extends State<TransactionTab> {
     final provider = Provider.of<MyWalletProvider>(context, listen: false);
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 300) {
-      provider.fetchWalletData(endpoint: endpoint, loadMore: true);
+      provider.fetchWalletData(context:context,endpoint: endpoint, loadMore: true);
     }
   }
 

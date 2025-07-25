@@ -40,7 +40,7 @@ class _BonusScreenState extends State<BonusScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<MyEarningProvider>(context, listen: false);
       provider.resetEarnings(_slug);
-      provider.fetchEarningsData();
+      provider.fetchEarningsData(context);
     });
   }
 
@@ -48,7 +48,7 @@ class _BonusScreenState extends State<BonusScreen> {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 100) {
       Provider.of<MyEarningProvider>(context, listen: false)
-          .fetchEarningsData(loadMore: true);
+          .fetchEarningsData(context,loadMore: true);
     }
   }
 

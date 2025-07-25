@@ -47,6 +47,7 @@ class _AddFundScreenState extends State<AddFundScreen> {
     }
 
     provider.fundRequest(
+      context,
       transactionNumber: txnNumber,
       paymentType: paymentType,
       amount: amount,

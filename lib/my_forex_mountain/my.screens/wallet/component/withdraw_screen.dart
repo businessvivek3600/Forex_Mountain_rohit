@@ -186,6 +186,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
             onPressed: () {
               if (_formKey.currentState?.validate() ?? false) {
                 walletProvider.withdrawRequest(
+                  context,
                   walletType: "wallet_commission",
                   amount: amountController.text.trim(),
                   paymentType: walletProvider.selectedPaymentType,

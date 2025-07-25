@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/repositories/my_earning_repo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../my.model/my_payout_model.dart';
 import '../my.model/my_withdraw_invoice.dart';
 import '../my.model/my_withdraw_model.dart';
+import '../my.screens/functions/my_function.dart';
+import '../my.screens/my.auth/my_login_screen.dart';
 
 
 class MyEarningProvider with ChangeNotifier {
@@ -83,7 +86,7 @@ class MyEarningProvider with ChangeNotifier {
   String? get invoiceError => _invoiceError;
 
   ///----------------------Bonus and Earnings Data Fetching----------------------///
-  Future<void> fetchEarningsData({bool loadMore = false}) async {
+  Future<void> fetchEarningsData(BuildContext context,{bool loadMore = false}) async {
     if (loadMore && (_isPaginating || !_hasMore)) return;
     if (!loadMore && _isFirstLoad) return;
 
@@ -102,7 +105,7 @@ class MyEarningProvider with ChangeNotifier {
       };
 
       final response = await earningRepo.getCEarningData(map);
-
+      await handleSessionExpired(context, response.response?.data);
       if (response.response?.statusCode == 200) {
         final responseData = response.response?.data;
 
@@ -134,7 +137,7 @@ class MyEarningProvider with ChangeNotifier {
     }
   }
   ///----------------------Payout Data Fetching----------------------///
-  Future<void> fetchPayoutData({bool loadMore = false}) async {
+  Future<void> fetchPayoutData(BuildContext context,{bool loadMore = false}) async {
     if (loadMore && (_isPaginatingPayout || !_hasMorePayout)) return;
     if (!loadMore && _isFirstLoadPayout) return;
 
@@ -153,6 +156,7 @@ class MyEarningProvider with ChangeNotifier {
       };
 
       final response = await earningRepo.getPayOut(map);
+      await handleSessionExpired(context, response.response?.data);
 
       if (response.response?.statusCode == 200) {
         final responseData = response.response?.data;
@@ -182,7 +186,7 @@ class MyEarningProvider with ChangeNotifier {
 
 
   ///----------------------Withdraw Request Data Fetching----------------------///
-  Future<void> fetchWithdrawRequests({bool loadMore = false}) async {
+  Future<void> fetchWithdrawRequests(BuildContext context,{bool loadMore = false}) async {
     if (loadMore && (_isPaginatingWithdraw || !_hasMoreWithdraw)) return;
     if (!loadMore && _isFirstLoadWithdraw) return;
 
@@ -201,7 +205,7 @@ class MyEarningProvider with ChangeNotifier {
       };
 
       final response = await earningRepo.getWithdrawList(map);
-
+      await handleSessionExpired(context, response.response?.data);
       if (response.response?.statusCode == 200) {
         final List<dynamic> result = response.response?.data['data'] ?? [];
         final newList = result.map((e) => MyWithdrawRequestModel.fromJson(e)).toList();
@@ -226,13 +230,14 @@ class MyEarningProvider with ChangeNotifier {
     }
   }
   ///----------------------Invoice Data Fetching----------------------///
-  Future<void> fetchInvoice(String id) async {
+  Future<void> fetchInvoice(BuildContext context,String id) async {
     _isLoadingInvoice = true;
     _invoiceError = null;
     notifyListeners();
 
     try {
       final resp = await earningRepo.getWithdrawInvoice({'id': id});
+      await handleSessionExpired(context, resp.response?.data);
       if (resp.response?.statusCode == 200) {
         final data = resp.response?.data;
         final invJson = data?['inv'];
