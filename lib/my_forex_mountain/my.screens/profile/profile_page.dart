@@ -219,7 +219,7 @@ class UserProfilePage extends StatelessWidget {
                       ).then((result) {
                         if (result == true) {
                           // ⬇️ Refresh dashboard data after profile update
-                          Provider.of<MyDashboardProvider>(context, listen: false).getDashboardData();
+                          Provider.of<MyDashboardProvider>(context, listen: false).getDashboardData(context);
                         }
                       });
                     },
@@ -274,7 +274,7 @@ class UserProfilePage extends StatelessWidget {
     ).then((result) {
     if (result == true) {
     // ⬇️ Refresh dashboard data after profile update
-    Provider.of<MyDashboardProvider>(context, listen: false).getDashboardData();
+    Provider.of<MyDashboardProvider>(context, listen: false).getDashboardData(context);
     }
     });
     },

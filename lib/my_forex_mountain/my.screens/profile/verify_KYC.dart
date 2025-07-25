@@ -21,7 +21,7 @@ class _VerifyKycState extends State<VerifyKyc> {
   @override
   void initState() {
     Future.microtask(() {
-      Provider.of<NewUserProvider>(context, listen: false).getKycData();
+      Provider.of<NewUserProvider>(context, listen: false).getKycData(context);
     });
     super.initState();
   }

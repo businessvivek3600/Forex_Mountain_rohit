@@ -6,14 +6,14 @@ import 'home/home_page.dart';
 import 'profile/profile_page.dart';
 import 'wallet/wallet_screen.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+class MyMainPage extends StatefulWidget {
+  const MyMainPage({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MyMainPage> createState() => _MyMainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MyMainPageState extends State<MyMainPage> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [

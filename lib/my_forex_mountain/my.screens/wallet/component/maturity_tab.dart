@@ -30,7 +30,7 @@ class _MaturityTabState extends State<MaturityTab> {
     _scrollController = ScrollController()..addListener(_onScroll);
     Future.microtask(() {
       Provider.of<MyWalletProvider>(context, listen: false)
-          .resetAndFetchWalletData(endpoint: endpoint);
+          .resetAndFetchWalletData( context,endpoint: endpoint);
     });
   }
 
@@ -38,7 +38,7 @@ class _MaturityTabState extends State<MaturityTab> {
     final provider = Provider.of<MyWalletProvider>(context, listen: false);
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 300) {
-      provider.fetchWalletData(endpoint: endpoint, loadMore: true);
+      provider.fetchWalletData(context: context,endpoint: endpoint, loadMore: true);
     }
   }
 
@@ -125,19 +125,19 @@ class _MaturityTabState extends State<MaturityTab> {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
-                          onPressed: () async {
+                           onPressed: () async {
                             final result = await Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (_) => TransferToWallet()),
+                              MaterialPageRoute(builder: (_) => TransferToWallet()),
                             );
+
                             if (result == true) {
-                              await Provider.of<MyWalletProvider>(context,
-                                  listen: false)
-                                  .resetAndFetchWalletData(
-                                  endpoint: endpoint);
+                              // ✅ Reload maturity data here
+                             await  Provider.of<MyWalletProvider>(context, listen: false)
+                                  .resetAndFetchWalletData(endpoint: endpoint,context); // or call your provider method
                               setState(() {});
                             }
+
                           },
                           icon: const Icon(Iconsax.import),
                           label: const Text('Transfer'),

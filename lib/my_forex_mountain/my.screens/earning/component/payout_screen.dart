@@ -26,14 +26,14 @@ class _PayoutScreenState extends State<PayoutScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<MyEarningProvider>(context, listen: false);
       provider.resetPayouts();
-      provider.fetchPayoutData();
+      provider.fetchPayoutData(context);
     });
 
     _scrollController.addListener(() {
       final provider = Provider.of<MyEarningProvider>(context, listen: false);
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 100) {
-        provider.fetchPayoutData(loadMore: true);
+        provider.fetchPayoutData(context,loadMore: true);
       }
     });
   }
@@ -72,7 +72,7 @@ class _PayoutScreenState extends State<PayoutScreen> {
                   return RefreshIndicator(
                     onRefresh: () async {
                       provider.resetPayouts();
-                      await provider.fetchPayoutData();
+                      await provider.fetchPayoutData(context);
                     },
                     child: ListView.builder(
                       controller: _scrollController,

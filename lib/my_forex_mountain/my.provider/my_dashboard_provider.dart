@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/my.model/my_company_info_model.dart';
 import 'package:forex_mountain/my_forex_mountain/repositories/my_dash_repo.dart';
 
-import '../../database/model/response/base/api_response.dart';
-import '../../database/model/response/company_info_model.dart';
 import '../../utils/api_checker.dart';
 import '../my.model/my_bank_model.dart';
 import '../my.model/my_dashboard_model.dart';
+import '../my.screens/functions/my_function.dart';
 
 class MyDashboardProvider with ChangeNotifier {
   final DashRepo dashRepo;
@@ -38,12 +37,14 @@ class MyDashboardProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getDashboardData() async {
+  Future<void> getDashboardData(BuildContext context) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     final response = await dashRepo.getDashboardData();
+
+    await handleSessionExpired(context, response.response?.data);
 
     if (response.response != null && response.response?.statusCode == 200) {
       final resBody = response.response?.data;
@@ -72,11 +73,12 @@ class MyDashboardProvider with ChangeNotifier {
   }
 
   ///___________________GET BANK DETAILS___________________
-  Future<void> getBankDetails() async {
+  Future<void> getBankDetails(BuildContext context) async {
     _isLoadingBank = true;
     notifyListeners();
+    final response = await dashRepo.getBankData();
 
-    ApiResponse response = await dashRepo.getBankData();
+    await handleSessionExpired(context, response.response?.data);
 
     if (response.response != null && response.response?.statusCode == 200) {
       try {
@@ -98,7 +100,8 @@ class MyDashboardProvider with ChangeNotifier {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
-    ApiResponse response = await dashRepo.getCompanyInfo();
+    final response = await dashRepo.getCompanyInfo();
+    await handleSessionExpired(context, response.response?.data);
     if (response.response != null && response.response?.statusCode == 200) {
       try {
         final data = response.response!.data['data']['company_info'];

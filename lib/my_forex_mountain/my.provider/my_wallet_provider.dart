@@ -7,6 +7,7 @@ import 'package:forex_mountain/my_forex_mountain/repositories/my_wallet_repo.dar
 import '../../database/model/response/base/api_response.dart';
 import '../my.model/my_fund_request.dart';
 import '../my.model/my_withdraw_model.dart';
+import '../my.screens/functions/my_function.dart';
 
 class MyWalletProvider extends ChangeNotifier {
   final MyWalletRepo walletRepo;
@@ -30,11 +31,11 @@ class MyWalletProvider extends ChangeNotifier {
   List<MyWalletData> _walletTransactionList = [];
   List<MyWalletData> get walletTransactionList => _walletTransactionList;
 
-  Future<void> resetAndFetchWalletData({required String endpoint}) async {
+  Future<void> resetAndFetchWalletData(BuildContext context,{required String endpoint}) async {
     _walletTransactionList = [];
     _currentPage = 1;
     _hasMoreData = true;
-    await fetchWalletData(endpoint: endpoint);
+    await fetchWalletData(context: context ,endpoint: endpoint);
   }
 
 
@@ -63,6 +64,7 @@ class MyWalletProvider extends ChangeNotifier {
 
 
   Future<void> fetchWalletData({
+    required BuildContext context,
     required String endpoint,
     bool loadMore = false,
   }) async {
@@ -82,7 +84,7 @@ class MyWalletProvider extends ChangeNotifier {
     };
 
     ApiResponse apiResponse = await walletRepo.getWalletData(endpoint, map);
-
+    await handleSessionExpired(context, apiResponse.response?.data);
     if (apiResponse.response != null &&
         apiResponse.response!.statusCode == 200) {
       try {
@@ -131,14 +133,14 @@ class MyWalletProvider extends ChangeNotifier {
 
   int _fundRequestPage = 1;
 
-  Future<void> resetAndFetchFundRequests() async {
+  Future<void> resetAndFetchFundRequests(context) async {
     _fundRequestList = [];
     _fundRequestPage = 1;
     _hasMoreFundData = true;
-    await fetchFundRequests();
+    await fetchFundRequests(context);
   }
 
-  Future<void> fetchFundRequests({bool loadMore = false}) async {
+  Future<void> fetchFundRequests(BuildContext context,{bool loadMore = false}) async {
     if (loadMore && (_isFundPaginating || !_hasMoreFundData)) return;
 
     if (loadMore) {
@@ -154,7 +156,7 @@ class MyWalletProvider extends ChangeNotifier {
     };
 
     ApiResponse response = await walletRepo.getFundRequestData(map);
-
+    await handleSessionExpired(context, response.response?.data);
     if (response.response != null &&
         response.response!.statusCode == 200 &&
         response.response!.data != null) {
@@ -185,7 +187,9 @@ class MyWalletProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fundRequest({
+  Future<void> fundRequest(
+      BuildContext context,
+      {
     required String transactionNumber,
     required String paymentType,
     required String amount,
@@ -202,7 +206,7 @@ class MyWalletProvider extends ChangeNotifier {
       amount: amount,
       transactionFile: transactionFile,
     );
-
+    await handleSessionExpired(context, response.response?.data);
     _isFundRequestLoading = false;
 
     if (response.response != null && response.response!.statusCode == 200) {
@@ -218,7 +222,9 @@ class MyWalletProvider extends ChangeNotifier {
 
   ///-------------------------Withdraw
 
-  Future<void> withdrawRequest({
+  Future<void> withdrawRequest(
+      BuildContext context,
+      {
     required String walletType,
     required String amount,
     required String paymentType,
@@ -244,7 +250,7 @@ class MyWalletProvider extends ChangeNotifier {
 
     try {
       ApiResponse response = await walletRepo.withdrawFunds(map);
-
+      await handleSessionExpired(context, response.response?.data);
       if (response.response != null && response.response!.statusCode == 200) {
         final res = response.response!.data;
         if (res['status'] == true) {

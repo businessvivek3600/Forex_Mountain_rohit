@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     Future.delayed(Duration.zero, () {
       final dashboardProvider =
           Provider.of<MyDashboardProvider>(context, listen: false);
-      dashboardProvider.getDashboardData();
+      dashboardProvider.getDashboardData(context);
      // dashboardProvider.getBankDetails(
 
    //   );
