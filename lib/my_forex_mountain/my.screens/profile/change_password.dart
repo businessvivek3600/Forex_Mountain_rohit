@@ -24,20 +24,11 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool isObscuredNew = true;
   bool isObscuredConfirm = true;
 
-  bool isLoading = true;
+
 
   @override
   void initState() {
     super.initState();
-
-    // Simulate loading state
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    });
   }
 
   @override
@@ -60,7 +51,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
-            child: isLoading ? _buildShimmerUI() : _buildPasswordForm(),
+            child:  _buildPasswordForm(),
           ),
         ),
       ),
@@ -71,10 +62,10 @@ class _ChangePasswordState extends State<ChangePassword> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GlassCard(
-          padding: const EdgeInsets.all(14),
+        const GlassCard(
+          padding: EdgeInsets.all(14),
           child: Row(
-            children: const [
+            children: [
               Icon(Iconsax.lock, color: Colors.amber, size: 20),
               SizedBox(width: 8),
               Text(
@@ -126,49 +117,6 @@ class _ChangePasswordState extends State<ChangePassword> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildShimmerUI() {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey.shade800,
-      highlightColor: Colors.grey.shade600,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(height: 40, width: double.infinity, color: Colors.white.withOpacity(0.6)),
-          const SizedBox(height: 24),
-          _shimmerLabel(),
-          _shimmerInput(),
-          const SizedBox(height: 16),
-          _shimmerLabel(),
-          _shimmerInput(),
-          const SizedBox(height: 16),
-          _shimmerLabel(),
-          _shimmerInput(),
-          const SizedBox(height: 24),
-          Container(height: 48, width: double.infinity, color: Colors.white.withOpacity(0.6)),
-        ],
-      ),
-    );
-  }
-
-  Widget _shimmerLabel() {
-    return Container(
-      height: 12,
-      width: 120,
-      margin: const EdgeInsets.only(bottom: 8),
-      color: Colors.white,
-    );
-  }
-
-  Widget _shimmerInput() {
-    return Container(
-      height: 48,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
     );
   }
 
