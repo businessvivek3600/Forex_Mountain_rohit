@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/my.model/my_wallet_model.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../my.constant/my_app_constant.dart';
@@ -147,12 +148,24 @@ class _TransactionTabState extends State<TransactionTab> {
 
             // Show "No data" if no fund and empty list
             if (walletBalance == 0.0 && transactionList.isEmpty)
-              const Center(
+              Center(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40),
-                  child: Text(
-                    'No data available.',
-                    style: TextStyle(fontSize: 16, color: Colors.white70),
+                  padding: const EdgeInsets.symmetric(vertical: 40),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/no_reload.json', // Ensure it's in pubspec.yaml
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'No data available.',
+                        style: TextStyle(fontSize: 16, color: Colors.white70),
+                      ),
+                    ],
                   ),
                 ),
               )

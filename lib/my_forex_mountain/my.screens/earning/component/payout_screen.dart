@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/widgets/glass_card.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../utils/color.dart';
@@ -68,19 +69,32 @@ class _PayoutScreenState extends State<PayoutScreen> {
                   if (provider.payoutErrorMessage != null) {
                     return Center(child: Text(provider.payoutErrorMessage!));
                   }
-                  if (provider.payouts.isEmpty) {
-                    return const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "No data found",
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 16,
+
+                  if (provider.withdrawRequests.isEmpty) {
+                    return AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: Center(
+                        key: const ValueKey('no-data'),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Lottie.asset(
+                              'assets/lottie/no_reload.json',
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.contain,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 16),
+                            const Text(
+                              "No data found",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   }

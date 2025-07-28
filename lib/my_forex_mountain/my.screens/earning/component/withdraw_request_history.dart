@@ -3,6 +3,7 @@ import 'package:forex_mountain/my_forex_mountain/my.model/my_withdraw_model.dart
 import 'package:forex_mountain/my_forex_mountain/widgets/glass_card.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../../../../sl_container.dart';
 import '../../../../utils/color.dart';
@@ -96,19 +97,33 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
 
+
                 if (provider.withdrawRequests.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "No data found",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 16,
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: Center(
+                      key: const ValueKey('no-data'),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Use asset if placed in assets folder
+                          Lottie.asset(
+                            'assets/lottie/no_reload.json',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.contain,
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 16),
+                          const Text(
+                            "No data found",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }
