@@ -5,6 +5,7 @@ import 'package:forex_mountain/my_forex_mountain/repositories/my_dash_repo.dart'
 import '../../utils/api_checker.dart';
 import '../my.model/my_bank_model.dart';
 import '../my.model/my_dashboard_model.dart';
+import '../my.model/my_support_model.dart';
 import '../my.screens/functions/my_function.dart';
 
 class MyDashboardProvider with ChangeNotifier {
@@ -26,6 +27,15 @@ class MyDashboardProvider with ChangeNotifier {
 
   MyCompanyInfo? _companyInfo;
   MyCompanyInfo? get companyInfo => _companyInfo;
+
+  ///Support
+  TicketListResponse? _ticketListResponse;
+  TicketListResponse? get ticketListResponse => _ticketListResponse;
+  int currentPage = 1;
+
+  bool _isLoadingSupport = false;
+  bool get isLoadingSupport => _isLoadingSupport;
+
 
   void setLoading(bool loading) {
     _isLoading = loading;
@@ -114,4 +124,64 @@ class MyDashboardProvider with ChangeNotifier {
     _isLoadingBank = false;
     notifyListeners();
   }
+
+  /// ___________________support
+  Future<void> getSupportData(BuildContext context) async {
+    _isLoadingSupport = true;
+    _errorMessage = null;
+    notifyListeners();
+ final map = {
+   'page' : currentPage.toString()
+ };
+    final response = await dashRepo.getSupportData(map);
+
+    await handleSessionExpired(context, response.response?.data);
+
+    if (response.response != null && response.response?.statusCode == 200) {
+      try {
+        final resBody = response.response!.data;
+        _ticketListResponse = TicketListResponse.fromJson(resBody);
+      } catch (e) {
+        _errorMessage = 'Support data parsing error: ${e.toString()}';
+        debugPrint('❌ Parsing error in support data: $e');
+      }
+    } else {
+      _errorMessage = response.error.toString();
+      debugPrint('❌ API Error in support data: $_errorMessage');
+    }
+
+    _isLoadingSupport = false;
+    notifyListeners();
+  }
+
+  Future<bool> createSupportTicket({
+    required BuildContext context,
+    required String subject,
+    required String departmentId,
+    required String message,
+  }) async {
+    setLoading(true);
+
+    final map = {
+      "subject": subject,
+      "department": departmentId.toString(),
+      "message": message,
+    };
+
+    final response = await dashRepo.createSupportTicket(map);
+    await handleSessionExpired(context, response.response?.data);
+
+    setLoading(false);
+
+    if (response.response != null && response.response?.statusCode == 200) {
+      return true;
+    } else {
+      setError(response.error.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to create ticket: ${response.error}")),
+      );
+      return false;
+    }
+  }
+
 }

@@ -1,9 +1,13 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../my.model/my_support_model.dart';
+import '../../my.provider/my_dashboard_provider.dart';
 
 class CreateSupportTicket extends StatefulWidget {
-  const CreateSupportTicket({super.key});
-
+  const CreateSupportTicket({super.key, required this.departments});
+  final List<Department> departments;
   @override
   State<CreateSupportTicket> createState() => _CreateSupportTicketState();
 }
@@ -12,11 +16,43 @@ class _CreateSupportTicketState extends State<CreateSupportTicket> {
   final TextEditingController subjectController = TextEditingController();
   final TextEditingController bodyController = TextEditingController();
 
-  final List<String> departments = ['Support', 'Billing', 'Sales'];
-  final List<String> priorities = ['Low', 'Medium', 'High'];
+  Department? selectedDepartment;
+  bool _userEditedSubject = false;
 
-  String selectedDepartment = 'Support';
-  String selectedPriority = 'Low';
+  @override
+  void initState() {
+    super.initState();
+    if (widget.departments.isNotEmpty) {
+      selectedDepartment = widget.departments.first;
+    }
+    bodyController.addListener(_autoGenerateSubjectFromBody);
+    subjectController.addListener(() {
+      _userEditedSubject = true;
+    });
+  }
+
+
+  void _autoGenerateSubjectFromBody() {
+    if (_userEditedSubject) return; // Don't auto-generate if user typed subject
+
+    final text = bodyController.text.trim();
+
+    if (text.isNotEmpty) {
+      final words = text.split(RegExp(r'\s+'));
+      final generatedSubject = words.take(6).join(' ') + (words.length > 6 ? '...' : '');
+      subjectController.text = generatedSubject;
+    } else {
+      subjectController.text = '';
+    }
+  }
+
+  @override
+  void dispose() {
+    bodyController.removeListener(_autoGenerateSubjectFromBody);
+    subjectController.dispose();
+    bodyController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +75,9 @@ class _CreateSupportTicketState extends State<CreateSupportTicket> {
           ),
           child: DraggableScrollableSheet(
             expand: false,
-            initialChildSize: 0.55,
-            maxChildSize: 0.9,
-            minChildSize: 0.4,
+            initialChildSize: 0.7,
+            maxChildSize: 0.7,
+            minChildSize: 0.7,
             builder: (context, scrollController) {
               return SingleChildScrollView(
                 controller: scrollController,
@@ -52,7 +88,7 @@ class _CreateSupportTicketState extends State<CreateSupportTicket> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Create Ticket',
+                        const Text('Describe Your Problem',
                             style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -74,51 +110,83 @@ class _CreateSupportTicketState extends State<CreateSupportTicket> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _buildLabel('Department'),
-                              _buildDropdown(
-                                departments,
-                                selectedDepartment,
-                                    (val) => setState(() {
-                                  selectedDepartment = val!;
-                                }),
-                              ),
+                              DropdownButtonFormField<Department>(
+                                value: selectedDepartment,
+                                dropdownColor: Colors.black87,
+                                style: const TextStyle(color: Colors.white),
+                                decoration: _inputDecoration('Select Department'),
+                                items: widget.departments.map((dept) {
+                                  return DropdownMenuItem<Department>(
+                                    value: dept,
+                                    child: Text(
+                                      dept.name ?? '',
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedDepartment = value;
+                                  });
+                                },
+                              )
+
+
                             ],
                           ),
                         ),
-                        const SizedBox(width: 22),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildLabel('Priority'),
-                              _buildDropdown(
-                                priorities,
-                                selectedPriority,
-                                    (val) => setState(() {
-                                  selectedPriority = val!;
-                                }),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // const SizedBox(width: 22),
+                        // Expanded(
+                        //   child: Column(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: [
+                        //       _buildLabel('Priority'),
+                        //       _buildDropdown(
+                        //         priorities,
+                        //         selectedPriority,
+                        //             (val) => setState(() {
+                        //           selectedPriority = val!;
+                        //         }),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                     const SizedBox(height: 22),
-                    _buildLabel('Ticket Body'),
-                    _buildTextField(bodyController, 'Describe your issue',
-                        maxLines: 3),
+                    _buildLabel('Describe your issue'),
+                    _buildTextField(bodyController, 'Please describe your issue in detail...',
+                        maxLines: 5),
                     const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          final ticket = {
-                            'subject': subjectController.text,
-                            'department': selectedDepartment,
-                            'priority': selectedPriority,
-                            'body': bodyController.text,
-                          };
-                          Navigator.of(context).pop(ticket);
-                        },
+
+                          onPressed: () async {
+                            if (subjectController.text.isEmpty || bodyController.text.isEmpty || selectedDepartment == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Please fill in all fields')),
+                              );
+                              return;
+                            }
+
+                            final provider = Provider.of<MyDashboardProvider>(context, listen: false);
+
+                            final success = await provider.createSupportTicket(
+                              context: context,
+                              subject: subjectController.text,
+                              departmentId: selectedDepartment!.departmentId.toString(), // make sure ID is not null
+                              message: bodyController.text,
+                            );
+
+                            if (success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Ticket created successfully')),
+                              );
+                              Navigator.of(context).pop(); // Close the modal
+                            }},
+
+
                         label: const Text("Create"),
                         icon: const Icon(Icons.send),
                         style: ElevatedButton.styleFrom(
@@ -143,8 +211,11 @@ class _CreateSupportTicketState extends State<CreateSupportTicket> {
   }
 
   Widget _buildLabel(String text) {
-    return Text(text,
-        style: const TextStyle(fontSize: 14, color: Colors.white));
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(text,
+          style: const TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.w600)),
+    );
   }
 
   Widget _buildTextField(TextEditingController controller, String hint,
@@ -156,23 +227,6 @@ class _CreateSupportTicketState extends State<CreateSupportTicket> {
       decoration: _inputDecoration(hint),
     );
   }
-
-  Widget _buildDropdown(List<String> items, String selectedValue,
-      ValueChanged<String?> onChanged) {
-    return DropdownButtonFormField<String>(
-      dropdownColor: Colors.black87,
-      value: selectedValue,
-      items: items
-          .map((e) => DropdownMenuItem(
-          value: e,
-          child: Text(e, style: const TextStyle(color: Colors.white))))
-          .toList(),
-      onChanged: onChanged,
-      decoration: _inputDecoration(null),
-      style: const TextStyle(color: Colors.white),
-    );
-  }
-
   InputDecoration _inputDecoration(String? hint) {
     return InputDecoration(
       hintText: hint,

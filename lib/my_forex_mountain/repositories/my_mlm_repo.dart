@@ -19,20 +19,20 @@ class MyMLMRepo {
 
   final String url = MyAppConstants.baseUrl;
 
-  Future<ApiResponse> getMyTeamData() async {
+  Future<ApiResponse> getMyTeamData(Map<String, String> map) async {
     try {
       final response =
-      await dioClient.post(url + MyAppConstants.myTeam, token: true);
+      await dioClient.post(url + MyAppConstants.myTeam, token: true, data: map);
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
     }
   }
 
-  Future<ApiResponse> getDirectMemberData() async {
+  Future<ApiResponse> getDirectMemberData(Map<String, String> map) async {
     try {
       final response =
-      await dioClient.post(url + MyAppConstants.directTeam, token: true);
+      await dioClient.post(url + MyAppConstants.directTeam, token: true,data: map);
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
