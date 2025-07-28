@@ -6,6 +6,7 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:forex_mountain/constants/assets_constants.dart';
 import 'package:forex_mountain/my_forex_mountain/my.provider/my_auth_provider.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -128,7 +129,7 @@ class _PlatformSelectionScreenState extends State<PlatformSelectionScreen> {
                   sl.get<AuthProvider>().getSignUpInitialData();
 
                   // Wait for a delay (e.g., 3 seconds or 2960 milliseconds as in your video)
-                  Future.delayed(const Duration(milliseconds: 2960), () {
+                  Future.delayed(const Duration(milliseconds: 1000), () {
                     _checkLoginAndNavigate();
                   });
                 },
@@ -204,32 +205,51 @@ class _PlatformSelectionScreenState extends State<PlatformSelectionScreen> {
 
   Widget _buildCustomButton(BuildContext context,
       {required String title,
-      required IconData icon,
-      required VoidCallback onPressed}) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon, size: 26, color: Colors.white),
-      label: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-          letterSpacing: 1.2,
+        required IconData icon,
+        required VoidCallback onPressed}) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.amber.withOpacity(0.2), Colors.orangeAccent.withOpacity(0.2)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orangeAccent.withOpacity(0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white.withOpacity(0.1),
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+        child: Row(
+          children: [
+            Icon(icon, size: 26, color: Colors.white),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                  letterSpacing: 1.1,
+                ),
+              ),
+            ),
+            const Icon(Iconsax.arrow_right_3, color: Colors.white),
+          ],
         ),
-        shadowColor: Colors.black.withOpacity(0.3),
-        side: const BorderSide(color: Colors.white70, width: 1),
       ),
     );
   }
+
   Column buildHeader(double height, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

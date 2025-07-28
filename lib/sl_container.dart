@@ -1,6 +1,8 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:forex_mountain/my_forex_mountain/my.provider/my_mlm_provider.dart';
 import 'package:forex_mountain/my_forex_mountain/my.provider/my_user_provider.dart';
+import 'package:forex_mountain/my_forex_mountain/repositories/my_mlm_repo.dart';
 import 'package:forex_mountain/my_forex_mountain/repositories/my_user_repo.dart';
 import 'package:forex_mountain/providers/deposit_request_provider.dart';
 import 'package:get_it/get_it.dart';
@@ -229,6 +231,9 @@ Future<void> initRepos() async {
   if(!sl.isRegistered<NewUserRepo>()) {
     sl.registerLazySingleton(() => NewUserRepo(dioClient: sl(), sharedPreferences: sl()));
   }
+  if(!sl.isRegistered<MyMLMRepo>()){
+    sl.registerLazySingleton(() => MyMLMRepo(dioClient: sl(), sharedPreferences: sl()));
+  }
 
   /// --------------------------Providers------------------------
   if (!sl.isRegistered<NewAuthProvider>()) {
@@ -246,5 +251,8 @@ Future<void> initRepos() async {
   }
   if (!sl.isRegistered<NewUserProvider>()) {
     sl.registerLazySingleton(() => NewUserProvider(newUserRepo: sl()));
+  }
+  if (!sl.isRegistered<MyMlmProvider>()) {
+    sl.registerLazySingleton(() => MyMlmProvider(mlmRepo: sl()));
   }
 }
