@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/my.model/my_earning_model.dart';
 import 'package:forex_mountain/my_forex_mountain/widgets/transparent_container.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -120,18 +121,32 @@ class _BonusScreenState extends State<BonusScreen> {
                   );
                 }).toList();
 
+
                 if (entries.isEmpty) {
                   return AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 100),
-                    child: const Center(
-                      key: ValueKey('no-data'),
-                      child: Text(
-                        "No data found",
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
+                    duration: const Duration(milliseconds: 300),
+                    child: Center(
+                      key: const ValueKey('no-data'),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Use asset if placed in assets folder
+                          Lottie.asset(
+                            'assets/lottie/no_reload.json',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            "No data found",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );

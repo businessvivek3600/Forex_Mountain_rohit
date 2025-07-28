@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/my.model/my_fund_request.dart';
 import 'package:forex_mountain/my_forex_mountain/my.screens/wallet/widget/transaction_card_shimmer.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../utils/picture_utils.dart';
@@ -79,16 +80,19 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
                   return Center(child: Text(provider.error!));
                 }
 
-                if (!provider.isFundRequestLoading &&
-                    provider.fundRequestList.isEmpty) {
-                  return const Center(
+                if (!provider.isFundRequestLoading && provider.fundRequestList.isEmpty) {
+                  return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.info_outline,
-                            color: Colors.white70, size: 40),
-                        SizedBox(height: 10),
-                        Text(
+                        Lottie.asset(
+                          'assets/lottie/no_reload.json', // make sure it's declared in pubspec.yaml
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.contain,
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
                           "No fund requests available.",
                           style: TextStyle(
                             color: Colors.white70,
@@ -99,6 +103,7 @@ class _FundHistoryScreenState extends State<FundHistoryScreen> {
                     ),
                   );
                 }
+
 
                 return ListView.builder(
                   controller: _scrollController,
