@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:forex_mountain/my_forex_mountain/repositories/my_mlm_repo.dart';
 
+import '../my.model/my_generation_model.dart';
 import '../my.model/my_team_view_model.dart';
 import '../my.screens/functions/my_function.dart';
 
@@ -112,4 +113,39 @@ class MyMlmProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+  ///GENERATION DATA
+  GenerationalTreeResponse? _generationData;
+  GenerationalTreeResponse? get generationData => _generationData;
+
+  bool _isLoadingGeneration = false;
+  bool get isLoadingGeneration => _isLoadingGeneration;
+
+  String? _generationError;
+  String? get generationError => _generationError;
+
+  Future<void> fetchGenerationData(BuildContext context, {String customerId = ''}) async {
+    _isLoadingGeneration = true;
+    _generationError = null;
+    notifyListeners();
+
+    try {
+      final map = {'customer_id': customerId};
+      final apiResponse = await mlmRepo.getGenerationData(map);
+      await handleSessionExpired(context, apiResponse.response?.data);
+
+      if (apiResponse.response?.statusCode == 200) {
+        final responseData = apiResponse.response?.data;
+        _generationData = GenerationalTreeResponse.fromJson(responseData);
+      } else {
+        _generationError = 'Failed to fetch generation data';
+      }
+    } catch (e) {
+      _generationError = 'Error: $e';
+    } finally {
+      _isLoadingGeneration = false;
+      notifyListeners();
+    }
+  }
+
+
 }
