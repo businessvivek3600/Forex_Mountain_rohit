@@ -2,39 +2,72 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/screens/drawerPages/support_pages/create_new_ticket.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:timelines/timelines.dart';
 
 import '../../../utils/picture_utils.dart';
 import '../../../utils/text.dart';
+import '../../my.model/my_support_model.dart';
+import '../../my.provider/my_dashboard_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/transparent_container.dart';
 import 'create_support_ticiket.dart';
 
-class SupportScreen extends StatefulWidget {
-  const SupportScreen({super.key});
+class MySupportScreen extends StatefulWidget {
+  const MySupportScreen({super.key});
 
   @override
-  State<SupportScreen> createState() => _SupportScreenState();
+  State<MySupportScreen> createState() => _MySupportScreenState();
 }
 
-class _SupportScreenState extends State<SupportScreen> {
-  List<Map<String, String>> tickets = [];
+class _MySupportScreenState extends State<MySupportScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      final provider = Provider.of<MyDashboardProvider>(context, listen: false);
+      provider.getSupportData(context);
+    });
+  }
 
   void _openCreateTicket(BuildContext context) async {
-    final newTicket = await showModalBottomSheet<Map<String, String>>(
+    final provider = Provider.of<MyDashboardProvider>(context, listen: false);
+
+    final hasOpenTicket = provider.ticketListResponse?.statusList?.any(
+          (status) => (status.name?.toLowerCase() == 'open') && (status.total ?? 0) > 0,
+    ) ?? false;
+
+    if (hasOpenTicket) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("You already have an open ticket.")),
+      );
+      return;
+    }
+
+    final departments = provider.ticketListResponse?.departments ?? [];
+
+   await showModalBottomSheet<Map<String, String>>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.3),
-      builder: (context) => const CreateSupportTicket(),
+      barrierColor: Colors.redAccent.withOpacity(0.3),
+      builder: (context) => CreateSupportTicket(departments: departments),
     );
+  }
 
-    if (newTicket != null) {
-      setState(() {
-        tickets.insert(0, newTicket);
-      });
+
+
+  String formatDate(String? rawDate) {
+    if (rawDate == null) return '-';
+    try {
+      final dateTime = DateTime.parse(rawDate);
+      return DateFormat("dd MMM yyyy, hh:mm a").format(dateTime);
+    } catch (e) {
+      return rawDate;
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +87,7 @@ class _SupportScreenState extends State<SupportScreen> {
           title: bodyLargeText('Support', context, fontSize: 20),
           backgroundColor: Colors.black,
           elevation: 0,
+          iconTheme: IconThemeData(color: Colors.amber),
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () => _openCreateTicket(context),
@@ -64,125 +98,207 @@ class _SupportScreenState extends State<SupportScreen> {
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-            child: Column(
-              children: [
-                // Glass card with status counts
-                const GlassCard(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _StatusCount(label: "Open", count: "1", color: Colors.red),
-                      _StatusCount(label: "In Progress", count: "0", color: Colors.green),
-                      _StatusCount(label: "Answered", count: "0", color: Colors.blue),
-                      _StatusCount(label: "On Hold", count: "0", color: Colors.orange),
-                      _StatusCount(label: "Closed", count: "0", color: Colors.grey),
-                    ],
+            child:
+                Consumer<MyDashboardProvider>(builder: (context, provider, _) {
+              final tickets = provider.ticketListResponse?.ticketList ?? [];
+              if (provider.isLoadingSupport) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (provider.errorMessage != null) {
+                return Center(child: Text(provider.errorMessage!));
+              }
+
+              return Column(
+                children: [
+                  // Glass card with status counts
+                  GlassCard(
+                    child: StatusCount(provider: provider),
                   ),
-                ),
-                const SizedBox(height: 16),
-                // Ticket list (optional preview of created tickets)
-                if (tickets.isEmpty)
-                  const Text(
-                    "No tickets yet.",
-                    style: TextStyle(color: Colors.white70),
-                  )
-                else
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: tickets.length,
-                      itemBuilder: (context, index) {
-                        final ticket = tickets[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 6.0),
-                          child: TransparentContainer(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Subject - full width
-                                Text(
-                                  ticket['subject'] ?? '',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(height: 11),
+                  const SizedBox(height: 16),
+                  // Ticket list (optional preview of created tickets)
+                  if (tickets.isEmpty)
+                    const Text(
+                      "No tickets yet.",
+                      style: TextStyle(color: Colors.white70),
+                    )
+                  else
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: tickets.length,
+                        itemBuilder: (context, index) {
+                          final ticket = tickets[index];
+                          final statusId = ticket.status;
+                          final statusObj = provider
+                              .ticketListResponse?.statusList
+                              ?.firstWhere((s) => s.ticketStatusId == statusId,
+                                  orElse: () => TicketStatus(
+                                      name: 'Unknown', statusColor: '#cccccc'));
 
-                                // Row 1: Ticket ID & Priority
-                                Row(
+                          final Color statusColor = Color(int.parse(
+                              'FF${statusObj!.statusColor?.replaceAll('#', '') ?? 'cccccc'}',
+                              radix: 16));
+                          final String statusName = statusObj.name ?? 'Unknown';
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Card(
+                              color: Colors.white.withOpacity(0.05),
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(14.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Text('Ticket ID: ', style: TextStyle(color: Colors.white70)),
-                                          Text('#${ticket['id'] ?? ''}', style: const TextStyle(color: Colors.white)),
-                                        ],
+                                    // 🔹 Subject
+                                    Text(
+                                      ticket.subject ?? 'No Subject',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
                                       ),
                                     ),
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          const Text('Priority: ', style: TextStyle(color: Colors.white70)),
-                                          Text('${ticket['priority'] ?? ''}', style: const TextStyle(color: Colors.white)),
-                                        ],
-                                      ),
+                                    const SizedBox(height: 8),
+
+                                    // 🔹 Ticket ID + Department
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text.rich(
+                                            TextSpan(
+                                              text: 'Ticket ID: ',
+                                              style: const TextStyle(
+                                                  color: Colors.white70),
+                                              children: [
+                                                TextSpan(
+                                                  text:
+                                                      '#${ticket.ticketId ?? ''}',
+                                                  style: const TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text.rich(
+                                            TextSpan(
+                                              text: 'Department: ',
+                                              style: const TextStyle(
+                                                  color: Colors.white70),
+                                              children: [
+                                                TextSpan(
+                                                  text:
+                                                      ticket.department ?? '-',
+                                                  style: const TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 6),
+
+                                    // 🔹 Created + Last Reply
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text.rich(
+                                            TextSpan(
+                                              text: 'Created: ',
+                                              style: const TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 12),
+                                              children: [
+                                                TextSpan(
+                                                  text: ticket.date != null ? formatDate(ticket.date!) : '-',
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text.rich(
+                                            TextSpan(
+                                              text: 'Last Reply: ',
+                                              style: const TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 12),
+                                              children: [
+                                                TextSpan(
+                                                  text: ticket.lastReply != null ? formatDate(ticket.lastReply!) : '-',
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+
+                                    // 🔹 Status Badge
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text.rich(
+                                          TextSpan(
+                                            text: 'Services: ',
+                                            style: const TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 12),
+                                            children: [
+                                              TextSpan(
+                                                text: ticket.service ?? '-',
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: statusColor.withOpacity(0.2),
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            border:
+                                                Border.all(color: statusColor),
+                                          ),
+                                          child: Text(
+                                            statusName,
+                                            style: TextStyle(
+                                                color: statusColor,
+                                                fontSize: 12),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 4),
-
-                                // Row 2: Department & Status
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Text('Department: ', style: TextStyle(color: Colors.white70)),
-                                          Text('${ticket['department'] ?? ''}', style: const TextStyle(color: Colors.white)),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          const Text('Status: ', style: TextStyle(color: Colors.white70)),
-                                          Text('${ticket['status'] ?? 'Closed'}', style: const TextStyle(color: Colors.white)),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-
-                                // Row 3: Last Reply (full width)
-                                Row(
-                                  children: [
-                                    const Text('Last Reply: ', style: TextStyle(color: Colors.white70)),
-                                    Expanded(
-                                      child: Text(
-                                        '${ticket['lastReply'] ?? ''}',
-                                        style: const TextStyle(color: Colors.white),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-
-
-
-
-              ],
-            ),
+                          );
+                        },
+                      ),
+                    )
+                ],
+              );
+            }),
           ),
         ),
       ),
@@ -190,40 +306,45 @@ class _SupportScreenState extends State<SupportScreen> {
   }
 }
 
-class _StatusCount extends StatelessWidget {
-  final String count;
-  final String label;
-  final Color color;
+class StatusCount extends StatelessWidget {
+  final MyDashboardProvider provider;
 
-  const _StatusCount({
-    Key? key,
-    required this.count,
-    required this.label,
-    required this.color,
-  }) : super(key: key);
+  const StatusCount({super.key, required this.provider});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          count,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: color,
+    final statusList = provider.ticketListResponse?.statusList ?? [];
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: statusList.map((status) {
+        final colorHex = status.statusColor?.replaceAll('#', '') ?? '000000';
+        final color = Color(int.parse('FF$colorHex', radix: 16));
+
+        return Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                status.total.toString(),
+                style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                status.name ?? '',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: color,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.white70,
-          ),
-        ),
-      ],
+        );
+      }).toList(),
     );
   }
 }
-

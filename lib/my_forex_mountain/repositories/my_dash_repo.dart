@@ -62,4 +62,24 @@ class DashRepo {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
     }
   }
+
+  ///Support
+  Future<ApiResponse> getSupportData(Map<String, dynamic> map) async {
+    try {
+      final response =
+      await dioClient.post(url + MyAppConstants.ticket, token: true,data: map);
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+  Future<ApiResponse> createSupportTicket(Map<String, dynamic> map) async {
+    try {
+      final response =
+      await dioClient.post(url + MyAppConstants.createTicket, token: true,data: map);
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
 }

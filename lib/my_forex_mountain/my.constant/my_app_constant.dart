@@ -30,6 +30,8 @@ class MyAppConstants {
   static const String withdrawList = 'withdraw_list';
   static const String withdrawInvoice = 'withdraw_note';
   static const String companyInfo = 'company_info';
+  static const String ticket = 'tickets';
+  static const String createTicket = 'open_ticket';
 
   ///wallet
   static const String walletTransaction = 'transaction_wallet';

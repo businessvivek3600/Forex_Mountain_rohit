@@ -170,7 +170,7 @@ class CustomAppDrawer extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (_) => const SupportScreen()),
+                                        builder: (_) => const MySupportScreen()),
                                   );
                                 },
                               ),
