@@ -121,9 +121,20 @@ class _BonusScreenState extends State<BonusScreen> {
                 }).toList();
 
                 if (entries.isEmpty) {
-                  return const Center(
-                      child: Text("No data found",
-                          style: TextStyle(color: Colors.white70)));
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 100),
+                    child: const Center(
+                      key: ValueKey('no-data'),
+                      child: Text(
+                        "No data found",
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  );
                 }
 
                 return ListView.builder(
