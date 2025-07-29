@@ -39,4 +39,14 @@ class MyMLMRepo {
     }
   }
 
+  Future<ApiResponse> getGenerationData(Map<String, String> map) async {
+    try {
+      final response =
+      await dioClient.post(url + MyAppConstants.generationData, token: true,data: map);
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
 }
