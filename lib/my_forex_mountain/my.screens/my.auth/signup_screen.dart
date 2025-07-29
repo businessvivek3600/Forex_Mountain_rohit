@@ -6,9 +6,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../utils/picture_utils.dart';
-import '../../../my.provider/my_auth_provider.dart';
-import '../../my.auth/my_login_screen.dart';
+import '../../../utils/picture_utils.dart';
+import '../../my.provider/my_auth_provider.dart';
+import 'my_login_screen.dart';
 
 class MySignupScreen extends StatefulWidget {
   const MySignupScreen({super.key});

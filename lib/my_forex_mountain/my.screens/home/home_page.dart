@@ -396,7 +396,7 @@ class HomeDashboard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: capText(
-                          "https://my.forexmountains.com/signup/",
+                          "https://my.forexmountains.com/signup/$sponsor",
                           context,
                           textAlign: TextAlign.start,
                           overflow: TextOverflow.ellipsis,
@@ -406,8 +406,8 @@ class HomeDashboard extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () async {
-                          await Clipboard.setData(const ClipboardData(
-                              text: "https://my.forexmountains.com/signup/"));
+                          await Clipboard.setData( ClipboardData(
+                              text: "https://my.forexmountains.com/signup/$sponsor"));
                           Toasts.showFToast(
                             context,
                             'Link copied to clipboard.',
@@ -425,7 +425,7 @@ class HomeDashboard extends StatelessWidget {
               width10(),
               GestureDetector(
                 onTap: () =>
-                    sendWhatsapp(text: "https://my.forexmountains.com/signup/"),
+                    sendWhatsapp(text: "https://my.forexmountains.com/signup/$sponsor"),
                 child: SizedBox(
                   width: 40,
                   height: 40,
@@ -435,7 +435,7 @@ class HomeDashboard extends StatelessWidget {
               width10(),
               GestureDetector(
                 onTap: () =>
-                    sendTelegram(text: 'https://my.forexmountains.com/signup/'),
+                    sendTelegram(text: 'https://my.forexmountains.com/signup/$sponsor'),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7),
                   child: SizedBox(

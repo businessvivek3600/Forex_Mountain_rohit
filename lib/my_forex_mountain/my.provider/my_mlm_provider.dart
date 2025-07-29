@@ -2,14 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:forex_mountain/my_forex_mountain/repositories/my_mlm_repo.dart';
 
 import '../my.model/my_generation_model.dart';
+import '../my.model/my_packages_model.dart';
 import '../my.model/my_team_view_model.dart';
+import '../my.screens/drawer/packages/packages.dart';
 import '../my.screens/functions/my_function.dart';
 
 class MyMlmProvider extends ChangeNotifier {
   final MyMLMRepo mlmRepo;
 
   MyMlmProvider({required this.mlmRepo});
-
 
   bool _isFirstLoad = false;
   bool _isPaginating = false;
@@ -18,7 +19,6 @@ class MyMlmProvider extends ChangeNotifier {
   String? _errorMessage;
   List<MyTeamMember> _teamMembers = [];
   List<MyTeamMember> _directMembers = [];
-
 
   bool get isFirstLoad => _isFirstLoad;
   bool get isPaginating => _isPaginating;
@@ -113,6 +113,7 @@ class MyMlmProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
   ///GENERATION DATA
   GenerationalTreeResponse? _generationData;
   GenerationalTreeResponse? get generationData => _generationData;
@@ -123,7 +124,8 @@ class MyMlmProvider extends ChangeNotifier {
   String? _generationError;
   String? get generationError => _generationError;
 
-  Future<void> fetchGenerationData(BuildContext context, {String customerId = ''}) async {
+  Future<void> fetchGenerationData(BuildContext context,
+      {String customerId = ''}) async {
     _isLoadingGeneration = true;
     _generationError = null;
     notifyListeners();
@@ -135,6 +137,7 @@ class MyMlmProvider extends ChangeNotifier {
 
       if (apiResponse.response?.statusCode == 200) {
         final responseData = apiResponse.response?.data;
+
         _generationData = GenerationalTreeResponse.fromJson(responseData);
       } else {
         _generationError = 'Failed to fetch generation data';
@@ -144,6 +147,93 @@ class MyMlmProvider extends ChangeNotifier {
     } finally {
       _isLoadingGeneration = false;
       notifyListeners();
+    }
+  }
+
+  ///packages----------------------------
+  bool _isLoadingPackages = false;
+  bool get isLoadingPackages => _isLoadingPackages;
+
+  String? _packageError;
+  String? get packageError => _packageError;
+
+  MyPackagesModel? _packagesModel;
+  MyPackagesModel? get packagesModel => _packagesModel;
+
+  Future<void> fetchPackagesData(BuildContext context) async {
+    _isLoadingPackages = true;
+    _packageError = null;
+    notifyListeners(); // optionally notify before
+
+    try {
+      final apiResponse = await mlmRepo.getPackageData();
+      await handleSessionExpired(context, apiResponse.response?.data);
+
+      final responseData = apiResponse.response?.data;
+
+      /// 🔍 Print the full raw response to console
+      print('API Response: $responseData');
+
+      if (apiResponse.response?.statusCode == 200) {
+        _packagesModel = MyPackagesModel.fromJson(responseData);
+      } else {
+        _packageError = 'Failed to fetch package data';
+      }
+    } catch (e, stacktrace) {
+      _packageError = 'Error: $e';
+      print('Error occurred: $e');
+      print('Stacktrace: $stacktrace');
+    } finally {
+      _isLoadingPackages = false;
+      notifyListeners();
+    }
+  }
+  Future<void> withdrawPackageByInvoiceId(
+      BuildContext context, String invoiceId) async {
+    try {
+      final response = await mlmRepo.withdrawPackage({"invoice_id": invoiceId});
+      final responseData = response.response?.data;
+
+      if (response.response?.statusCode == 200 &&
+          responseData['status'] == true) {
+        showCustomToast(context, responseData['message'] ?? "Withdraw successful");
+        fetchPackagesData(context); // 🔁 Refresh the list
+      } else {
+        showCustomToast(context, responseData['message'] ?? "Withdraw failed", isError: true);
+      }
+    } catch (e) {
+      showCustomToast(context, 'Withdraw error: $e', isError: true);
+    }
+  }
+  Future<void> purchasePackage(
+      BuildContext context, {
+        required String planId,
+        required String amount,
+        String? duration,
+      }) async {
+    try {
+      final Map<String, String> payload = {
+        "plan_id": planId,
+        "amount": amount,
+      };
+
+      if (duration != null) {
+        payload["duration"] = duration;
+      }
+
+      final response = await mlmRepo.purchasePackage(payload);
+      final responseData = response.response?.data;
+
+      if (response.response?.statusCode == 200 &&
+          responseData['status'] == true) {
+        showCustomToast(context, responseData['message'] ?? "Purchase successful");
+        fetchPackagesData(context); // Refresh list if needed
+        Navigator.of(context).pop(); // Optional: close BuyPackage screen
+      } else {
+        showCustomToast(context, responseData['message'] ?? "Purchase failed", isError: true);
+      }
+    } catch (e) {
+      showCustomToast(context, 'Purchase error: $e', isError: true);
     }
   }
 

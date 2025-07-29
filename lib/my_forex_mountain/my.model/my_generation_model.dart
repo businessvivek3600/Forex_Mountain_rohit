@@ -83,7 +83,7 @@ class Client {
       id: json['id'],
       customerId: json['customer_id'],
       username: json['username'],
-      directSponserUsername: json['direct_sponser_username'],
+      directSponserUsername: json['direct_sponser_username'] ?? '',
       salesActive: json['sales_active'],
       activeTotalMember: json['active_total_member'],
       totalMember: json['total_member'],

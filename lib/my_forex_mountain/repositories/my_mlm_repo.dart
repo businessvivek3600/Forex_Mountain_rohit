@@ -48,5 +48,33 @@ class MyMLMRepo {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
     }
   }
+  Future<ApiResponse> getPackageData() async {
+    try {
+      final response =
+      await dioClient.post(url + MyAppConstants.packages, token: true);
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
 
+  Future<ApiResponse> withdrawPackage(Map<String, String> map) async {
+    try {
+      final response =
+      await dioClient.post(url + MyAppConstants.packageWithdraw, token: true,data: map);
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
+  Future<ApiResponse> purchasePackage(Map<String, String> map) async {
+    try {
+      final response =
+      await dioClient.post(url + MyAppConstants.purchasePackage, token: true,data: map);
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
 }

@@ -7,7 +7,7 @@ import 'package:forex_mountain/utils/picture_utils.dart';
 
 import '../../my.model/login_view_model.dart';
 import '../../my.provider/my_auth_provider.dart';
-import '../drawer/packages/signup_screen.dart';
+import 'signup_screen.dart';
 import '../main_screen.dart';
 
 class MyLoginScreen extends StatefulWidget {

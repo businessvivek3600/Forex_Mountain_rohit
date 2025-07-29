@@ -29,7 +29,6 @@ class NewAuthProvider with ChangeNotifier {
     if (token.isNotEmpty) {
       _token = token;
       authRepository.saveUserToken(token);
-      notifyListeners();
     }
   }
 

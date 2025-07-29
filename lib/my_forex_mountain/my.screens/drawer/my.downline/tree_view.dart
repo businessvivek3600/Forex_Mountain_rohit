@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 
 import '../../../../utils/picture_utils.dart';
 import '../../../../utils/text.dart';
+import '../../../my.model/my_generation_model.dart';
 
 class TreeViewPage extends StatefulWidget {
-  const TreeViewPage({super.key});
-
+  const TreeViewPage({super.key, required this.childNodes, required this.username});
+  final List<CustomerChild> childNodes;
+  final String username;
   @override
   State<TreeViewPage> createState() => _TreeViewPageState();
 }
@@ -34,23 +36,10 @@ class _TreeViewPageState extends State<TreeViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final childNodes = [
-      '100002',
-      'Usmanpk',
-      'Usman6',
-      'usmanpk14',
-      '649493',
-      'Fatima22',
-      'AliTech', 'Usman6',
-      'usmanpk14',
-      '649493',
-      'Fatima22',
-      'AliTech',
-    ];
 
 /// Width reserved for each node
     final screenWidth = MediaQuery.of(context).size.width;
-    final double calculatedNodeWidth = (screenWidth - 40) / childNodes.length;
+    final double calculatedNodeWidth = (screenWidth - 40) / widget.childNodes.length;
     final double nodeWidth = calculatedNodeWidth < 60 ? 60 : calculatedNodeWidth;
 
     return Container(
@@ -73,24 +62,24 @@ class _TreeViewPageState extends State<TreeViewPage> {
         child: InteractiveViewer(
         panEnabled: true,
         scaleEnabled: true,
-          boundaryMargin: EdgeInsets.all(30
+          boundaryMargin: const EdgeInsets.all(30
              ),
           minScale: 0.1,
           maxScale: 5.6,
         child: Center(
           child: SizedBox(
-            width: childNodes.length * nodeWidth,
+            width: widget.childNodes.length * nodeWidth,
             height: 250,
             child: Column(
               children: [
-                const NodeWidget(label: '100001', isMain: true),
+              NodeWidget(label: widget.username, isMain: true),
                 const SizedBox(height: 10),
 
                 // Connector (custom lines)
                 CustomPaint(
-                  size: Size(childNodes.length * nodeWidth, 60), // Less height
+                  size: Size( widget.childNodes.length * nodeWidth, 60), // Less height
                   painter: ConnectorPainter(
-                    count: childNodes.length,
+                    count:  widget.childNodes.length,
                     nodeWidth: nodeWidth,
                   ),
                 ),
@@ -99,16 +88,16 @@ class _TreeViewPageState extends State<TreeViewPage> {
                 // Child nodes
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(childNodes.length, (index) {
-                    return SizedBox(
-                      width: nodeWidth,
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: NodeWidget(label: childNodes[index]),
+                  children: widget.childNodes.map((child) {
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+                        child: NodeWidget(label: child.username ?? ""),
                       ),
                     );
-                  }),
+                  }).toList(),
                 ),
+
               ],
             ),
           ),
@@ -130,17 +119,19 @@ class NodeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-       /// Displays a fixed image for each node.
         Image.asset(
           'assets/images/green.png',
-          width: 50,
-          height: 50,
+          width: isMain ? 50 : 30,
+          height: isMain ? 50 : 30,
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 2),
         Text(
           label,
+          textAlign: TextAlign.center,
           style: TextStyle(
+            fontSize: isMain ? 14 : 10,
             color: Colors.white,
             fontWeight: isMain ? FontWeight.bold : FontWeight.normal,
           ),
@@ -149,6 +140,7 @@ class NodeWidget extends StatelessWidget {
     );
   }
 }
+
 
 class ConnectorPainter extends CustomPainter {
   final int count;
@@ -160,40 +152,40 @@ class ConnectorPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.amber
-      ..strokeWidth = 4
+      ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
-    final double spacing = nodeWidth;
+    final double spacing = size.width / count; // Dynamically space based on actual width
     final double top = 0;
     final double bottom = size.height;
     final double lineY = bottom / 3;
 
-    // Vertical line from top (main node center) to horizontal connector
+    // 🔶 Line from top (main node) to horizontal center line
     canvas.drawLine(
       Offset(size.width / 2, top),
       Offset(size.width / 2, lineY),
       paint,
     );
 
-    // ✨ Horizontal connector line: only from first to last node center
-    final double startX = nodeWidth / 2;
-    final double endX = size.width - nodeWidth / 2;
+    // 🔶 Horizontal line across all child nodes
     canvas.drawLine(
-      Offset(startX, lineY),
-      Offset(endX, lineY),
+      Offset(spacing / 2, lineY),
+      Offset(size.width - spacing / 2, lineY),
       paint,
     );
 
-    // Curved connector down to each child
+    // 🔶 Connector from horizontal line to each child node center
     for (int i = 0; i < count; i++) {
-      double x = spacing * i + spacing / 2;
-      Path path = Path();
+      final double x = spacing * i + spacing / 2;
+
+      final path = Path();
       path.moveTo(x, lineY);
-      path.relativeCubicTo(0, 20, 0, 40, 0, 60);
+      path.relativeCubicTo(0, 10, 0, 30, 0, 60); // smoother curve down
       canvas.drawPath(path, paint);
     }
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant ConnectorPainter oldDelegate) => true;
 }
+

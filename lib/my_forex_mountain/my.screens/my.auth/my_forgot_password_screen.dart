@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../utils/picture_utils.dart';
 import '../../my.provider/my_auth_provider.dart';
-import '../drawer/packages/signup_screen.dart';
+import 'signup_screen.dart';
 import 'my_login_screen.dart';
 
 
