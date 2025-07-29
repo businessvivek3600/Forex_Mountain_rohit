@@ -4,6 +4,7 @@ import 'package:forex_mountain/screens/drawerPages/support_pages/create_new_tick
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:timelines/timelines.dart';
 
 import '../../../utils/picture_utils.dart';
@@ -47,7 +48,7 @@ class _MySupportScreenState extends State<MySupportScreen> {
 
     final departments = provider.ticketListResponse?.departments ?? [];
 
-   await showModalBottomSheet<Map<String, String>>(
+    await showModalBottomSheet<Map<String, String>>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -55,8 +56,6 @@ class _MySupportScreenState extends State<MySupportScreen> {
       builder: (context) => CreateSupportTicket(departments: departments),
     );
   }
-
-
 
   String formatDate(String? rawDate) {
     if (rawDate == null) return '-';
@@ -67,7 +66,6 @@ class _MySupportScreenState extends State<MySupportScreen> {
       return rawDate;
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -98,11 +96,22 @@ class _MySupportScreenState extends State<MySupportScreen> {
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-            child:
-                Consumer<MyDashboardProvider>(builder: (context, provider, _) {
+            child: Consumer<MyDashboardProvider>(builder: (context, provider, _) {
               final tickets = provider.ticketListResponse?.ticketList ?? [];
+
               if (provider.isLoadingSupport) {
-                return const Center(child: CircularProgressIndicator());
+                return Column(
+                  children: [
+                    GlassCard(child: StatusCount(provider: provider)),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: 5,
+                        itemBuilder: (context, index) => buildShimmerTicketCard(),
+                      ),
+                    ),
+                  ],
+                );
               }
 
               if (provider.errorMessage != null) {
@@ -111,12 +120,8 @@ class _MySupportScreenState extends State<MySupportScreen> {
 
               return Column(
                 children: [
-                  // Glass card with status counts
-                  GlassCard(
-                    child: StatusCount(provider: provider),
-                  ),
+                  GlassCard(child: StatusCount(provider: provider)),
                   const SizedBox(height: 16),
-                  // Ticket list (optional preview of created tickets)
                   if (tickets.isEmpty)
                     const Text(
                       "No tickets yet.",
@@ -129,11 +134,10 @@ class _MySupportScreenState extends State<MySupportScreen> {
                         itemBuilder: (context, index) {
                           final ticket = tickets[index];
                           final statusId = ticket.status;
-                          final statusObj = provider
-                              .ticketListResponse?.statusList
-                              ?.firstWhere((s) => s.ticketStatusId == statusId,
-                                  orElse: () => TicketStatus(
-                                      name: 'Unknown', statusColor: '#cccccc'));
+                          final statusObj = provider.ticketListResponse?.statusList?.firstWhere(
+                                (s) => s.ticketStatusId == statusId,
+                            orElse: () => TicketStatus(name: 'Unknown', statusColor: '#cccccc'),
+                          );
 
                           final Color statusColor = Color(int.parse(
                               'FF${statusObj!.statusColor?.replaceAll('#', '') ?? 'cccccc'}',
@@ -153,7 +157,6 @@ class _MySupportScreenState extends State<MySupportScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // 🔹 Subject
                                     Text(
                                       ticket.subject ?? 'No Subject',
                                       style: const TextStyle(
@@ -163,22 +166,17 @@ class _MySupportScreenState extends State<MySupportScreen> {
                                       ),
                                     ),
                                     const SizedBox(height: 8),
-
-                                    // 🔹 Ticket ID + Department
                                     Row(
                                       children: [
                                         Expanded(
                                           child: Text.rich(
                                             TextSpan(
                                               text: 'Ticket ID: ',
-                                              style: const TextStyle(
-                                                  color: Colors.white70),
+                                              style: const TextStyle(color: Colors.white70),
                                               children: [
                                                 TextSpan(
-                                                  text:
-                                                      '#${ticket.ticketId ?? ''}',
-                                                  style: const TextStyle(
-                                                      color: Colors.white),
+                                                  text: '#${ticket.ticketId ?? ''}',
+                                                  style: const TextStyle(color: Colors.white),
                                                 ),
                                               ],
                                             ),
@@ -188,14 +186,11 @@ class _MySupportScreenState extends State<MySupportScreen> {
                                           child: Text.rich(
                                             TextSpan(
                                               text: 'Department: ',
-                                              style: const TextStyle(
-                                                  color: Colors.white70),
+                                              style: const TextStyle(color: Colors.white70),
                                               children: [
                                                 TextSpan(
-                                                  text:
-                                                      ticket.department ?? '-',
-                                                  style: const TextStyle(
-                                                      color: Colors.white),
+                                                  text: ticket.department ?? '-',
+                                                  style: const TextStyle(color: Colors.white),
                                                 ),
                                               ],
                                             ),
@@ -204,23 +199,17 @@ class _MySupportScreenState extends State<MySupportScreen> {
                                       ],
                                     ),
                                     const SizedBox(height: 6),
-
-                                    // 🔹 Created + Last Reply
                                     Row(
                                       children: [
                                         Expanded(
                                           child: Text.rich(
                                             TextSpan(
                                               text: 'Created: ',
-                                              style: const TextStyle(
-                                                  color: Colors.white70,
-                                                  fontSize: 12),
+                                              style: const TextStyle(color: Colors.white70, fontSize: 12),
                                               children: [
                                                 TextSpan(
                                                   text: ticket.date != null ? formatDate(ticket.date!) : '-',
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12),
+                                                  style: const TextStyle(color: Colors.white, fontSize: 12),
                                                 ),
                                               ],
                                             ),
@@ -230,15 +219,11 @@ class _MySupportScreenState extends State<MySupportScreen> {
                                           child: Text.rich(
                                             TextSpan(
                                               text: 'Last Reply: ',
-                                              style: const TextStyle(
-                                                  color: Colors.white70,
-                                                  fontSize: 12),
+                                              style: const TextStyle(color: Colors.white70, fontSize: 12),
                                               children: [
                                                 TextSpan(
                                                   text: ticket.lastReply != null ? formatDate(ticket.lastReply!) : '-',
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12),
+                                                  style: const TextStyle(color: Colors.white, fontSize: 12),
                                                 ),
                                               ],
                                             ),
@@ -247,43 +232,31 @@ class _MySupportScreenState extends State<MySupportScreen> {
                                       ],
                                     ),
                                     const SizedBox(height: 8),
-
-                                    // 🔹 Status Badge
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text.rich(
                                           TextSpan(
                                             text: 'Services: ',
-                                            style: const TextStyle(
-                                                color: Colors.white70,
-                                                fontSize: 12),
+                                            style: const TextStyle(color: Colors.white70, fontSize: 12),
                                             children: [
                                               TextSpan(
                                                 text: ticket.service ?? '-',
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12),
+                                                style: const TextStyle(color: Colors.white, fontSize: 12),
                                               ),
                                             ],
                                           ),
                                         ),
                                         Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 4),
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                           decoration: BoxDecoration(
                                             color: statusColor.withOpacity(0.2),
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                            border:
-                                                Border.all(color: statusColor),
+                                            borderRadius: BorderRadius.circular(30),
+                                            border: Border.all(color: statusColor),
                                           ),
                                           child: Text(
                                             statusName,
-                                            style: TextStyle(
-                                                color: statusColor,
-                                                fontSize: 12),
+                                            style: TextStyle(color: statusColor, fontSize: 12),
                                           ),
                                         ),
                                       ],
@@ -299,6 +272,53 @@ class _MySupportScreenState extends State<MySupportScreen> {
                 ],
               );
             }),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildShimmerTicketCard() {
+    return TransparentContainer(
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey.shade800,
+        highlightColor: Colors.grey.shade600,
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(width: 150, height: 16, color: Colors.white),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Container(width: 80, height: 14, color: Colors.white),
+                  const SizedBox(width: 20),
+                  Container(width: 80, height: 14, color: Colors.white),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Container(width: 100, height: 12, color: Colors.white),
+                  const SizedBox(width: 20),
+                  Container(width: 100, height: 12, color: Colors.white),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(width: 80, height: 12, color: Colors.white),
+                  Container(width: 60, height: 24, color: Colors.white),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -327,18 +347,12 @@ class StatusCount extends StatelessWidget {
             children: [
               Text(
                 status.total.toString(),
-                style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               const SizedBox(height: 4),
               Text(
                 status.name ?? '',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: color,
-                ),
+                style: TextStyle(fontSize: 12, color: color),
                 textAlign: TextAlign.center,
               ),
             ],
