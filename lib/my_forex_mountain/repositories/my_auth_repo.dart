@@ -124,4 +124,19 @@ class NewAuthRepo {
     }
   }
 
+  Future<ApiResponse> logout() async {
+    try {
+      debugPrint('🔗 API URL: $baseUrl${MyAppConstants.logout}');
+      final response = await dioClient.post(
+        '$baseUrl${MyAppConstants.logout}',token: true,
+
+      );
+
+      debugPrint('✅ ForgotPassword RESPONSE: ${response.data}');
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
 }

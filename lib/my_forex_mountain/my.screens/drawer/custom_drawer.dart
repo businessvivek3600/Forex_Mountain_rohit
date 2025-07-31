@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../../constants/app_constants.dart';
 import '../../../constants/assets_constants.dart';
+import '../../../platform_selection.dart';
 import '../../../sl_container.dart';
 import '../../../utils/picture_utils.dart';
 import '../../my.provider/my_auth_provider.dart';
@@ -300,9 +301,9 @@ class CustomAppDrawer extends StatelessWidget {
                                 );
 
                                 if (confirm == true) {
-                                  await sl.get<NewAuthProvider>().logout();
+                                  await sl.get<NewAuthProvider>().logout(context);
                                   Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(builder: (_) => MyLoginScreen()),
+                                    MaterialPageRoute(builder: (_) => PlatformSelectionScreen()),
                                         (Route<dynamic> route) => false,
                                   );
                                 }
