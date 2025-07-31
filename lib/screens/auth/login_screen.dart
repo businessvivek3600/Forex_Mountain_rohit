@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:forex_mountain/platform_selection.dart';
 import 'package:get/get.dart';
 import 'package:forex_mountain/utils/default_logger.dart';
 import '../../utils/deviceid_provider.dart';
@@ -99,6 +100,17 @@ class _LoginScreenState extends State<LoginScreen> {
         child: AutofillGroup(
           child: Scaffold(
             backgroundColor: Colors.black,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Get.offAll(() =>   const PlatformSelectionScreen()); // Replace with your actual screen class
+                },
+              ),
+            ),
+
             body: Container(
               height: height,
               width: double.maxFinite,

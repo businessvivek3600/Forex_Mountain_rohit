@@ -33,12 +33,7 @@ class NewAuthProvider with ChangeNotifier {
   }
 
 
-  Future<void> logout() async {
-    _token = null;
-    _customer = null;
-    await authRepository.clearAuthData();
-    notifyListeners();
-  }
+
 
 
 
@@ -141,5 +136,28 @@ class NewAuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> logout(BuildContext context) async {
+    try {
+      final response = await authRepository.logout();
+      if ( response.response?.data['status'] == true) {
+        _token = null;
+        _customer = null;
+        await authRepository.clearAuthData();
+        notifyListeners();
+      } else {
+        // Optionally handle logout failure
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.response?.data.message ?? 'Logout failed')),
+        );
+      }
+    } catch (e) {
+      debugPrint('❌ Logout Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Something went wrong. Please try again.')),
+      );
+    }
+  }
+
 
 }
