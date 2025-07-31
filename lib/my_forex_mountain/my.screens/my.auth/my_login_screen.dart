@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:forex_mountain/my_forex_mountain/my.screens/my.auth/my_forgot_password_screen.dart';
-import 'package:forex_mountain/screens/auth/forgot_password.dart';
 import 'package:provider/provider.dart';
 import 'package:forex_mountain/utils/picture_utils.dart';
 
@@ -103,11 +102,13 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
 
                             Align(
                               alignment: Alignment.centerRight,
-                              child:GestureDetector(
+                              child: GestureDetector(
                                 onTap: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => const MyForgotPasswordScreen ()),
+                                    MaterialPageRoute(
+                                      builder: (context) => const MyForgotPasswordScreen(),
+                                    ),
                                   );
                                 },
                                 child: const Text(
@@ -150,6 +151,18 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                                           builder: (_) => MyMainPage(),
                                         ),
                                       );
+
+                                      Future.delayed(
+                                        const Duration(milliseconds: 300),
+                                            () {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Login successful'),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                        },
+                                      );
                                     } else if (authProvider.errorMessage ==
                                         'Please verify your email before logging in.') {
                                       showDialog(
@@ -157,7 +170,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                                         builder: (_) => AlertDialog(
                                           title: const Text('Email Verification Required'),
                                           content: const Text(
-                                              'Your email is not verified. Please check your inbox.'),
+                                            'Your email is not verified. Please check your inbox.',
+                                          ),
                                           actions: [
                                             TextButton(
                                               onPressed: () =>
@@ -168,11 +182,20 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                                         ),
                                       );
                                     } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      final messenger = ScaffoldMessenger.of(context);
+                                      messenger.clearSnackBars();
+                                      messenger.showSnackBar(
                                         SnackBar(
-                                          content: Text(authProvider.errorMessage ??
-                                              'Login failed'),
+                                          content: Text(
+                                            authProvider.errorMessage ??
+                                                'Invalid username or password',
+                                            style: const TextStyle(color: Colors.white),
+                                          ),
                                           backgroundColor: Colors.red,
+                                          behavior: SnackBarBehavior.floating,
+                                          margin: const EdgeInsets.only(
+                                              top: 20, left: 20, right: 20),
+                                          duration: const Duration(seconds: 3),
                                         ),
                                       );
                                     }
@@ -180,8 +203,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                                 },
                                 child: const Text(
                                   'Sign in',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
+                                  style: TextStyle(color: Colors.white, fontSize: 16),
                                 ),
                               ),
                             ),
@@ -204,8 +226,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                              const MySignupScreen(),
+                                              builder: (context) => const MySignupScreen(),
                                             ),
                                           );
                                         },
